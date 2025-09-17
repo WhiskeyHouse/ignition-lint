@@ -48,8 +48,13 @@ class LintIssue:
         return f"{self.severity.value}: {self.code} - {self.message}"
 
 class IgnitionPerspectiveLinter:
-    def __init__(self, schema_path: str = "./core-ia-components-schema-robust.json"):
+    def __init__(self, schema_path: str = None):
         """Initialize the linter with the component schema."""
+        if schema_path is None:
+            # Default to schema in schemas directory relative to this file
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            schema_path = os.path.join(os.path.dirname(current_dir), "schemas", "core-ia-components-schema-robust.json")
+        
         self.schema = self._load_schema(schema_path)
         self.issues: List[LintIssue] = []
         self.component_stats = {
@@ -892,8 +897,8 @@ def main():
     )
     parser.add_argument(
         "--schema",
-        default="./core-ia-components-schema-robust.json",
-        help="Path to component schema file"
+        default=None,
+        help="Path to component schema file (default: schemas/core-ia-components-schema-robust.json)"
     )
     parser.add_argument(
         "--output", "-o",

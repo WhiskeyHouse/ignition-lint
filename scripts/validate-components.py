@@ -15,7 +15,9 @@ from jsonschema import validate, ValidationError
 # Path to the whk-distillery01-ignition-global repo
 REPO_PATH = "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global"
 VIEWS_PATH = os.path.join(REPO_PATH, "com.inductiveautomation.perspective/views")
-SCHEMA_PATH = "./core-ia-components-schema-robust.json"
+# Get schema path relative to this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SCHEMA_PATH = os.path.join(os.path.dirname(SCRIPT_DIR), "schemas", "core-ia-components-schema-robust.json")
 
 def load_schema() -> dict:
     """Load the JSON schema for validation"""
