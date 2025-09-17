@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ignition Perspective Core Components Schema - Permissive",
+  "description": "More permissive JSON Schema validation rules for core Ignition Perspective ia.* components",
+  "type": "object",
+  "definitions": {
+    "componentBase": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^ia\\.(container|display|input|chart|navigation)\\.",
+          "description": "Component type must start with ia. followed by category"
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "name": { 
+              "type": "string",
+              "description": "Component name for identification"
+            }
+          },
+          "additionalProperties": true,
+          "description": "Metadata about the component"
+        },
+        "position": {
+          "type": "object",
+          "description": "Layout positioning properties",
+          "additionalProperties": true
+        },
+        "props": {
+          "type": "object",
+          "description": "Component-specific properties",
+          "additionalProperties": true
+        },
+        "propConfig": {
+          "type": "object",
+          "description": "Property configuration and bindings",
+          "additionalProperties": true
+        },
+        "events": {
+          "type": "object",
+          "description": "Event handlers",
+          "additionalProperties": true
+        },
+        "custom": {
+          "type": "object",
+          "description": "Custom properties",
+          "additionalProperties": true
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/componentBase" },
+          "description": "Child components (for containers)"
+        }
+      },
+      "additionalProperties": true
+    },
+    
+    "containerComponent": {
+      "allOf": [
+        { "$ref": "#/definitions/componentBase" },
+        {
+          "properties": {
+            "type": {
+              "enum": [
+                "ia.container.flex",
+                "ia.container.coord", 
+                "ia.container.breakpt",
+                "ia.container.tab"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    
+    "displayComponent": {
+      "allOf": [
+        { "$ref": "#/definitions/componentBase" },
+        {
+          "properties": {
+            "type": {
+              "enum": [
+                "ia.display.label",
+                "ia.display.icon", 
+                "ia.display.view",
+                "ia.display.table",
+                "ia.display.flex-repeater",
+                "ia.display.markdown",
+                "ia.display.tree",
+                "ia.display.image",
+                "ia.display.iframe",
+                "ia.display.tag-browse-tree",
+                "ia.display.viewcanvas",
+                "ia.display.progress",
+                "ia.display.equipmentschedule",
+                "ia.display.barcode",
+                "ia.display.alarmstatustable",
+                "ia.display.alarmjournaltable"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    
+    "inputComponent": {
+      "allOf": [
+        { "$ref": "#/definitions/componentBase" },
+        {
+          "properties": {
+            "type": {
+              "enum": [
+                "ia.input.button",
+                "ia.input.dropdown",
+                "ia.input.text-field",
+                "ia.input.numeric-entry-field",
+                "ia.input.checkbox",
+                "ia.input.text-area",
+                "ia.input.oneshotbutton",
+                "ia.input.date-time-input",
+                "ia.input.multi-state-button",
+                "ia.input.toggle-switch",
+                "ia.input.signature-pad",
+                "ia.input.fileupload"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    
+    "chartComponent": {
+      "allOf": [
+        { "$ref": "#/definitions/componentBase" },
+        {
+          "properties": {
+            "type": {
+              "enum": ["ia.chart.pie", "ia.chart.xy"]
+            }
+          }
+        }
+      ]
+    },
+    
+    "navigationComponent": {
+      "allOf": [
+        { "$ref": "#/definitions/componentBase" },
+        {
+          "properties": {
+            "type": {
+              "enum": ["ia.navigation.menutree", "ia.navigation.horizontalmenu"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  
+  "oneOf": [
+    { "$ref": "#/definitions/containerComponent" },
+    { "$ref": "#/definitions/displayComponent" },
+    { "$ref": "#/definitions/inputComponent" },
+    { "$ref": "#/definitions/chartComponent" },
+    { "$ref": "#/definitions/navigationComponent" }
+  ],
+  
+  "examples": [
+    {
+      "type": "ia.display.label",
+      "meta": { "name": "SampleLabel" },
+      "props": { "text": "Hello World" }
+    },
+    {
+      "type": "ia.container.flex",
+      "meta": { "name": "Container" },
+      "props": { "direction": "column" },
+      "children": []
+    },
+    {
+      "type": "ia.input.button",
+      "meta": { "name": "ClickMe" },
+      "props": { "text": "Click Me" },
+      "events": {
+        "component": {
+          "onActionPerformed": {
+            "config": { "script": "print('clicked')" }
+          }
+        }
+      }
+    }
+  ]
+}

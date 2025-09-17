@@ -1,0 +1,726 @@
+
+============================================================
+📊 LINTING REPORT
+============================================================
+📁 Files processed: 226
+🧩 Components analyzed: 2660
+✅ Valid components: 2533
+❌ Invalid components: 127
+🔧 Component types found: 36
+📈 Schema compliance: 95.2%
+
+📋 Issues by severity:
+   ❌ ERROR: 147
+   ⚠️ WARNING: 94
+   ℹ️ INFO: 497
+   💄 STYLE: 485
+
+🎯 Issues by component type:
+   ia.chart.pie: 2 issues
+   ia.chart.xy: 1 issues
+   ia.container.breakpt: 1 issues
+   ia.container.coord: 3 issues
+   ia.container.flex: 676 issues
+   ia.container.tab: 1 issues
+   ia.display.flex-repeater: 25 issues
+   ia.display.icon: 22 issues
+   ia.display.image: 1 issues
+   ia.display.label: 361 issues
+   ia.display.table: 39 issues
+   ia.display.view: 9 issues
+   ia.input.button: 52 issues
+   ia.input.dropdown: 28 issues
+   ia.input.oneshotbutton: 1 issues
+   ia.input.text-field: 1 issues
+
+🏗️ Component types discovered:
+   - ia.chart.pie
+   - ia.chart.xy
+   - ia.container.breakpt
+   - ia.container.coord
+   - ia.container.flex
+   - ia.container.tab
+   - ia.display.alarmjournaltable
+   - ia.display.alarmstatustable
+   - ia.display.barcode
+   - ia.display.equipmentschedule
+   - ia.display.flex-repeater
+   - ia.display.icon
+   - ia.display.iframe
+   - ia.display.image
+   - ia.display.label
+   - ia.display.markdown
+   - ia.display.progress
+   - ia.display.table
+   - ia.display.tag-browse-tree
+   - ia.display.tree
+   - ia.display.view
+   - ia.display.viewcanvas
+   - ia.input.button
+   - ia.input.checkbox
+   - ia.input.date-time-input
+   - ia.input.dropdown
+   - ia.input.fileupload
+   - ia.input.multi-state-button
+   - ia.input.numeric-entry-field
+   - ia.input.oneshotbutton
+   - ia.input.signature-pad
+   - ia.input.text-area
+   - ia.input.text-field
+   - ia.input.toggle-switch
+   - ia.navigation.horizontalmenu
+   - ia.navigation.menutree
+
+🔍 DETAILED ISSUES
+------------------------------------------------------------
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/MaintenanceHistory/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.0.children.0.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.0.children.0.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0]
+      Suggestion: Path: children.0.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0].children[0]
+      Suggestion: Path: children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0].children[0].children[0]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[0].children[0].children[0].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/CronScheduleBuilder/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[1].children[1].children[0].children[1].children[1]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.0.children.1.children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.tab at root.root.children[1]
+      Suggestion: Path: children.0.children.1.children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0]
+      Suggestion: Path: children.1.children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0].children[1]
+      Suggestion: Path: children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0].children[1].children[1]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[0].children[1].children[1].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/FacilityToggle/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/AlarmMessenger/Framework/Embedded/AlarmConfiguration/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.0.children.28.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0]
+      Suggestion: Path: children.28.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0].children[26]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[0].children[26].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0].children[27]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[0].children[27].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0].children[28]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': ''} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[0].children[28].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/RecipeManagement/Components/Editors/MashingProtocolEditor/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/content_copy'}, 'text': 'Select a template...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.0.children.1.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/content_copy'}, 'text': 'Select a template...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0]
+      Suggestion: Path: children.1.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/content_copy'}, 'text': 'Select a template...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0].children[1]
+      Suggestion: Path: children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/content_copy'}, 'text': 'Select a template...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0].children[1].children[0]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/content_copy'}, 'text': 'Select a template...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[0].children[1].children[0].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/RecipeManagement/Components/CreateRecipe/StepItem/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[0].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/ScheduleManagement/Views/AddEditSchedule/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[1].children[0].children[1].children[1].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[0].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[1].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[2].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[3].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[4].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[5].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[6].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[7].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[5].children[0].children[1].children[8].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/ScheduleManagement/Views/AddEditHoliday/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[1].children[0].children[1].children[1].children[1]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/Recipe/CloneRecipePopup/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.container.coord at root.root
+      Suggestion: Path: children.7.props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 24 is not of type 'string'
+      Component: ia.display.label at root.root.children[2]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\trecipeId = self.view.params.RecipeId\n\trecipeName = self.view.params.RecipeName\n\tinputRecipeName = self.view.custom.Input.RecipeName\n\tuser = \'admin\' #self.session.props.auth.user.userName\n\t\n\tif recipeId and inputRecipeName: #and (recipeName != inputRecipeName)\n\t\tsuccess = DataAccess.Database.CloneRecipe(recipeId, inputRecipeName, user)\n\t\t# if we fail to clone recipe, show error from SP in label\n\t\tif success != \'0\':\n\t\t\tself.getSibling("CloneFailedErrorLabel").props.text = success\n\t\t\tself.getSibling("CloneFailedErrorLabel").meta.visible = True\n\t\telse:\n\t\t\tsystem.perspective.sendMessage(\'update-table\', scope = \'page\')\n\t\t\tsystem.perspective.closePopup(\'\')\n\telse:\n\t\tself.getSibling("DuplicateRecipeNameErrorLabel").meta.visible = True\n\t\n\t'}, 'scope': 'G', 'type': 'script'}, {'config': {'draggable': True, 'id': 'gl0aGMa7', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'type': 'close', 'viewPath': 'Pop Up/Recipe/CloneRecipePopup', 'viewportBound': False}, 'enabled': False, 'scope': 'C', 'type': 'popup'}] is not of type 'object'
+      Component: ia.input.button at root.root.children[3]
+      Suggestion: Path: events.dom.onClick
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 18 is not of type 'string'
+      Component: ia.display.label at root.root.children[5]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[6]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[7]
+      Suggestion: Path: props.textStyle.fontSize
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/Recipe/AddRecipePopup/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.coord at root.root
+      Suggestion: Path: children.15.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 18 is not of type 'string'
+      Component: ia.display.label at root.root.children[2]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Item Version...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[3]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 24 is not of type 'string'
+      Component: ia.display.label at root.root.children[5]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[8]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[9]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[10]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[11]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[12]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[13]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[15]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[16]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[17]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[17].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/Recipe/EditRecipePopup/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.container.coord at root.root
+      Suggestion: Path: children.18.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 18 is not of type 'string'
+      Component: ia.display.label at root.root.children[0]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Item Version...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 24 is not of type 'string'
+      Component: ia.display.label at root.root.children[3]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[6]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[7]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[8]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Status...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[10]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[11]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[12]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[14]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Asset...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[18]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 14 is not of type 'string'
+      Component: ia.display.label at root.root.children[19]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[20]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[20].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/Recipe/Embedded/ParameterDataTypeSelector/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.0.children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0]
+      Suggestion: Path: children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Data Type...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[0].children[0]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/UserSettings/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[1].children[0].children[1].children[1]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/MaintenanceHistory/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.0.children.0.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.0.children.0.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0]
+      Suggestion: Path: children.0.children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0].children[0]
+      Suggestion: Path: children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0].children[0].children[0]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select History Type...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[0].children[0].children[0].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Popup/CronScheduleBuilder/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[1].children[0].children[0].children[1].children[1]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Section/SearchBar/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Show:'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.2.children.2.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Show:'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.2.children.2.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Show:'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Sort: '} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[1].children[0]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Show:'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[1].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Show:'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[2]
+      Suggestion: Path: children.2.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Sort: '} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[2].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'color': '#161616', 'text': 'Show:'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[2].children[2]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Section/FacilityToggle/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Alarms/Alarm Pop Up/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tid = [self.view.params.AlarmID]\n\tnote = "None"\n\tsystem.alarm.acknowledge(id, note)\n\t'}, 'scope': 'G', 'type': 'script'}, {'config': {'draggable': True, 'id': 'OpkT0Hbp', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'type': 'close', 'viewPath': '', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}] is not of type 'object'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.2.children.0.events.component.onActionPerformed
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tid = [self.view.params.AlarmID]\n\tnote = "None"\n\tsystem.alarm.acknowledge(id, note)\n\t'}, 'scope': 'G', 'type': 'script'}, {'config': {'draggable': True, 'id': 'OpkT0Hbp', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'type': 'close', 'viewPath': '', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}] is not of type 'object'
+      Component: ia.container.flex at root.root.children[2]
+      Suggestion: Path: children.0.events.component.onActionPerformed
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tid = [self.view.params.AlarmID]\n\tnote = "None"\n\tsystem.alarm.acknowledge(id, note)\n\t'}, 'scope': 'G', 'type': 'script'}, {'config': {'draggable': True, 'id': 'OpkT0Hbp', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'type': 'close', 'viewPath': '', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}] is not of type 'object'
+      Component: ia.input.button at root.root.children[2].children[0]
+      Suggestion: Path: events.component.onActionPerformed
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Fields/Dropdown/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Fields/KitDropdown/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Widgets/Date Range Picker/Date Range Picker/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/assignment'}} is not of type 'string'
+      Component: ia.container.breakpt at root.root
+      Suggestion: Path: children.1.children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/assignment'}} is not of type 'string'
+      Component: ia.container.flex at root.root.children[0]
+      Suggestion: Path: children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/assignment'}} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[0].children[0]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/assignment'}} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'icon': {'path': 'material/assignment'}} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[0]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/RosterManagement/Tools/Icon/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/RosterManagement/Views/AddEditRoster/view.json
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[1].children[2].children[0]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/MasterConfiguraton/UnitManagement/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'background-success': {'backgroundColor': '#d4edda'}, 'background-warning': {'backgroundColor': '#fff3cd'}} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.0.children.0.props.style.classes
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'background-success': {'backgroundColor': '#d4edda'}, 'background-warning': {'backgroundColor': '#fff3cd'}} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.0.children.0.props.style.classes
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'background-success': {'backgroundColor': '#d4edda'}, 'background-warning': {'backgroundColor': '#fff3cd'}} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0]
+      Suggestion: Path: children.0.props.style.classes
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'background-success': {'backgroundColor': '#d4edda'}, 'background-warning': {'backgroundColor': '#fff3cd'}} is not of type 'string'
+      Component: ia.display.table at root.root.children[1].children[0].children[0]
+      Suggestion: Path: props.style.classes
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/OrderManagement/ProductionOrders/ProductionOrderList/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: True is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.1.props.wrap
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: True is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.1.props.wrap
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: True is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1]
+      Suggestion: Path: props.wrap
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Docks/Headers/global_top_dock/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tif not self.session.props.auth.authenticated:\n\t\tsystem.perspective.login()\n\telse:\n\t\tsystem.perspective.logout()'}, 'scope': 'G', 'type': 'script'}, {'config': {}, 'enabled': False, 'scope': 'C', 'type': 'login'}] is not of type 'object'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.2.children.1.events.dom.onClick
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tif not self.session.props.auth.authenticated:\n\t\tsystem.perspective.login()\n\telse:\n\t\tsystem.perspective.logout()'}, 'scope': 'G', 'type': 'script'}, {'config': {}, 'enabled': False, 'scope': 'C', 'type': 'login'}] is not of type 'object'
+      Component: ia.container.flex at root.root.children[2]
+      Suggestion: Path: children.1.events.dom.onClick
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tif not self.session.props.auth.authenticated:\n\t\tsystem.perspective.login()\n\telse:\n\t\tsystem.perspective.logout()'}, 'scope': 'G', 'type': 'script'}, {'config': {}, 'enabled': False, 'scope': 'C', 'type': 'login'}] is not of type 'object'
+      Component: ia.display.icon at root.root.children[2].children[1]
+      Suggestion: Path: events.dom.onClick
+
+   ❌ MISSING_ICON_PATH: Icon component missing required path property
+      Component: ia.display.icon at root.root.children[2].children[1]
+      Suggestion: Add 'props.path' with icon reference
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Items/Mashing/MashingProductionSmall/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: '.2' is not of type 'number'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.0.children.1.children.0.position.grow
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: '.2' is not of type 'number'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.0.children.1.children.0.position.grow
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: '.2' is not of type 'number'
+      Component: ia.container.flex at root.root.children[1].children[0]
+      Suggestion: Path: children.1.children.0.position.grow
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: '.2' is not of type 'number'
+      Component: ia.container.flex at root.root.children[1].children[0].children[1]
+      Suggestion: Path: children.0.position.grow
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: '.2' is not of type 'number'
+      Component: ia.display.label at root.root.children[1].children[0].children[1].children[0]
+      Suggestion: Path: position.grow
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Items/Barrels/LotRecord/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Tank...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.1.children.4.children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Tank...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.1.children.4.children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Tank...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1]
+      Suggestion: Path: children.4.children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Recipe...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[1]
+      Suggestion: Path: children.0.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Recipe...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[1].children[0]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Recipe...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[1].children[1].children[0].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Barrel Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[2]
+      Suggestion: Path: children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Barrel Mfg...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[2].children[0]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Barrel Mfg...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[1].children[2].children[0].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Barrel Type...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[2].children[1]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Barrel Type...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[1].children[2].children[1].children[1]
+      Suggestion: Path: props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Tank...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[4]
+      Suggestion: Path: children.1.children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Tank...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[1].children[4].children[1]
+      Suggestion: Path: children.1.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Tank...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[1].children[4].children[1].children[1]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Items/Granary/LoadIn/Pop-ups/Grain Testing Popup/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tif self.props.value:\n\t\timport json\t\n\t\tl = system.util.getLogger("testResultUpdate")\n\t\tupdates = self.view.custom.tests.updates\n\t\tclient = core.apiClient.Client()\n\t\tself.view.custom.ui_props.upload_error = False\n\t\ttry:\n\t\t\tfor item in updates:\n\t\t\t\tif type(item[\'resultValue\']) == bool:\n\t\t\t\t\tvalue = 1 if item[\'resultValue\'] else 0\n\t\t\t\telse:\n\t\t\t\t\tvalue = item[\'resultValue\']\n\t\t\t\t# TODO: update to testedBy and updatedBy, at testedAt\n\t\t\t\tpatchQuery = \'\'\'{\n\t\t\t\t    "testSetpointValue": %s,\n\t\t\t\t    "testResult": %s,\n\t\t\t\t    "testedBy": "%s",\n\t\t\t\t    "testedAt": "%s",\n\t\t\t\t    "updatedBy": "%s"\n\t\t\t\t}\'\'\' % (value, value, self.session.props.auth.user.userName, system.date.format(system.date.now(), \'yyyy-MM-dd HH:mm:ss\'), self.session.props.auth.user.userName)\n\t\t\t\tpatchQuery.replace(\'True\', \'true\')\n\t\t\t\tpatchQuery.replace(\'False\', \'false\')\n\t\t\t\t\n\t\t\t\tsystem.perspective.print("Uploading Test %s with data: %s" % (item[\'id\'], patchQuery))\n\t\t\t\ttestParameter = client.patchQuery(patchQuery, \'/testParameters/\'+str(item[\'id\']), None)\n\t\t\t\tsystem.perspective.print(testParameter)\n\t\t\t\tif testParameter.good:\n\t\t\t\t\tself.props.value = 0\n\t\t\t\t\tl.debug("Test parameter %s updated: %s" % (item[\'id\'], testParameter.json))\n\t\t\t\t\tir = self.view.params.receipt_data\n\t\t\t\t\t\n\t\t\t\t\t# Chain API call to update the Item Receipt to be passed\n\t\t\t\t\tpatchQuery = \'\'\'{\n\t\t\t\t\t    "testsPassed": %s,\n\t\t\t\t\t    "updatedBy": "%s"\n\t\t\t\t\t}\'\'\' % (\'true\' if self.parent.getChild("FlexContainer_0").getChild("MultiStateButton").props.controlValue > 0 else \'false\', self.session.props.auth.user.userName)\n\t\t\t\t\tsystem.perspective.print("Uploading Item Receipt %s with data: %s" % (ir[\'id\'], patchQuery))\n\t\t\t\t\titemReceipt = client.patchQuery(patchQuery, \'/itemReceipts/\'+str(ir[\'id\']), None)\n\t\t\t\t\tif itemReceipt.good:\n\t\t\t\t\t\tsystem.perspective.print(itemReceipt.getJson())\n\t\t\t\t\t\tds = system.tag.readBlocking(self.view.custom.loadInExchange.tagPath+\'/LoadInQueue\')[0].value\n\t\t\t\t\t\t# find the dataset row with a matching LoadID\n\t\t\t\t\t\tpds = system.dataset.toPyDataSet(ds)\n\t\t\t\t\t\trowIndex =-1\n\t\t\t\t\t\tfor i , row in enumerate(pds):\n\t\t\t\t\t\t\tif row[0] == itemReceipt.getJson().get(\'loadId\',\'\'):\n\t\t\t\t\t\t\t\trowIndex = i\n\t\t\t\t\t\tif rowIndex != -1:\n\t\t\t\t\t\t\tsystem.tag.writeBlocking(self.view.custom.loadInExchange.tagPath+\'/LoadInQueue\', system.dataset.updateRow(\n\t\t\t\t\t\t\t\tds,\n\t\t\t\t\t\t\t\trowIndex,\n\t\t\t\t\t\t\t\t{\'TestsPassed\': bool(self.parent.getChild("FlexContainer_0").getChild("MultiStateButton").props.controlValue), \'TestedAt\': system.date.now()}\n\t\t\t\t\t\t\t))\n\t\t\t\t\t\tsystem.perspective.closePopup(\'grainTestPopup\')\n\t\t\t\t\telse:\n\t\t\t\t\t\tl.error("Error sending item receipt results to backend: %s" % (itemReceipt.json))\n\t\t\t\t\t\tself.props.value = 0\n\t\t\t\t\t\tself.view.custom.ui_props.upload_error = True\n\t\t\t\telse:\n\t\t\t\t\tl.error("Error sending test results to backend: %s" % (testParameter.json))\n\t\t\t\t\tsystem.perspective.print("Error sending test results to backendd: %s" % (testParameter.json))\n\t\t\t\t\tself.props.value = 0\n\t\t\t\t\tself.view.custom.ui_props.upload_error = True\n\t\t\t\t\t\n\t\texcept Exception as e: \n\t\t\tself.props.value = 0\n\t\t\tself.view.custom.ui_props.upload_error = True\n\t\t\tsystem.perspective.print(repr(e))'}, 'scope': 'G', 'type': 'script'}, {'config': {'draggable': True, 'id': 'ElYn0vuE', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'title': 'Select Silo', 'type': 'open', 'viewPath': 'Granary/Pop-ups/Grain Receiving_Control', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}, {'config': {'draggable': True, 'id': 'grainLoadPopup', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'type': 'close', 'viewPath': '', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}] is not of type 'object'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.5.events.component.onActionPerformed
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 10 is not of type 'string'
+      Component: ia.display.label at root.root.children[3]
+      Suggestion: Path: props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: [{'config': {'script': '\tif self.props.value:\n\t\timport json\t\n\t\tl = system.util.getLogger("testResultUpdate")\n\t\tupdates = self.view.custom.tests.updates\n\t\tclient = core.apiClient.Client()\n\t\tself.view.custom.ui_props.upload_error = False\n\t\ttry:\n\t\t\tfor item in updates:\n\t\t\t\tif type(item[\'resultValue\']) == bool:\n\t\t\t\t\tvalue = 1 if item[\'resultValue\'] else 0\n\t\t\t\telse:\n\t\t\t\t\tvalue = item[\'resultValue\']\n\t\t\t\t# TODO: update to testedBy and updatedBy, at testedAt\n\t\t\t\tpatchQuery = \'\'\'{\n\t\t\t\t    "testSetpointValue": %s,\n\t\t\t\t    "testResult": %s,\n\t\t\t\t    "testedBy": "%s",\n\t\t\t\t    "testedAt": "%s",\n\t\t\t\t    "updatedBy": "%s"\n\t\t\t\t}\'\'\' % (value, value, self.session.props.auth.user.userName, system.date.format(system.date.now(), \'yyyy-MM-dd HH:mm:ss\'), self.session.props.auth.user.userName)\n\t\t\t\tpatchQuery.replace(\'True\', \'true\')\n\t\t\t\tpatchQuery.replace(\'False\', \'false\')\n\t\t\t\t\n\t\t\t\tsystem.perspective.print("Uploading Test %s with data: %s" % (item[\'id\'], patchQuery))\n\t\t\t\ttestParameter = client.patchQuery(patchQuery, \'/testParameters/\'+str(item[\'id\']), None)\n\t\t\t\tsystem.perspective.print(testParameter)\n\t\t\t\tif testParameter.good:\n\t\t\t\t\tself.props.value = 0\n\t\t\t\t\tl.debug("Test parameter %s updated: %s" % (item[\'id\'], testParameter.json))\n\t\t\t\t\tir = self.view.params.receipt_data\n\t\t\t\t\t\n\t\t\t\t\t# Chain API call to update the Item Receipt to be passed\n\t\t\t\t\tpatchQuery = \'\'\'{\n\t\t\t\t\t    "testsPassed": %s,\n\t\t\t\t\t    "updatedBy": "%s"\n\t\t\t\t\t}\'\'\' % (\'true\' if self.parent.getChild("FlexContainer_0").getChild("MultiStateButton").props.controlValue > 0 else \'false\', self.session.props.auth.user.userName)\n\t\t\t\t\tsystem.perspective.print("Uploading Item Receipt %s with data: %s" % (ir[\'id\'], patchQuery))\n\t\t\t\t\titemReceipt = client.patchQuery(patchQuery, \'/itemReceipts/\'+str(ir[\'id\']), None)\n\t\t\t\t\tif itemReceipt.good:\n\t\t\t\t\t\tsystem.perspective.print(itemReceipt.getJson())\n\t\t\t\t\t\tds = system.tag.readBlocking(self.view.custom.loadInExchange.tagPath+\'/LoadInQueue\')[0].value\n\t\t\t\t\t\t# find the dataset row with a matching LoadID\n\t\t\t\t\t\tpds = system.dataset.toPyDataSet(ds)\n\t\t\t\t\t\trowIndex =-1\n\t\t\t\t\t\tfor i , row in enumerate(pds):\n\t\t\t\t\t\t\tif row[0] == itemReceipt.getJson().get(\'loadId\',\'\'):\n\t\t\t\t\t\t\t\trowIndex = i\n\t\t\t\t\t\tif rowIndex != -1:\n\t\t\t\t\t\t\tsystem.tag.writeBlocking(self.view.custom.loadInExchange.tagPath+\'/LoadInQueue\', system.dataset.updateRow(\n\t\t\t\t\t\t\t\tds,\n\t\t\t\t\t\t\t\trowIndex,\n\t\t\t\t\t\t\t\t{\'TestsPassed\': bool(self.parent.getChild("FlexContainer_0").getChild("MultiStateButton").props.controlValue), \'TestedAt\': system.date.now()}\n\t\t\t\t\t\t\t))\n\t\t\t\t\t\tsystem.perspective.closePopup(\'grainTestPopup\')\n\t\t\t\t\telse:\n\t\t\t\t\t\tl.error("Error sending item receipt results to backend: %s" % (itemReceipt.json))\n\t\t\t\t\t\tself.props.value = 0\n\t\t\t\t\t\tself.view.custom.ui_props.upload_error = True\n\t\t\t\telse:\n\t\t\t\t\tl.error("Error sending test results to backend: %s" % (testParameter.json))\n\t\t\t\t\tsystem.perspective.print("Error sending test results to backendd: %s" % (testParameter.json))\n\t\t\t\t\tself.props.value = 0\n\t\t\t\t\tself.view.custom.ui_props.upload_error = True\n\t\t\t\t\t\n\t\texcept Exception as e: \n\t\t\tself.props.value = 0\n\t\t\tself.view.custom.ui_props.upload_error = True\n\t\t\tsystem.perspective.print(repr(e))'}, 'scope': 'G', 'type': 'script'}, {'config': {'draggable': True, 'id': 'ElYn0vuE', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'title': 'Select Silo', 'type': 'open', 'viewPath': 'Granary/Pop-ups/Grain Receiving_Control', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}, {'config': {'draggable': True, 'id': 'grainLoadPopup', 'modal': False, 'overlayDismiss': False, 'resizable': True, 'showCloseIcon': True, 'type': 'close', 'viewPath': '', 'viewportBound': False}, 'scope': 'C', 'type': 'popup'}] is not of type 'object'
+      Component: ia.input.oneshotbutton at root.root.children[5]
+      Suggestion: Path: events.component.onActionPerformed
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Pages/Barreling/DistillateLotProduction/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Period...'} is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.1.children.0.children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Period...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1]
+      Suggestion: Path: children.0.children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Period...'} is not of type 'string'
+      Component: ia.container.flex at root.root.children[1].children[0]
+      Suggestion: Path: children.0.props.placeholder
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: {'text': 'Select Period...'} is not of type 'string'
+      Component: ia.input.dropdown at root.root.children[1].children[0].children[0]
+      Suggestion: Path: props.placeholder
+
+
+📄 ../whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Pages/Barreling/ScannerDataValidation/view.json
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 32 is not of type 'string'
+      Component: ia.container.flex at root.root
+      Suggestion: Path: children.0.props.textStyle.fontSize
+
+   ❌ SCHEMA_VALIDATION: Schema validation failed: 32 is not of type 'string'
+      Component: ia.display.label at root.root.children[0]
+      Suggestion: Path: props.textStyle.fontSize

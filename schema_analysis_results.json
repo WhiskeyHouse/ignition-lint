@@ -1,0 +1,148 @@
+{
+  "analysis_summary": {
+    "error_patterns": 28,
+    "properties_with_multiple_types": 0,
+    "suggestions_generated": 0
+  },
+  "error_patterns": {
+    "children.1.children.0.children.0.children.0.children.1.props.placeholder|dict\u2192string": 2,
+    "children.1.children.0.children.1.children.1.children.1.props.placeholder|dict\u2192string": 1,
+    "children.0.children.28.children.1.props.placeholder|dict\u2192string": 1,
+    "children.0.children.1.children.0.children.1.props.placeholder|dict\u2192string": 1,
+    "children.7.props.textStyle.fontSize|int\u2192string": 1,
+    "props.textStyle.fontSize|int\u2192string": 2,
+    "events.dom.onClick|list\u2192object": 1,
+    "children.15.props.placeholder|dict\u2192string": 1,
+    "children.18.props.placeholder|dict\u2192string": 1,
+    "children.0.children.0.props.placeholder|dict\u2192string": 1,
+    "children.1.children.2.children.2.props.placeholder|dict\u2192string": 1,
+    "children.2.children.0.events.component.onActionPerformed|list\u2192object": 1,
+    "children.1.props.placeholder|dict\u2192string": 2,
+    "children.1.children.0.props.placeholder|dict\u2192string": 1,
+    "children.1.children.0.children.0.props.style.classes|dict\u2192string": 1,
+    "children.1.children.1.props.wrap|bool\u2192string": 1,
+    "children.1.props.wrap|bool\u2192string": 1,
+    "props.wrap|bool\u2192string": 1,
+    "children.2.children.1.events.dom.onClick|list\u2192object": 1,
+    "children.1.children.0.children.1.children.0.position.grow|str\u2192number": 1,
+    "children.0.children.1.children.0.position.grow|str\u2192number": 1,
+    "children.1.children.0.position.grow|str\u2192number": 1,
+    "children.0.position.grow|str\u2192number": 1,
+    "position.grow|str\u2192number": 1,
+    "children.1.children.1.children.4.children.1.children.1.props.placeholder|dict\u2192string": 1,
+    "children.5.events.component.onActionPerformed|list\u2192object": 1,
+    "children.1.children.0.children.0.props.placeholder|dict\u2192string": 1,
+    "children.0.props.textStyle.fontSize|int\u2192string": 1
+  },
+  "property_type_usage": {
+    "children.1.children.0.children.0.children.0.children.1.props.placeholder": {
+      "dict": []
+    },
+    "children.1.children.0.children.1.children.1.children.1.props.placeholder": {
+      "dict": []
+    },
+    "children.0.children.28.children.1.props.placeholder": {
+      "dict": []
+    },
+    "children.0.children.1.children.0.children.1.props.placeholder": {
+      "dict": []
+    },
+    "children.7.props.textStyle.fontSize": {
+      "int": [
+        14
+      ]
+    },
+    "props.textStyle.fontSize": {
+      "int": [
+        24,
+        32
+      ]
+    },
+    "events.dom.onClick": {
+      "list": []
+    },
+    "children.15.props.placeholder": {
+      "dict": []
+    },
+    "children.18.props.placeholder": {
+      "dict": []
+    },
+    "children.0.children.0.props.placeholder": {
+      "dict": []
+    },
+    "children.1.children.2.children.2.props.placeholder": {
+      "dict": []
+    },
+    "children.2.children.0.events.component.onActionPerformed": {
+      "list": []
+    },
+    "children.1.props.placeholder": {
+      "dict": []
+    },
+    "children.1.children.0.props.placeholder": {
+      "dict": []
+    },
+    "children.1.children.0.children.0.props.style.classes": {
+      "dict": []
+    },
+    "children.1.children.1.props.wrap": {
+      "bool": [
+        true
+      ]
+    },
+    "children.1.props.wrap": {
+      "bool": [
+        true
+      ]
+    },
+    "props.wrap": {
+      "bool": [
+        true
+      ]
+    },
+    "children.2.children.1.events.dom.onClick": {
+      "list": []
+    },
+    "children.1.children.0.children.1.children.0.position.grow": {
+      "str": [
+        ".2"
+      ]
+    },
+    "children.0.children.1.children.0.position.grow": {
+      "str": [
+        ".2"
+      ]
+    },
+    "children.1.children.0.position.grow": {
+      "str": [
+        ".2"
+      ]
+    },
+    "children.0.position.grow": {
+      "str": [
+        ".2"
+      ]
+    },
+    "position.grow": {
+      "str": [
+        ".2"
+      ]
+    },
+    "children.1.children.1.children.4.children.1.children.1.props.placeholder": {
+      "dict": []
+    },
+    "children.5.events.component.onActionPerformed": {
+      "list": []
+    },
+    "children.1.children.0.children.0.props.placeholder": {
+      "dict": []
+    },
+    "children.0.props.textStyle.fontSize": {
+      "int": [
+        32
+      ]
+    }
+  },
+  "suggestions": [],
+  "schema_patches": {}
+}

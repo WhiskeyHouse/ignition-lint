@@ -1,0 +1,1517 @@
+{
+  "summary": {
+    "total_bindings": 11092,
+    "total_transforms": 3545,
+    "total_jython_scripts": 679,
+    "unique_binding_types": 6,
+    "unique_transform_types": 4
+  },
+  "binding_types": {
+    "property": 3679,
+    "expr": 5242,
+    "expr-struct": 76,
+    "query": 13,
+    "tag": 2067,
+    "tag-history": 15
+  },
+  "transform_types": {
+    "expression": 198,
+    "script": 705,
+    "map": 2512,
+    "format": 130
+  },
+  "binding_patterns": {
+    "property": [
+      {
+        "property": "props.text",
+        "type": "property",
+        "config": {
+          "path": "view.params.Value.Name"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json",
+        "transforms": [
+          {
+            "expression": "'Name: '+{value}",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "property",
+        "config": {
+          "path": "view.params.Value.Description"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json",
+        "transforms": [
+          {
+            "expression": "'Description: '+{value}",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "props.src",
+        "type": "property",
+        "config": {
+          "path": "view.params.URL"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json"
+      },
+      {
+        "property": "props.text",
+        "type": "property",
+        "config": {
+          "path": "session.props.auth.user.userName"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json",
+        "transforms": [
+          {
+            "expression": "'User: '+{value}",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "custom.displayMode",
+        "type": "property",
+        "config": {
+          "path": "page.props.dimensions.viewport.width"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Asset Management/view.json",
+        "transforms": [
+          {
+            "code": "\tif value == 0 or value > 750:\n\t\tmode = 'browser'\n\telse:\n\t\tmode = 'mobile'\n\tself.setCanvasMode(mode)\n\treturn mode",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.instances[1].viewParams.panelOpen",
+        "type": "property",
+        "config": {
+          "path": "this.custom.panelOpen"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Asset Management/view.json"
+      },
+      {
+        "property": "props.instances[2].viewParams.id",
+        "type": "property",
+        "config": {
+          "path": "this.props.instances[0].viewParams.selectedNode.id"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Asset Management/view.json",
+        "transforms": [
+          {
+            "code": "\treturn value if value != '-1' else int(value)",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.params.header",
+        "type": "property",
+        "config": {
+          "path": "view.params.item"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Inventory Investigation/view.json"
+      },
+      {
+        "property": "props.data",
+        "type": "property",
+        "config": {
+          "path": "view.custom.activeInvestigations"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Inventory Investigation/view.json"
+      },
+      {
+        "property": "props.text",
+        "type": "property",
+        "config": {
+          "path": "view.params.itemType"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/DeleteConfirmation/view.json",
+        "transforms": [
+          {
+            "code": "\treturn 'Delete {}'.format(value)",
+            "type": "script"
+          }
+        ]
+      }
+    ],
+    "expr": [
+      {
+        "property": "props.options",
+        "type": "expr",
+        "config": {
+          "expression": "1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/SetEquipmentTag/view.json",
+        "transforms": [
+          {
+            "code": "\tfrom com.inductiveautomation.ignition.gateway import IgnitionGateway\n\tcontext = IgnitionGateway.get()\n\ttoOption = lambda x: {'label': x.getName(), 'value': '[{}]'.format(x.getName())}\n\treturn [toOption(provider) for provider in context.getTagManager().getTagProviders() if provider.getName() != 'System']",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.options",
+        "type": "expr",
+        "config": {
+          "expression": "1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/CronScheduleBuilder/view.json",
+        "transforms": [
+          {
+            "code": "\treturn exchange.cmms.common.dataclass.cron.common_schedules.CommonSchedules.getSchedules()",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.options",
+        "type": "expr",
+        "config": {
+          "expression": "'Component'"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AdvancedSearchPanel/view.json",
+        "transforms": [
+          {
+            "code": "\treturn exchange.cmms.db.dropdown.get(value)",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.items",
+        "type": "expr",
+        "config": {
+          "expression": "1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/FacilityTreePanel/view.json",
+        "transforms": [
+          {
+            "code": "\treturn exchange.cmms.db.handlers.site.getTreeNodes()",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "position.display",
+        "type": "expr",
+        "config": {
+          "expression": "{view.params.id} != -1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json"
+      },
+      {
+        "property": "custom.isEditable",
+        "type": "expr",
+        "config": {
+          "expression": "{parent.custom.mode} != 'view'"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json"
+      },
+      {
+        "property": "position.display",
+        "type": "expr",
+        "config": {
+          "expression": "{parent.custom.mode} != 'view'"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json"
+      },
+      {
+        "property": "props.items",
+        "type": "expr",
+        "config": {
+          "expression": "1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetsTreePanel/view.json",
+        "transforms": [
+          {
+            "code": "\tif self.parent.getChild(\"Header\").getChild(\"FlexContainer\").getChild(\"OOSToggle\").props.selected:\n\t\treturn WHK.util.getAllAssetsTreeWithLatestRevision()\n\telse:\n\t\treturn WHK.util.getAssetTree()",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.items",
+        "type": "expr",
+        "config": {
+          "expression": "1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/LocationTreeInvestigation/view.json",
+        "transforms": [
+          {
+            "code": "\treturn WHK.util.getInventoryLocationTree()",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.items",
+        "type": "expr",
+        "config": {
+          "expression": "1"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/LocationTreeSelect/view.json",
+        "transforms": [
+          {
+            "code": "\treturn WHK.util.getInventoryLocationTree()",
+            "type": "script"
+          }
+        ]
+      }
+    ],
+    "expr-struct": [
+      {
+        "property": "props.root",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "path": "{view.custom.tagProvider}",
+            "trigger": "{this.custom.trigger}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/SetEquipmentTag/view.json",
+        "transforms": [
+          {
+            "code": "\treturn value",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "custom.isValid",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "name": "{./Name.props.params.isValid}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json",
+        "transforms": [
+          {
+            "code": "\treturn all(value.values())",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "custom.isValidAssetChange",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "Make": "{./Make.props.params.isValid}",
+            "Model": "{./Model.props.params.isValid}",
+            "PartNo": "{./PartNo.props.params.isValid}",
+            "SerialNumber": "{./SerialNumber.props.params.isValid}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json",
+        "transforms": [
+          {
+            "code": "\treturn all(value.values())",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.params.value",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "item": "{..../Configure.custom.item.assetPath}",
+            "name": "{..../Configure.custom.item.assetName}",
+            "path": "{../Asset/Dropdown.props.value}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json",
+        "transforms": [
+          {
+            "code": "\tpathId = self.parent.getChild(\"Asset\").getChild(\"Dropdown\").props.value\n\tpath = ''\n\tif pathId:\n\t\tfor i, asset in enumerate(self.view.custom.assetDropdown):\n\t\t\tif asset['value'] == pathId:\n\t\t\t\tpath = asset['label']\n\tif path:\n\t\tpath = path + '/'\n\tname = self.parent.parent.parent.getChild(\"Configure\").custom.item.assetName\n\treturn '' if not (path or name) else path + name",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.params.actionButton.enabled",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "isValid": "{../Fields.custom.isValid}",
+            "isValidAssetChange": "{../Fields.custom.isValidAssetChange}",
+            "mode": "{.../Configure.custom.mode}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json",
+        "transforms": [
+          {
+            "code": "\tif 'assetchange' in value['mode'] and not value['isValidAssetChange']:\n\t\treturn False\n\telse:\n\t\treturn True",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "props.instances",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "items": "{view.params.items}",
+            "search": "{view.params.search}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/FilesDisplay/view.json",
+        "transforms": [
+          {
+            "code": "\treturn value.items",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "position.display",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "id": "{view.params.id}",
+            "location": "{view.params.value}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/LocationTreeInvestigation/view.json",
+        "transforms": [
+          {
+            "code": "\tif len(value['location']) > 0 or value['id'] != -1:\n\t\treturn True\n\telse:\n\t\treturn False",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "position.display",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "edit": "{view.params.enabled}",
+            "id": "{view.params.id}",
+            "selectedLocation": "{view.params.selectedLocation}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/LocationTreeInvestigation/view.json",
+        "transforms": [
+          {
+            "code": "\tif value['id'] == -1:\n\t\tif value['selectedLocation']:\n\t\t\treturn False\n\t\treturn True\n\telse:\n\t\tif value['edit']:\n\t\t\tif value['selectedLocation']:\n\t\t\t\treturn False\n\t\t\treturn True\n\t\treturn False",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "meta.visible",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "interacted": "{view.custom.interacted}",
+            "isValid": "!{view.params.isValid}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/Checkbox/view.json",
+        "transforms": [
+          {
+            "code": "\treturn all(value.values())",
+            "type": "script"
+          }
+        ]
+      },
+      {
+        "property": "meta.visible",
+        "type": "expr-struct",
+        "config": {
+          "struct": {
+            "interacted": "{view.custom.interacted}",
+            "isValid": "!{view.params.isValid}"
+          },
+          "waitOnAll": true
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/JSON/view.json",
+        "transforms": [
+          {
+            "code": "\treturn all(value.values())",
+            "type": "script"
+          }
+        ]
+      }
+    ],
+    "query": [
+      {
+        "property": "props.data",
+        "type": "query",
+        "config": {
+          "parameters": {
+            "AlarmName": "\"\""
+          },
+          "queryPath": "Configuration/Alarm/GetAlarms",
+          "returnFormat": "json"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Alarms/Alarm Configuration/view.json"
+      },
+      {
+        "property": "props.params.data",
+        "type": "query",
+        "config": {
+          "parameters": {
+            "endDate": "{../Filters/End Date/Date.props.value}",
+            "search": "{../Filters/Search/Search.custom.searchStr}",
+            "startDate": "{../Filters/Start Date/Date.props.value}"
+          },
+          "polling": {
+            "enabled": true,
+            "rate": "15"
+          },
+          "queryPath": "Audit Log/Audit Log",
+          "returnFormat": "json"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Audit Log/Audit Log/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "queryPath": "EquipmentStateConfig/CategoryDropdownOptions"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "parameters": {
+            "Category": "{.../CategoryCtn/Value.props.value}"
+          },
+          "queryPath": "EquipmentStateConfig/StateDropdownOptions"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "queryPath": "EquipmentStateConfig/CategoryDropdownOptions"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "queryPath": "EquipmentStateConfig/StateDropdownOptions"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "queryPath": "EquipmentStateConfig/CategoryDropdownOptions"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "queryPath": "EquipmentStateConfig/StateDropdownOptions"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "property": "props.options",
+        "type": "query",
+        "config": {
+          "queryPath": "Barreling01/LabelPrinting/GetActiveBarrelTypes"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Distillery/popups/Barrel Label Printing Popup - 20241120/view.json"
+      },
+      {
+        "property": "props.style.backgroundColor",
+        "type": "query",
+        "config": {
+          "queryPath": "Barreling01/LabelPrinting/GetLabelPrintingQueueStatus"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Distillery/popups/Barrel Label Printing Queue Popup/view.json",
+        "transforms": [
+          {
+            "formatType": "numeric",
+            "formatValue": "integer",
+            "type": "format"
+          },
+          {
+            "fallback": "#D5D5D5",
+            "inputType": "scalar",
+            "mappings": [
+              {
+                "input": "0",
+                "output": "#00FF00"
+              },
+              {
+                "input": 1,
+                "output": "#FF0000"
+              }
+            ],
+            "outputType": "color",
+            "type": "map"
+          }
+        ]
+      }
+    ],
+    "tag": [
+      {
+        "property": "props.style.backgroundColor",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/Available"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "fallback": "#808080",
+            "inputType": "scalar",
+            "mappings": [
+              {
+                "input": false,
+                "output": "#D90000"
+              },
+              {
+                "input": true,
+                "output": "#00AC00"
+              }
+            ],
+            "outputType": "color",
+            "type": "map"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/Available"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "fallback": "No",
+            "inputType": "scalar",
+            "mappings": [
+              {
+                "input": false,
+                "output": "No"
+              },
+              {
+                "input": true,
+                "output": "Yes"
+              }
+            ],
+            "outputType": "scalar",
+            "type": "map"
+          }
+        ]
+      },
+      {
+        "property": "props.style.backgroundColor",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/AvailableThroughFailover"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "fallback": "#808080",
+            "inputType": "scalar",
+            "mappings": [
+              {
+                "input": false,
+                "output": "#D90000"
+              },
+              {
+                "input": true,
+                "output": "#00AC00"
+              }
+            ],
+            "outputType": "color",
+            "type": "map"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/AvailableThroughFailover"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "fallback": "No",
+            "inputType": "scalar",
+            "mappings": [
+              {
+                "input": false,
+                "output": "No"
+              },
+              {
+                "input": true,
+                "output": "Yes"
+              }
+            ],
+            "outputType": "scalar",
+            "type": "map"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/ActiveConnections"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/QueriesPerSecond"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/AvgQueryTime"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "props.style.backgroundColor",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "direct",
+          "tagPath": "[System]Gateway/Performance/CPU Usage"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "expression": "{value} * 100.0",
+            "type": "expression"
+          },
+          {
+            "fallback": "#808080",
+            "inputType": "range",
+            "mappings": [
+              {
+                "input": {
+                  "max": 70,
+                  "min": 0
+                },
+                "output": "#00AC00"
+              },
+              {
+                "input": {
+                  "max": 80,
+                  "min": 70
+                },
+                "output": "#D9D900"
+              },
+              {
+                "input": {
+                  "max": 100,
+                  "min": 90
+                },
+                "output": "#D90000"
+              }
+            ],
+            "outputType": "color",
+            "type": "map"
+          }
+        ]
+      },
+      {
+        "property": "props.text",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "database": "{view.params.database}"
+          },
+          "tagPath": "[System]Gateway/Database/{database}/ConnectionSaturation"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json",
+        "transforms": [
+          {
+            "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##%\"))",
+            "type": "expression"
+          }
+        ]
+      },
+      {
+        "property": "props.style.backgroundColor",
+        "type": "tag",
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "indirect",
+          "references": {
+            "server": "{view.params.server}"
+          },
+          "tagPath": "[System]Gateway/OPC/Connections/{server}/Enabled"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/OPC Server/view.json",
+        "transforms": [
+          {
+            "fallback": "#808080",
+            "inputType": "scalar",
+            "mappings": [
+              {
+                "input": false,
+                "output": "#808080"
+              },
+              {
+                "input": true,
+                "output": "#00AC00"
+              }
+            ],
+            "outputType": "color",
+            "type": "map"
+          }
+        ]
+      }
+    ],
+    "tag-history": [
+      {
+        "property": "props.dataSources.data",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "15",
+            "mostRecentUnits": "MIN"
+          },
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": "{this.custom.Key}",
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/popups/ROPID_Faceplate/view.json"
+      },
+      {
+        "property": "props.dataSources.data",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "15",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": [
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/CoolingTower01/Control/Motor/PMP_52002/SP_PID_PV"
+            }
+          ],
+          "valueFormat": "DOCUMENT"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "custom.Key[0]",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "1",
+            "mostRecentUnits": "HOUR"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": false,
+            "rate": "30"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": [
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/Neutralization01/Instrumentation/Analog/LIT_6022/Out_PV"
+            }
+          ],
+          "valueFormat": "DOCUMENT"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "custom.Key[0].path",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "1",
+            "mostRecentUnits": "HOUR"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": false,
+            "rate": "30"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": [
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/Neutralization01/Instrumentation/Analog/LIT_6022/Out_PV"
+            }
+          ],
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "custom.Key",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "1",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": [
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/CoolingTower01/Control/Motor/PMP_52002/SP_PID_PV"
+            },
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/CoolingTower01/Control/Motor/PMP_52002/SP_PID_SP"
+            },
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/Neutralization01/Instrumentation/Analog/LIT_6022/Out_PV"
+            }
+          ],
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "props.dataSources.example",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "1",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": [
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/Neutralization01/Instrumentation/Analog/LIT_6022/Out_PV"
+            }
+          ],
+          "valueFormat": "DOCUMENT"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "custom.Key[0].path",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "15",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": false,
+            "rate": "30"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "15",
+            "type": "FIXED"
+          },
+          "tags": [
+            {
+              "path": "[CanaryHistorian/default:default]WCNRVM03/IgnitionData/WH/WHK01/Distillery01/Utility01/CoolingTower01/Control/Motor/PMP_52002/SP_PID_PV"
+            }
+          ],
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "props.dataSources.data",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "15",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": "{this.custom.Key}",
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Utilities/Culligan RO Skid/RO Clean Screen 1/view.json"
+      },
+      {
+        "property": "props.dataSources.data",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "MinMax",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "15",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": "{this.custom.Key}",
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Templates/Device Pop-ups/PID_Faceplate_Valve/view.json"
+      },
+      {
+        "property": "props.dataSources.data",
+        "type": "tag-history",
+        "config": {
+          "aggregate": "LastValue",
+          "avoidScanClassValidation": true,
+          "dateRange": {
+            "mostRecent": "15",
+            "mostRecentUnits": "MIN"
+          },
+          "enableValueCache": true,
+          "ignoreBadQuality": false,
+          "polling": {
+            "enabled": true,
+            "rate": "5"
+          },
+          "preventInterpolation": false,
+          "returnFormat": "Wide",
+          "returnSize": {
+            "numRows": "100",
+            "type": "FIXED"
+          },
+          "tags": "{this.custom.Key}",
+          "valueFormat": "DATASET"
+        },
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Templates/Device Pop-ups/PID_Faceplate_Pump/view.json"
+      }
+    ]
+  },
+  "transform_patterns": {
+    "expression": [
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/_REFERENCE/Instructions/InstructionPopup/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.backgroundColor",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Database/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/Gateway Network Connection/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.backgroundColor",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Framework/Diagnostics/Embedded/System Performance/view.json"
+      }
+    ],
+    "script": [
+      {
+        "config": {},
+        "property": "custom.displayMode",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Asset Management/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.instances[2].viewParams.id",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Asset Management/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/DeleteConfirmation/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/DeleteConfirmation/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.data",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/MaintenanceHistory/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.options",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/SetEquipmentTag/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.root",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/SetEquipmentTag/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.options",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/CronScheduleBuilder/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AdvancedSearchPanel/view.json"
+      },
+      {
+        "config": {},
+        "property": "position.basis",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AdvancedSearchPanel/view.json"
+      }
+    ],
+    "map": [
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/SetEquipmentTag/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.color",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/CronScheduleBuilder/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.path",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/CronScheduleBuilder/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.classes",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetDetails/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.color",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetManagementStatus/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.color",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/AssetManagementStatus/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.color",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/Status/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.path",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Section/FacilityToggle/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.textStyle.classes",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Cards/Manage/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.style.classes",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Fields/DateTimePicker/view.json"
+      }
+    ],
+    "format": [
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Event/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Save/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Event Full Row/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/MES/PerformanceManagement/Downtime/Downtime Event Full Row/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Docks/Headers/topBanner_SCADA/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Docks/Headers/global_top_dock/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Distillery/Doubler/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Distillery/Doubler/view.json"
+      },
+      {
+        "config": {},
+        "property": "props.text",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-ignition-scada/com.inductiveautomation.perspective/views/Distillery/Doubler/view.json"
+      }
+    ]
+  },
+  "jython_analysis": {
+    "total_scripts": 679,
+    "avg_lines": 5.5699558173784975,
+    "max_lines": 180,
+    "common_imports": {
+      "json": 4,
+      "Message": 4,
+      "work_order_task": 3,
+      "inventory": 2,
+      "ScheduleRepeatStyle": 1,
+      "BasicScheduleModel": 1,
+      "HolidayModel": 1,
+      "StringIO": 1,
+      "csv": 1,
+      "time": 1
+    },
+    "common_functions": {
+      "getChild": 398,
+      "write": 230,
+      "sendMessage": 131,
+      "closePopup": 88,
+      "print": 87,
+      "getSibling": 52,
+      "str": 46,
+      "get": 38,
+      "upper": 34,
+      "read": 32
+    },
+    "script_samples": [
+      {
+        "script": "\timport json\n\t\t\n\t# Define the URL of your endpoint\n\turl = \"http://127.0.0.1:6000/ask_question\"\n\t\n\t# Your data payload with database details and the question\n\tdata = {\n\t    \"database\": \"my-db\",\n\t    \"username\": \"admin\",\n\t    \"password\": \"admin\",\n\t    \"host\": \"localhost\",\n\t    \"port\": \"5432\",\n\t    \"question\": str(self.getSibling(\"Question\").props.text)\n\t}\n\tjson_data = json.dumps(data)\n\t\n\ttry:\n\t    client = system.net.httpClient()\n\t    response = client.post(url, data=json_data, headers={'Content-Type': 'application/json'})\n\t    if response.statusCode == 200:\n\t        jsonResponse = response.json\n\t        self.getSibling(\"Response\").props.text = jsonResponse['response']\n\t    else:\n\t        system.perspective.print(\"Error:\", response.statusCode, response.text)\n\texcept Exception as e:\n\t    system.perspective.print(\"Error making the request:\", str(e))",
+        "event": "onActionPerformed",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/WHK CMMS AI Agent/view.json",
+        "scope": "G",
+        "lines": 26
+      },
+      {
+        "script": "\tsystem.perspective.sendMessage('cmms-refresh-tree')",
+        "event": "onClick",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Asset Management/view.json",
+        "scope": "G",
+        "lines": 1
+      },
+      {
+        "script": "\tsystem.perspective.sendMessage(\"refreshInvestigationBinding\", {'refreshInvestigationBinding':True})",
+        "event": "onClick",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Inventory Investigation/view.json",
+        "scope": "G",
+        "lines": 1
+      },
+      {
+        "script": "\tname = self.view.params.item.lower()\n\tview = name.split(\" \")[0]\n\titem = '{0}-item'.format(view)\n\texchange.cmms.ui.navigate.goTo(item, {'id': -1})",
+        "event": "onActionPerformed",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Page/Inventory Investigation/view.json",
+        "scope": "G",
+        "lines": 4
+      },
+      {
+        "script": "\tsystem.perspective.closePopup('delete-confirmation')",
+        "event": "onClick",
+        "file": "/Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/com.inductiveautomation.perspective/views/Exchange/CMMS/Util/Popup/DeleteConfirmation/view.json",
+        "scope": "G",
+        "lines": 1
+      }
+    ]
+  },
+  "common_patterns": {
+    "common_tag_paths": [],
+    "common_expressions": [
+      [
+        "{TAG}",
+        1053
+      ],
+      [
+        "\"Label_\"+ {TAG}",
+        615
+      ],
+      [
+        "tag({TAG})",
+        214
+      ],
+      [
+        "if({TAG}={TAG},1,0)",
+        195
+      ],
+      [
+        "{TAG} || ({TAG}='designer')",
+        179
+      ],
+      [
+        "\"Label_\" + {TAG}",
+        144
+      ],
+      [
+        "{TAG} && {TAG}",
+        74
+      ],
+      [
+        "if(tag({TAG}),1,{TAG})",
+        74
+      ],
+      [
+        "{TAG} && (isAuthorized(false, \"Authenticated/Roles/it.admin\", \"Authenticated/Roles/operations.distillery.supervisor\"))",
+        64
+      ],
+      [
+        "tag({TAG}) && {TAG}",
+        63
+      ]
+    ],
+    "common_script_events": [
+      [
+        "onClick",
+        384
+      ],
+      [
+        "onActionPerformed",
+        130
+      ],
+      [
+        "onStartup",
+        27
+      ],
+      [
+        "onMouseOut",
+        18
+      ],
+      [
+        "onMouseOver",
+        18
+      ],
+      [
+        "onMouseDown",
+        17
+      ],
+      [
+        "onMouseUp",
+        15
+      ],
+      [
+        "onBlur",
+        11
+      ],
+      [
+        "onEditCellCommit",
+        10
+      ],
+      [
+        "onItemClicked",
+        8
+      ]
+    ]
+  }
+}

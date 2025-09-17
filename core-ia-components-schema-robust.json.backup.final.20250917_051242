@@ -1,0 +1,645 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ignition Perspective Core Components Schema - Robust",
+  "description": "Robust JSON Schema validation rules for core Ignition Perspective ia.* components without oneOf ambiguity",
+  "type": "object",
+  "required": [
+    "type"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "pattern": "^ia\\.(container|display|input|chart|navigation)\\.",
+      "description": "Component type must start with ia. followed by category",
+      "enum": [
+        "ia.chart.gauge",
+        "ia.chart.pie",
+        "ia.chart.powerchart",
+        "ia.chart.timeseries",
+        "ia.chart.xy",
+        "ia.container.breakpt",
+        "ia.container.column",
+        "ia.container.coord",
+        "ia.container.flex",
+        "ia.container.tab",
+        "ia.display.alarmjournaltable",
+        "ia.display.alarmstatustable",
+        "ia.display.barcode",
+        "ia.display.carousel",
+        "ia.display.equipmentschedule",
+        "ia.display.flex-repeater",
+        "ia.display.icon",
+        "ia.display.iframe",
+        "ia.display.image",
+        "ia.display.label",
+        "ia.display.led-display",
+        "ia.display.markdown",
+        "ia.display.moving-analog-indicator",
+        "ia.display.progress",
+        "ia.display.table",
+        "ia.display.tag-browse-tree",
+        "ia.display.tree",
+        "ia.display.video-player",
+        "ia.display.view",
+        "ia.display.viewcanvas",
+        "ia.input.button",
+        "ia.input.checkbox",
+        "ia.input.date-time-input",
+        "ia.input.dropdown",
+        "ia.input.fileupload",
+        "ia.input.multi-state-button",
+        "ia.input.numeric-entry-field",
+        "ia.input.oneshotbutton",
+        "ia.input.radio-group",
+        "ia.input.signature-pad",
+        "ia.input.text-area",
+        "ia.input.text-field",
+        "ia.input.toggle-switch",
+        "ia.navigation.horizontalmenu",
+        "ia.navigation.menutree",
+        "ia.shapes.svg",
+        "ia.symbol.sensor",
+        "ia.symbol.valve"
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Component name for identification"
+        },
+        "tooltip": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "location": {
+              "type": "string"
+            },
+            "sustain": {
+              "type": "number"
+            },
+            "text": {
+              "type": "string"
+            },
+            "delay": {
+              "type": "number"
+            },
+            "tail": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        },
+        "visible": {
+          "type": [
+            "boolean",
+            "string",
+            "number"
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "description": "Metadata about the component"
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "y": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "width": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "height": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "basis": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "grow": {
+          "type": [
+            "number",
+            "string"
+          ],
+          "minimum": 0
+        },
+        "shrink": {
+          "type": "number",
+          "minimum": 0
+        },
+        "display": {
+          "type": "boolean"
+        },
+        "marginLeft": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "marginRight": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "marginTop": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "marginBottom": {
+          "type": [
+            "number",
+            "string"
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "description": "Layout positioning properties"
+    },
+    "props": {
+      "type": "object",
+      "properties": {
+        "style": {
+          "type": "object",
+          "properties": {
+            "classes": {
+              "type": [
+                "string",
+                "object"
+              ]
+            },
+            "margin": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "padding": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "width": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "height": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "overflow": {
+              "type": "string"
+            },
+            "user-select": {
+              "type": "string"
+            },
+            "alignSelf": {
+              "type": "string"
+            },
+            "backgroundColor": {
+              "type": "string"
+            },
+            "color": {
+              "type": [
+                "string",
+                "object"
+              ]
+            },
+            "textAlign": {
+              "type": "string"
+            },
+            "marginLeft": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "marginRight": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "marginTop": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "marginBottom": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "cursor": {
+              "type": "string"
+            },
+            "flex": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "textStyle": {
+          "type": "object",
+          "properties": {
+            "classes": {
+              "type": "string"
+            },
+            "margin": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "fontWeight": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "fontSize": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "color": {
+              "type": [
+                "string",
+                "object"
+              ]
+            },
+            "textAlign": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "type": "string"
+        },
+        "color": {
+          "type": [
+            "string",
+            "object"
+          ]
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "selected": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": [
+            "boolean",
+            "number",
+            "string",
+            "object",
+            "array",
+            "null"
+          ]
+        },
+        "placeholder": {
+          "type": [
+            "string",
+            "object"
+          ]
+        },
+        "src": {
+          "type": "string"
+        },
+        "referrerPolicy": {
+          "type": "string"
+        },
+        "allowFullScreen": {
+          "type": "boolean"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "row",
+            "column"
+          ]
+        },
+        "justify": {
+          "type": "string"
+        },
+        "alignItems": {
+          "type": "string"
+        },
+        "wrap": {
+          "type": [
+            "string",
+            "boolean"
+          ]
+        },
+        "gap": {
+          "type": "number"
+        },
+        "align": {
+          "type": "string"
+        },
+        "alignVertical": {
+          "type": "string"
+        },
+        "alignHorizontal": {
+          "type": "string"
+        },
+        "icon": {
+          "type": [
+            "object",
+            "string"
+          ]
+        },
+        "image": {
+          "type": [
+            "object",
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "object",
+            "string"
+          ]
+        },
+        "data": {
+          "type": [
+            "array",
+            "object"
+          ]
+        },
+        "columns": {
+          "type": [
+            "array",
+            "object"
+          ]
+        },
+        "options": {
+          "type": "array"
+        },
+        "instances": {
+          "type": "array"
+        },
+        "params": {
+          "type": "object"
+        },
+        "loading": {
+          "type": "object"
+        },
+        "filter": {
+          "type": "object"
+        },
+        "dataSources": {
+          "type": "object"
+        },
+        "series": {
+          "type": "array"
+        },
+        "xAxes": {
+          "type": "array"
+        },
+        "yAxes": {
+          "type": "array"
+        },
+        "items": {
+          "type": "array"
+        },
+        "source": {
+          "type": "string"
+        },
+        "transitionSettings": {
+          "type": "object"
+        },
+        "useDefaultViewHeight": {
+          "type": "boolean"
+        },
+        "useDefaultViewWidth": {
+          "type": "boolean"
+        },
+        "format": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true,
+      "description": "Component-specific properties"
+    },
+    "propConfig": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "property",
+                    "expr",
+                    "tag",
+                    "expr-struct",
+                    "query"
+                  ]
+                },
+                "config": {
+                  "type": "object"
+                },
+                "transforms": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            },
+            "paramDirection": {
+              "type": "string",
+              "enum": [
+                "input",
+                "output",
+                "inout"
+              ]
+            },
+            "persistent": {
+              "type": "boolean"
+            },
+            "onChange": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "description": "Property configuration and bindings",
+      "additionalProperties": true
+    },
+    "events": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "object",
+          "patternProperties": {
+            "^on[A-Z].*": {
+              "type": [
+                "object",
+                "array"
+              ],
+              "properties": {
+                "config": {
+                  "type": "object"
+                },
+                "scope": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "dom": {
+          "type": "object",
+          "patternProperties": {
+            "^on[A-Z].*": {
+              "type": [
+                "object",
+                "array"
+              ],
+              "properties": {
+                "config": {
+                  "type": "object"
+                },
+                "scope": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true,
+      "description": "Event handlers"
+    },
+    "custom": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom properties"
+    },
+    "scripts": {
+      "type": "object",
+      "properties": {
+        "customMethods": {
+          "type": "array"
+        },
+        "extensionFunctions": {
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "messageHandlers": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": true,
+      "description": "Script configurations for advanced components"
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "$ref": "#"
+      },
+      "description": "Child components (for containers)"
+    }
+  },
+  "additionalProperties": true,
+  "examples": [
+    {
+      "type": "ia.display.label",
+      "meta": {
+        "name": "SampleLabel"
+      },
+      "props": {
+        "text": "Hello World"
+      }
+    },
+    {
+      "type": "ia.container.flex",
+      "meta": {
+        "name": "Container"
+      },
+      "props": {
+        "direction": "column"
+      },
+      "children": []
+    },
+    {
+      "type": "ia.input.button",
+      "meta": {
+        "name": "ClickMe"
+      },
+      "props": {
+        "text": "Click Me"
+      },
+      "events": {
+        "component": {
+          "onActionPerformed": {
+            "config": {
+              "script": "print('clicked')"
+            },
+            "scope": "G",
+            "type": "script"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "custom": {},
+  "params": {
+    "apiEndpoint": "http://localhost:8000/api"
+  },
+  "root": {
+    "type": "ia.container.flex", 
+    "meta": {
+      "name": "TestContainer"
+    },
+    "children": [
+      {
+        "type": "ia.input.button",
+        "meta": {
+          "name": "APIButton"
+        },
+        "props": {
+          "text": "Call API"
+        },
+        "events": {
+          "component": {
+            "onActionPerformed": {
+              "type": "script",
+              "config": {
+                "script": "\timport json\n\turl = 'http://127.0.0.1:8000/ask_question'\n\t    data = {'question': 'test'}  \n\tresponse = system.net.httpClient().post(url, data)\n\tprint('Response received:', response.statusCode"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "ia.display.label",
+        "meta": {
+          "name": "DataLabel"
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "type": "property",
+              "config": {
+                "path": "view.params.apiData"
+              },
+              "transforms": [
+                {
+                  "type": "script",
+                  "code": "\tif value == null:\n\t\treturn \"No data\"\n    else:\n\t\treturn str(value).upper()"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

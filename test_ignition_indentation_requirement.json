@@ -1,0 +1,32 @@
+{
+  "root": {
+    "type": "ia.input.button",
+    "meta": {
+      "name": "BadIndentationButton"
+    },
+    "events": {
+      "component": {
+        "onActionPerformed": {
+          "type": "script",
+          "config": {
+            "script": "import json\n\turl = 'http://localhost:8000'\n\tdata = {'test': 'value'}\nresponse = system.net.httpClient().post(url, data)\n\tprint('Done')"
+          }
+        }
+      }
+    },
+    "propConfig": {
+      "props.text": {
+        "binding": {
+          "type": "property",
+          "config": {"path": "view.params.data"},
+          "transforms": [
+            {
+              "type": "script",
+              "code": "\tif value is None:\nreturn 'No data'\n\telse:\n\t\treturn str(value).upper()"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
