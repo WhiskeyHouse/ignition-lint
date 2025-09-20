@@ -1,0 +1,74 @@
+name: 'Ignition Lint'
+description: 'Lint Ignition projects for naming conventions and code quality. Extends ia-eknorr/ignition-lint with additional features.'
+author: 'Whiskey House Labs'
+
+inputs:
+  files:
+    description: 'Comma-separated list of ignition files to lint (supports glob patterns)'
+    required: false
+    default: '**/view.json'
+  component_style:
+    description: 'Naming convention style for components'
+    required: false
+    default: 'PascalCase'
+  parameter_style:
+    description: 'Naming convention style for parameters'
+    required: false
+    default: 'camelCase'
+  component_style_rgx:
+    description: 'Custom regex pattern for component naming'
+    required: false
+  parameter_style_rgx:
+    description: 'Custom regex pattern for parameter naming'
+    required: false
+  allow_acronyms:
+    description: 'Allow acronyms in component and parameter names'
+    required: false
+    default: 'false'
+  project_path:
+    description: 'Path to Ignition project directory (alternative to files)'
+    required: false
+  lint_type:
+    description: 'Type of linting to perform (perspective, scripts, all)'
+    required: false
+    default: 'perspective'
+  naming_only:
+    description: 'Only run naming convention checks, skip empirical linter'
+    required: false
+    default: 'true'
+
+outputs:
+  result:
+    description: 'Linting result (success or failure)'
+
+branding:
+  icon: 'zap'
+  color: 'orange'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ${{ github.action_path }}
+    
+    - name: Run Ignition Lint
+      shell: bash
+      env:
+        INPUT_FILES: ${{ inputs.files }}
+        INPUT_COMPONENT_STYLE: ${{ inputs.component_style }}
+        INPUT_PARAMETER_STYLE: ${{ inputs.parameter_style }}
+        INPUT_COMPONENT_STYLE_RGX: ${{ inputs.component_style_rgx }}
+        INPUT_PARAMETER_STYLE_RGX: ${{ inputs.parameter_style_rgx }}
+        INPUT_ALLOW_ACRONYMS: ${{ inputs.allow_acronyms }}
+        INPUT_PROJECT_PATH: ${{ inputs.project_path }}
+        INPUT_LINT_TYPE: ${{ inputs.lint_type }}
+        INPUT_NAMING_ONLY: ${{ inputs.naming_only }}
+      run: ignition-lint-action

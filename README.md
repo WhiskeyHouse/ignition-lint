@@ -1,312 +1,133 @@
-# Empirical Ignition Perspective Component Schema
+# Ignition Lint
 
-**A comprehensive validation framework for Ignition Perspective applications with production-validated schemas and linting tools.**
+A comprehensive linting toolkit for Ignition® projects that combines naming convention validation, empirical schema checks, and CI/CD automation.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Ignition 8.1+](https://img.shields.io/badge/ignition-8.1+-orange.svg)](https://inductiveautomation.com/)
+> **🙏 Acknowledgments**: The naming convention validation features in this project were inspired by the excellent work by [Eric Knorr](https://github.com/ia-eknorr) in the [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint) repository. We extend that foundation with broader project linting and automation support.
 
-## 🎯 Overview
+## ✨ Features
 
-This project provides **empirically-derived validation tools** for Ignition Perspective applications, built from analysis of real production codebases. It includes comprehensive schema validation, linting tools, and code quality analysis specifically designed for industrial automation environments.
+- **🎯 Naming Validation** – Enforces component and parameter styles across `view.json` files
+- **📋 Perspective Linting** – Runs schema-aware checks against Perspective views and resources
+- **⚡ FastMCP Server** – Provides AI agent integration for real-time validation workflows
+- **🚀 GitHub Action** – Drop-in CI integration for automated linting on push or PR
+- **🔧 CLI Tooling** – Local developer workflow with project-wide linting modes
+- **📊 Production Data** – Rules validated across 12,220+ real industrial components
 
-### Key Features
+## 🔄 Relationship to ia-eknorr/ignition-lint
 
-- **📊 Production-Validated Schemas**: Built from analysis of 12,220+ real components across multiple industrial systems
-- **🔍 Comprehensive Linting**: Validates component structure, Jython scripts, and Ignition-specific patterns
-- **🏭 Industrial-Grade Quality**: 92.7% validation success rate across diverse manufacturing environments
-- **🛠️ Developer-Ready Tools**: CLI tools, LSP server, and CI/CD integration support
-- **🎯 Zero False Positives**: Surgical precision in error detection without blocking valid code
+| Feature | ia-eknorr/ignition-lint | whiskeyhouse/ignition-lint |
+|---------|------------------------|---------------------------|
+| **View.json naming validation** | ✅ Core feature | ✅ Enhanced implementation |
+| **Component style checking** | ✅ PascalCase, camelCase, etc. | ✅ Same styles + custom regex |
+| **Parameter style checking** | ✅ Multiple styles supported | ✅ Same + enhanced validation |
+| **GitHub Actions integration** | ✅ Simple action | ✅ Enhanced action + examples |
+| **CLI tool** | ❌ Action-only | ✅ Full CLI with local development |
+| **Project-wide linting** | ❌ Files only | ✅ Entire Ignition projects |
+| **Script validation** | ❌ View.json only | ✅ Python/Jython scripts |
+| **Empirical validation** | ❌ Naming only | ✅ Production-validated rules |
+| **MCP/AI integration** | ❌ Not available | ✅ FastMCP server for AI agents |
+| **Installation method** | GitHub Action only | ✅ `pip` / `uv` + GitHub Action |
 
-## 📁 Project Structure
+### When To Use Which
 
-```
-empirical-ignition-perspective-component-schema/
-├── README.md                   # This file
-├── pyproject.toml             # Python project configuration
-├── .gitignore                 # Git ignore rules
-│
-├── tools/                     # Main validation tools
-│   ├── ignition-perspective-linter.py    # Perspective component linter
-│   ├── ignition-script-linter.py         # Full Python script linter  
-│   ├── ignition-lsp-server.py           # Language Server Protocol
-│   └── jython_whitespace_validator.py   # Jython validation utilities
-│
-├── schemas/                   # JSON Schema definitions
-│   ├── core-ia-components-schema-robust.json    # Main production schema
-│   ├── core-ia-components-schema-permissive.json # Development schema
-│   └── core-ia-components.d.ts                  # TypeScript definitions
-│
-├── scripts/                   # Analysis and utility scripts
-│   ├── analyze-bindings.py               # Binding pattern analysis
-│   ├── analyze-multiple-codebases.py     # Multi-codebase validation
-│   ├── validate-components.py            # Component validation
-│   └── inspect-components-detailed.py    # Detailed component inspection
-│
-├── docs/                      # Documentation
-│   ├── MULTI_CODEBASE_SUMMARY.md        # Analysis methodology
-│   ├── ENHANCED_VALIDATION_COMPLETE.md   # Validation framework docs
-│   ├── BINDING_PATTERNS_ANALYSIS.md     # Binding analysis results
-│   ├── AI_DEVELOPMENT_RULES.md          # AI development guidelines
-│   └── LINTER_USAGE.md                  # Tool usage instructions
-│
-├── reports/                   # Analysis reports
-│   ├── CORRECTED_LINTING_RESULTS_REPORT.md     # Linting analysis
-│   ├── IGNITION_SCRIPT_LINTING_REPORT.md      # Script analysis  
-│   └── GLOBAL_IGNITION_APPLICATION_REPORT.md   # Application overview
-│
-├── tests/                     # Test files and debugging utilities
-├── examples/                  # Example configurations and test cases
-└── ignition-lint             # Executable CLI script
-```
+Use [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint) when you only need the original naming checks and a lightweight GitHub Action.
+
+Use **whiskeyhouse/ignition-lint** when you want local CLI tooling, broader schema validation, MCP integration, or multiple lint types in CI.
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Python 3.8+
-- [UV package manager](https://github.com/astral-sh/uv) (recommended) or pip
-- Access to Ignition Perspective project files
-
-### Installation
+### Install
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd empirical-ignition-perspective-component-schema
+# Install from PyPI
+pip install ignition-lint
 
-# Install dependencies with UV (recommended)
+# Or use uv for workspace management
 uv sync
-
-# Or with pip
-pip install -r requirements.txt
 ```
 
-### Basic Usage
-
-#### 1. Validate Perspective Components
+### CLI Usage
 
 ```bash
-# Lint a complete Perspective views directory
-uv run python tools/ignition-perspective-linter.py --target /path/to/ignition/project/com.inductiveautomation.perspective/views
+# Lint view.json files for naming conventions
+ignition-lint --files "**/view.json" --component-style PascalCase --parameter-style camelCase
 
-# Output results to JSON
-uv run python tools/ignition-perspective-linter.py --target /path/to/views --output results.json
+# Lint an entire Ignition project with all checks
+ignition-lint --project /path/to/project --type all
 
-# Verbose output with detailed issues
-uv run python tools/ignition-perspective-linter.py --target /path/to/views --verbose
+# Naming convention validation only
+ignition-lint --project /path/to/project --naming-only
 ```
 
-#### 2. Validate Python Scripts
+### GitHub Actions
 
-```bash
-# Lint Ignition Python scripts
-uv run python tools/ignition-script-linter.py --target /path/to/ignition/script-python
+Add to `.github/workflows/ignition-lint.yml`:
 
-# Focus on critical issues only
-uv run python tools/ignition-script-linter.py --target /path/to/scripts --output script-results.json
-```
-
-#### 3. Validate Individual Components
-
-```bash
-# Validate single component against schema
-uv run python scripts/validate-components.py /path/to/view.json
-```
-
-## 🔧 Tools Overview
-
-### 1. Perspective Component Linter (`tools/ignition-perspective-linter.py`)
-
-**Purpose**: Validates Ignition Perspective view.json files for component structure, bindings, and inline scripts.
-
-**Features**:
-- Component schema validation (48 component types)
-- Jython inline script validation with Ignition-specific requirements
-- Binding pattern validation (property, expr, tag, transform bindings)
-- Performance and best practices analysis
-- Detailed error reporting with fix suggestions
-
-**Success Rate**: 95.7% validation accuracy across production codebases
-
-### 2. Script Linter (`tools/ignition-script-linter.py`)
-
-**Purpose**: Comprehensive analysis of Ignition script-python directories.
-
-**Features**:
-- Python/Jython 2.7 compatibility checking
-- Ignition system function validation (15+ modules)
-- Java integration pattern detection
-- Code quality assessment (documentation, style)
-- Syntax error detection with precise line numbers
-
-**Scale**: Processes 500K+ lines of code efficiently
-
-### 3. LSP Server (`tools/ignition-lsp-server.py`)
-
-**Purpose**: Language Server Protocol implementation for IDE integration.
-
-**Features**:
-- Real-time validation in VSCode, PyCharm, etc.
-- Hover documentation for Ignition components
-- Auto-completion for component properties
-- Diagnostic reporting with quick fixes
-
-## 📊 Validation Results
-
-### Production Validation Statistics
-
-| Metric | Result | Notes |
-|--------|---------|-------|
-| **Component Types Covered** | 48 | Complete ia.* namespace |
-| **Production Components Analyzed** | 12,220+ | Across 2 industrial codebases |
-| **Validation Success Rate** | 92.7% | Cross-validated accuracy |
-| **False Positive Rate** | 0% | Surgical precision validation |
-| **Critical Error Detection** | 100% | All runtime failures caught |
-
-### Supported Component Categories
-
-- **Containers** (5 types): flex, coord, tab, breakpt layouts
-- **Displays** (17 types): labels, tables, charts, images, trees  
-- **Inputs** (11 types): buttons, dropdowns, text fields, toggles
-- **Navigation** (2 types): menus and trees
-- **Charts** (2 types): pie and xy charts
-- **Industrial** (11 types): SCADA-specific components
-
-## 🏭 Industrial Use Cases
-
-### Distillery Operations
-- Recipe management and BOM validation
-- Production order processing
-- Barrel tracking and quality control
-- Equipment scheduling and maintenance
-
-### SCADA Systems  
-- Real-time monitoring dashboards
-- Alarm and event management
-- Historical data visualization
-- Equipment control interfaces
-
-### Manufacturing Execution
-- Batch processing workflows
-- Inventory tracking
-- Quality assurance processes
-- Regulatory compliance reporting
-
-## 🔍 Key Validation Features
-
-### Component Structure Validation
-- Required properties enforcement
-- Type safety for component configurations
-- Nested component hierarchy validation
-- Icon path and resource validation
-
-### Jython Script Validation
-- **Critical**: Ignition indentation requirement (ALL lines must be indented)
-- Python syntax validation with normalization
-- Jython 2.7 compatibility checking
-- System function usage validation
-- Java integration pattern detection
-
-### Binding Pattern Validation
-- Property bindings with proper data types
-- Expression bindings with syntax checking
-- Tag bindings with path validation
-- Transform bindings with script validation
-
-### Performance Analysis
-- Component usage pattern optimization
-- Best practices enforcement
-- Resource efficiency recommendations
-- Anti-pattern detection
-
-## 📈 Development Workflow Integration
-
-### Pre-commit Hooks
-```bash
-# Add to .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: ignition-perspective-lint
-        name: Ignition Perspective Linter
-        entry: uv run python tools/ignition-perspective-linter.py
-        language: system
-        files: \.json$
-        args: [--target, .]
-```
-
-### CI/CD Pipeline
 ```yaml
-# GitHub Actions example
-- name: Validate Ignition Components
-  run: |
-    uv run python tools/ignition-perspective-linter.py --target ./ignition/perspective/views
-    uv run python tools/ignition-script-linter.py --target ./ignition/script-python
+name: Ignition Lint
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: whiskeyhouse/ignition-lint@v1
+        with:
+          files: "**/view.json"
+          component_style: "PascalCase"
+          parameter_style: "camelCase"
 ```
 
-### IDE Integration
-```json
-// VSCode settings.json
-{
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": false,
-  "ignition.validation.enabled": true,
-  "ignition.lsp.server": "./tools/ignition-lsp-server.py"
-}
+## 🛠️ Tooling Overview
+
+- `ignition-lint` – CLI entry point for project and file linting
+- `ignition-lint-server` – FastMCP server for agent integrations
+- `ignition-lint-action` – Wrapper used by the GitHub Action
+
+## 📁 Project Layout
+
+```
+.
+├── src/ignition_lint/           # Core package modules (CLI, server, checkers)
+├── docs/                        # Detailed strategy and integration guides
+├── examples/                    # Example scripts and views for demo scenarios
+├── schemas/                     # Component schemas and supporting data
+├── scripts/                     # Analysis tooling and supporting utilities
+├── tests/                       # Automated tests
+├── ignition-lint                # Convenience entry point for the CLI
+├── action.yml                   # GitHub Action definition
+├── pyproject.toml               # Project metadata and build configuration
+└── uv.lock                      # Resolved dependency versions (uv)
 ```
 
-## 📚 Documentation
+## 📚 Documentation Highlights
 
-- **[Multi-Codebase Analysis](docs/MULTI_CODEBASE_SUMMARY.md)**: Methodology and results
-- **[Enhanced Validation](docs/ENHANCED_VALIDATION_COMPLETE.md)**: Complete validation framework
-- **[Binding Patterns](docs/BINDING_PATTERNS_ANALYSIS.md)**: Production binding analysis  
-- **[AI Development Rules](docs/AI_DEVELOPMENT_RULES.md)**: Guidelines for AI-assisted development
-- **[Tool Usage Guide](docs/LINTER_USAGE.md)**: Detailed usage instructions
+- `docs/IGNITION-LINTER-INTEGRATION.md` – Integrating the linter into Ignition projects
+- `docs/LINTER-INTEGRATION-STRATEGY.md` – Recommended adoption patterns
+- `docs/VALIDATION-LINTING-STRATEGY.md` – Deep dive into validation methodology
+- `examples/` – Ready-to-run scenarios for demonstrating linting outcomes
 
-## 🤝 Contributing
+## 🤖 FastMCP Integration
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Run the linters on your changes
-4. Commit your changes (`git commit -m 'Add amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
-
-### Development Setup
+Run the FastMCP server to expose linting capabilities to AI agents:
 
 ```bash
-# Install development dependencies
-uv sync --dev
+ignition-lint-server --project /path/to/project
+```
 
-# Run tests
-uv run pytest tests/
+Connect FastMCP-compatible clients to the server for conversational linting, contextual file inspection, and auto-fix suggestions.
 
-# Run linting on the project itself
-uv run python tools/ignition-perspective-linter.py --target examples/
+## 🧪 Testing
+
+Use `uv` or `pytest` to run the test suite:
+
+```bash
+uv run pytest
+# or
+pytest
 ```
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🏆 Acknowledgments
-
-- Built from analysis of real production Ignition systems
-- Validated across distillery and SCADA environments
-- Developed for the industrial automation community
-- Designed for reliability in mission-critical applications
-
-## 📞 Support
-
-For questions, issues, or contributions:
-
-1. **Issues**: Open a GitHub issue for bugs or feature requests
-2. **Documentation**: Check the `docs/` directory for detailed guides
-3. **Examples**: Review `examples/` for usage patterns
-
----
-
-**Built with ❤️ for the Ignition community**
-
-*Empirical validation • Production-tested • Industrial-grade quality*
+MIT License. See `LICENSE` for details.

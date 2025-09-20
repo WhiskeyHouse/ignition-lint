@@ -1,4 +1,4 @@
-# Empirical Ignition Perspective Component Schema - .gitignore
+# Ignition Lint - project .gitignore
 
 # === Python ===
 # Byte-compiled / optimized / DLL files
@@ -54,7 +54,75 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Virtual environments
+# Translations
+*.mo
+*.pot
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
 .venv
 env/
@@ -67,7 +135,7 @@ venv.bak/
 .uv/
 
 # === IDE & Editor Files ===
-# VSCode
+# VS Code
 .vscode/
 *.code-workspace
 
@@ -95,6 +163,34 @@ auto-save-list
 tramp
 .\#*
 
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Temporary files
+*.tmp
+*.temp
+
 # === System Files ===
 # macOS
 .DS_Store
@@ -120,8 +216,6 @@ Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
-*.tmp
-*.temp
 Desktop.ini
 $RECYCLE.BIN/
 *.cab
@@ -163,11 +257,9 @@ logs/
 *.save
 *~
 
-# === Temporary Files ===
+# === Temporary Directories ===
 tmp/
 temp/
-*.tmp
-*.temp
 
 # === Project Specific ===
 # Ignition project files that shouldn't be committed
@@ -214,8 +306,6 @@ secrets.json
 .env.secret
 
 # === Documentation Build ===
-# Sphinx documentation
-docs/_build/
 docs/build/
 
 # === Keep Important Files ===
@@ -233,8 +323,3 @@ docs/build/
 !ENHANCED_LINTING_RESULTS_REPORT.md
 !CORRECTED_LINTING_RESULTS_REPORT.md
 !IGNITION_SCRIPT_LINTING_REPORT.md
-
-# === Comments ===
-# This .gitignore is designed for the Empirical Ignition Perspective Component Schema project
-# It excludes development artifacts while preserving important schema files, documentation,
-# and linting tools that form the core deliverables of this project.

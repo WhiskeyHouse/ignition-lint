@@ -1,0 +1,44 @@
+{
+  "custom": {
+    "goodParameter": {
+      "value": "test"
+    },
+    "anotherGoodParam": {
+      "value": "test"
+    }
+  },
+  "meta": {
+    "name": "TestView"
+  },
+  "params": {
+    "goodParamName": {
+      "paramType": "value",
+      "value": "default"
+    },
+    "anotherParam": {
+      "paramType": "value", 
+      "value": "default"
+    }
+  },
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "GoodComponentName"
+        },
+        "type": "ia.display.button"
+      },
+      {
+        "meta": {
+          "name": "AnotherComponent"  
+        },
+        "type": "ia.display.label"
+      }
+    ],
+    "meta": {
+      "name": "RootContainer"
+    },
+    "type": "ia.container.flex"
+  }
+}

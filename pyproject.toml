@@ -1,9 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
-name = "ignition-perspective-schemas"
-version = "0.1.0"
-description = "Add your description here"
+name = "ignition-lint"
+version = "1.0.0"
+description = "Comprehensive Ignition linting tool with naming conventions and empirical validation. Extends ia-eknorr/ignition-lint with enhanced features."
 readme = "README.md"
-requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Whiskey House Labs", email = "info@whiskeyhouse.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+keywords = ["ignition", "lint", "validation", "naming-conventions", "scada", "automation", "perspective", "view.json"]
 dependencies = [
+    "fastmcp>=2.0.0",
     "jsonschema>=4.25.1",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/whiskeyhouse/ignition-lint"
+Repository = "https://github.com/whiskeyhouse/ignition-lint"
+Documentation = "https://github.com/whiskeyhouse/ignition-lint/blob/main/README.md"
+
+[project.scripts]
+ignition-lint-server = "ignition_lint.server:main"
+ignition-lint = "ignition_lint.cli:main"
+ignition-lint-action = "ignition_lint.action_entry:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

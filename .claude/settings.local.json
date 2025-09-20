@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(python:*)",
+      "Bash(uv run:*)",
+      "Bash(INPUT_FILES=\"examples/test_view.json\" INPUT_COMPONENT_STYLE=\"PascalCase\" INPUT_PARAMETER_STYLE=\"camelCase\" uv run ignition-lint-action)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

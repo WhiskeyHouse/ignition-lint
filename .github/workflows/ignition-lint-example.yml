@@ -1,0 +1,34 @@
+name: Ignition Lint
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-ignition:
+    runs-on: ubuntu-latest
+    name: Lint Ignition Files
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Lint Ignition view.json files
+        uses: whiskeyhouse/ignition-lint@v1
+        with:
+          files: "**/view.json"
+          component_style: "PascalCase"
+          parameter_style: "camelCase"
+          allow_acronyms: "false"
+      
+      # Alternative: Lint entire Ignition project
+      # - name: Lint Ignition Project
+      #   uses: whiskeyhouse/ignition-lint@v1
+      #   with:
+      #     project_path: "ignition-projects/MyProject"
+      #     lint_type: "perspective"
+      #     naming_only: "true"
+      #     component_style: "PascalCase"
+      #     parameter_style: "camelCase"
