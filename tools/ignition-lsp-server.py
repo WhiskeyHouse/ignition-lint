@@ -7,7 +7,7 @@ Enables real-time linting in VS Code and other LSP-compatible editors
 import json
 import sys
 from typing import Dict, List, Any
-from ignition_perspective_linter import IgnitionPerspectiveLinter
+from ignition_lint.perspective.linter import IgnitionPerspectiveLinter
 
 class IgnitionLSPServer:
     def __init__(self):

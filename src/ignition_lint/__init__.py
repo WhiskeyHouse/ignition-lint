@@ -14,10 +14,3 @@ from .json_linter import JsonLinter
 
 __all__ = ["StyleChecker", "JsonLinter"]
 
-# Optional FastMCP server import
-try:
-    from .server import FastMCPIgnitionLinter
-    __all__.append("FastMCPIgnitionLinter")
-except ImportError:
-    # FastMCP not available, that's okay for CLI usage
-    pass

@@ -6,7 +6,11 @@
       "WebFetch(domain:api.github.com)",
       "Bash(python:*)",
       "Bash(uv run:*)",
-      "Bash(INPUT_FILES=\"examples/test_view.json\" INPUT_COMPONENT_STYLE=\"PascalCase\" INPUT_PARAMETER_STYLE=\"camelCase\" uv run ignition-lint-action)"
+      "Bash(INPUT_FILES=\"examples/test_view.json\" INPUT_COMPONENT_STYLE=\"PascalCase\" INPUT_PARAMETER_STYLE=\"camelCase\" uv run ignition-lint-action)",
+      "Bash(PYTHONPATH=src python3 -m ignition_lint.cli --project ../whk-distillery01-ignition-global --profile default --report-format text)",
+      "Bash(PYTHONPATH=src python3 -m ignition_lint.cli --project ../whk-distillery01-ignition-global --checks scripts --report-format json --fail-on warning)",
+      "Bash(PYTHONPATH=src python3 tools/jython_whitespace_validator.py --file tools/ignition-perspective-linter.py)",
+      "Read(//Users/pmannion/Documents/whiskeyhouse/whk-distillery01-ignition-global/**)"
     ],
     "deny": [],
     "ask": []
