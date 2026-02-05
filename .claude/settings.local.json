@@ -12,7 +12,16 @@
       "Bash(npm run build:*)",
       "Bash(ls:*)",
       "Bash(xargs:*)",
-      "Bash(npx docusaurus:*)"
+      "Bash(npx docusaurus:*)",
+      "Bash(wc:*)",
+      "Bash(git rm:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ignition-lint:*)",
+      "Bash(python -m build:*)",
+      "Bash(uv run python -m build:*)",
+      "Bash(uv run python:*)",
+      "Bash(git -C /Users/pmannion/whiskeyhouse/ignition-lint status src/ignition_lint/schemas/)",
+      "Bash(git -C /Users/pmannion/whiskeyhouse/ignition-lint add src/ignition_lint/schemas/__init__.py src/ignition_lint/schemas/core-ia-components-schema.json src/ignition_lint/schemas/core-ia-components-schema-robust.json src/ignition_lint/schemas/core-ia-components-schema-permissive.json)"
     ],
     "deny": [],
     "ask": []

@@ -468,11 +468,9 @@ wheels = [
 ]
 
 [[package]]
-name = "ignition-lint"
-version = "1.0.0"
+name = "ignition-lint-toolkit"
 source = { editable = "." }
 dependencies = [
-    { name = "fastmcp" },
     { name = "jsonschema" },
     { name = "pathspec" },
 ]
@@ -483,17 +481,20 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+mcp = [
+    { name = "fastmcp" },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=22.0.0" },
-    { name = "fastmcp", specifier = ">=2.0.0" },
+    { name = "fastmcp", marker = "extra == 'mcp'", specifier = ">=2.0.0" },
     { name = "jsonschema", specifier = ">=4.25.1" },
     { name = "pathspec", specifier = ">=0.11.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "mcp"]
 
 [[package]]
 name = "iniconfig"

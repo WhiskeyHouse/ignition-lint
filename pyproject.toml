@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ignition-lint"
-version = "1.0.0"
+name = "ignition-lint-toolkit"
+dynamic = ["version"]
 description = "Comprehensive Ignition linting tool with naming conventions and empirical validation. Extends ia-eknorr/ignition-lint with enhanced features."
 readme = "README.md"
 license = "MIT"
@@ -12,23 +12,25 @@ authors = [
     { name = "Whiskey House Labs", email = "info@whiskeyhouse.com" }
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
 ]
 requires-python = ">=3.10"
 keywords = ["ignition", "lint", "validation", "naming-conventions", "scada", "automation", "perspective", "view.json"]
 dependencies = [
-    "fastmcp>=2.0.0",
     "jsonschema>=4.25.1",
     "pathspec>=0.11.0",
 ]
 
 [project.optional-dependencies]
+mcp = ["fastmcp>=2.0.0"]
 dev = [
     "pytest>=7.0.0",
     "black>=22.0.0",
@@ -39,11 +41,24 @@ dev = [
 Homepage = "https://github.com/whiskeyhouse/ignition-lint"
 Repository = "https://github.com/whiskeyhouse/ignition-lint"
 Documentation = "https://github.com/whiskeyhouse/ignition-lint/blob/main/README.md"
+Changelog = "https://github.com/whiskeyhouse/ignition-lint/releases"
 
 [project.scripts]
 ignition-lint-server = "ignition_lint.server:main"
 ignition-lint = "ignition_lint.cli:main"
 ignition-lint-action = "ignition_lint.action_entry:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/ignition_lint/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ignition_lint"]
 
 [tool.black]
 line-length = 88

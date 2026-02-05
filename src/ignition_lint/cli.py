@@ -15,14 +15,9 @@ from .perspective.linter import (
     LintSeverity as PerspectiveSeverity,
 )
 from .reporting import LintIssue, LintReport, LintSeverity, format_report_text
+from .schemas import SCHEMA_FILES, schema_path_for
 from .scripts.linter import IgnitionScriptLinter, LintSeverity as ScriptSeverity, ScriptLintIssue
 from .suppression import build_suppression_config
-
-SCHEMA_FILES = {
-    "strict": "core-ia-components-schema.json",
-    "robust": "core-ia-components-schema-robust.json",
-    "permissive": "core-ia-components-schema-permissive.json",
-}
 
 PROFILE_CHECKS = {
     "default": {"perspective", "naming", "scripts"},
@@ -31,17 +26,6 @@ PROFILE_CHECKS = {
     "naming-only": {"naming"},
     "full": {"perspective", "naming", "scripts"},
 }
-
-
-def project_root() -> Path:
-    return Path(__file__).resolve().parents[2]
-
-
-def schema_path_for(mode: str) -> Path:
-    normalized = mode.lower()
-    if normalized not in SCHEMA_FILES:
-        raise ValueError(f"Unknown schema mode '{mode}'. Options: {', '.join(SCHEMA_FILES)}")
-    return project_root() / "schemas" / SCHEMA_FILES[normalized]
 
 
 def check_linter_availability(schema_mode: str) -> bool:

@@ -35,6 +35,7 @@ except ImportError:  # pragma: no cover - optional dependency
 
         pass
 
+from ..schemas import schema_path_for as _schema_path_for
 from ..validators.jython import JythonValidator
 
 class LintSeverity(Enum):
@@ -60,8 +61,7 @@ class IgnitionPerspectiveLinter:
     def __init__(self, schema_path: str = None):
         """Initialize the linter with the component schema."""
         if schema_path is None:
-            project_root = Path(__file__).resolve().parents[4]
-            schema_path = project_root / 'schemas' / 'core-ia-components-schema-robust.json'
+            schema_path = _schema_path_for("robust")
         else:
             schema_path = Path(schema_path)
 

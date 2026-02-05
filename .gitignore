@@ -3,6 +3,9 @@
 # === Python ===
 # Byte-compiled / optimized / DLL files
 __pycache__/
+
+# hatch-vcs generated version file
+src/ignition_lint/_version.py
 *.py[cod]
 *$py.class
 

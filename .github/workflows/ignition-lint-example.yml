@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Lint Ignition view.json files
-        uses: whiskeyhouse/ignition-lint@v1
+        uses: whiskeyhouse/ignition-lint@v0
         with:
           files: "**/view.json"
           component_style: "PascalCase"
@@ -25,7 +25,7 @@ jobs:
       
       # Alternative: Lint entire Ignition project
       # - name: Lint Ignition Project
-      #   uses: whiskeyhouse/ignition-lint@v1
+      #   uses: whiskeyhouse/ignition-lint@v0
       #   with:
       #     project_path: "ignition-projects/MyProject"
       #     lint_type: "perspective"

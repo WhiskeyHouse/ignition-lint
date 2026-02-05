@@ -20,11 +20,10 @@ from .cli import (
     lint_naming,
     lint_perspective,
     lint_scripts,
-    schema_path_for,
 )
+from .schemas import schema_path_for
 from .suppression import build_suppression_config
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCHEMA_MODE = "robust"
 
 if FastMCP is None:
