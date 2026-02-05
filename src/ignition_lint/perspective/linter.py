@@ -21,8 +21,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, Any
-from dataclasses import dataclass
-from enum import Enum
+
 try:
     from jsonschema import validate, ValidationError
     JSONSCHEMA_AVAILABLE = True
@@ -35,27 +34,10 @@ except ImportError:  # pragma: no cover - optional dependency
 
         pass
 
+from ..reporting import LintIssue, LintSeverity
 from ..schemas import schema_path_for as _schema_path_for
+from ..validators.expression import ExpressionValidator
 from ..validators.jython import JythonValidator
-
-class LintSeverity(Enum):
-    ERROR = "ERROR"
-    WARNING = "WARNING" 
-    INFO = "INFO"
-    STYLE = "STYLE"
-
-@dataclass
-class LintIssue:
-    severity: LintSeverity
-    code: str
-    message: str
-    file_path: str
-    component_path: str
-    component_type: str
-    line_suggestion: Optional[str] = None
-    
-    def __str__(self) -> str:
-        return f"{self.severity.value}: {self.code} - {self.message}"
 
 class IgnitionPerspectiveLinter:
     def __init__(self, schema_path: str = None):
@@ -78,6 +60,7 @@ class IgnitionPerspectiveLinter:
         }
         self._missing_schema_files: Set[str] = set()
         self.jython_validator = JythonValidator()
+        self.expression_validator = ExpressionValidator()
         
         # Known best practices patterns
         self.best_practices = {
@@ -157,7 +140,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=component.get('type', 'unknown'),
-                    line_suggestion="Install the 'jsonschema' package to enable schema validation.",
+                    suggestion="Install the 'jsonschema' package to enable schema validation.",
                 ))
             return True
 
@@ -172,7 +155,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=component_path,
                 component_type=component.get('type', 'unknown'),
-                line_suggestion=f"Path: {'.'.join(map(str, e.absolute_path))}" if e.absolute_path else None
+                suggestion=f"Path: {'.'.join(map(str, e.absolute_path))}" if e.absolute_path else None
             ))
             return False
     
@@ -191,7 +174,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=comp_type,
-                    line_suggestion=f"Add 'meta.{required_prop}' property"
+                    suggestion=f"Add 'meta.{required_prop}' property"
                 ))
         
         # Check for empty or generic names
@@ -204,7 +187,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=component_path,
                 component_type=comp_type,
-                line_suggestion="Provide a descriptive name for debugging and maintenance"
+                suggestion="Provide a descriptive name for debugging and maintenance"
             ))
         elif name in ['Component', 'View', 'Container', 'Label', 'Button']:
             self.issues.append(LintIssue(
@@ -214,7 +197,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=component_path,
                 component_type=comp_type,
-                line_suggestion="Use descriptive names like 'StatusLabel', 'SubmitButton', etc."
+                suggestion="Use descriptive names like 'StatusLabel', 'SubmitButton', etc."
             ))
         
         # Check for performance concerns
@@ -240,7 +223,7 @@ class IgnitionPerspectiveLinter:
                         file_path=file_path,
                         component_path=f"{component_path}.children[{i}]",
                         component_type=child.get('type', 'unknown'),
-                        line_suggestion="Add position properties for proper layout"
+                        suggestion="Add position properties for proper layout"
                     ))
         
         # Check for inefficient flex container usage
@@ -257,7 +240,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=comp_type,
-                    line_suggestion="Consider if flex container is needed for single child"
+                    suggestion="Consider if flex container is needed for single child"
                 ))
             
             # Check for missing direction property
@@ -269,7 +252,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=comp_type,
-                    line_suggestion="Add 'props.direction' for explicit layout control"
+                    suggestion="Add 'props.direction' for explicit layout control"
                 ))
         
         # Validate bindings
@@ -277,7 +260,13 @@ class IgnitionPerspectiveLinter:
         
         # Validate event handler Jython scripts
         self._validate_event_scripts(component, file_path, component_path)
-        
+
+        # Validate onChange scripts in propConfig
+        self._validate_onchange_scripts(component, file_path, component_path)
+
+        # Validate expression bindings and transforms
+        self._validate_expressions(component, file_path, component_path)
+
         # Check for missing text in labels
         if comp_type == 'ia.display.label':
             props = component.get('props', {})
@@ -295,7 +284,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=comp_type,
-                    line_suggestion="Add 'props.text' or 'propConfig.props.text.binding'"
+                    suggestion="Add 'props.text' or 'propConfig.props.text.binding'"
                 ))
         
         # Check for missing path in icons
@@ -309,7 +298,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=comp_type,
-                    line_suggestion="Add 'props.path' with icon reference"
+                    suggestion="Add 'props.path' with icon reference"
                 ))
     
     def check_component_accessibility(self, component: dict, file_path: str, component_path: str):
@@ -339,7 +328,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=component_path,
                     component_type=comp_type,
-                    line_suggestion="Add descriptive text, placeholder, or meaningful name"
+                    suggestion="Add descriptive text, placeholder, or meaningful name"
                 ))
     
     def _validate_bindings(self, component: dict, file_path: str, component_path: str):
@@ -367,7 +356,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=f"{component_path}.propConfig.{prop_name}",
                     component_type=comp_type,
-                    line_suggestion=f"Use one of: {', '.join(valid_binding_types)}"
+                    suggestion=f"Use one of: {', '.join(valid_binding_types)}"
                 ))
             
             # Validate type-specific configurations
@@ -392,7 +381,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=f"{component_path}.propConfig.{prop_name}",
                 component_type=comp_type,
-                line_suggestion="Add 'tagPath' property to tag binding config"
+                suggestion="Add 'tagPath' property to tag binding config"
             ))
         
         # Check for fallback handling on critical properties
@@ -404,7 +393,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=f"{component_path}.propConfig.{prop_name}",
                 component_type=comp_type,
-                line_suggestion="Consider adding 'fallbackDelay' for better error handling"
+                suggestion="Consider adding 'fallbackDelay' for better error handling"
             ))
     
     def _validate_expr_binding(self, config: dict, prop_name: str, file_path: str, component_path: str, comp_type: str):
@@ -417,7 +406,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=f"{component_path}.propConfig.{prop_name}",
                 component_type=comp_type,
-                line_suggestion="Add 'expression' property to expression binding config"
+                suggestion="Add 'expression' property to expression binding config"
             ))
     
     def _validate_property_binding(self, config: dict, prop_name: str, file_path: str, component_path: str, comp_type: str):
@@ -430,7 +419,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=f"{component_path}.propConfig.{prop_name}",
                 component_type=comp_type,
-                line_suggestion="Add 'path' property to property binding config"
+                suggestion="Add 'path' property to property binding config"
             ))
     
     def _validate_transform(self, transform: dict, prop_name: str, index: int, file_path: str, component_path: str, comp_type: str):
@@ -446,7 +435,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=f"{component_path}.propConfig.{prop_name}.transforms[{index}]",
                 component_type=comp_type,
-                line_suggestion=f"Use one of: {', '.join(valid_transform_types)}"
+                suggestion=f"Use one of: {', '.join(valid_transform_types)}"
             ))
         
         # Validate type-specific requirements
@@ -459,7 +448,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=f"{component_path}.propConfig.{prop_name}.transforms[{index}]",
                     component_type=comp_type,
-                    line_suggestion="Add 'code' property with Jython script"
+                    suggestion="Add 'code' property with Jython script"
                 ))
             else:
                 # Validate the Jython script content
@@ -475,7 +464,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path=f"{component_path}.propConfig.{prop_name}.transforms[{index}]",
                 component_type=comp_type,
-                line_suggestion="Add 'expression' property with transform expression"
+                suggestion="Add 'expression' property with transform expression"
             ))
         
         if transform_type == 'map':
@@ -487,7 +476,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=f"{component_path}.propConfig.{prop_name}.transforms[{index}]",
                     component_type=comp_type,
-                    line_suggestion="Add 'mappings' array with input/output pairs"
+                    suggestion="Add 'mappings' array with input/output pairs"
                 ))
             
             # Check for fallback value on map transforms
@@ -499,7 +488,7 @@ class IgnitionPerspectiveLinter:
                     file_path=file_path,
                     component_path=f"{component_path}.propConfig.{prop_name}.transforms[{index}]",
                     component_type=comp_type,
-                    line_suggestion="Add 'fallback' property for unmapped values"
+                    suggestion="Add 'fallback' property for unmapped values"
                 ))
     
     def _validate_jython_script(self, script_content: str, prop_name: str, context: str, file_path: str, component_path: str, comp_type: str):
@@ -509,27 +498,10 @@ class IgnitionPerspectiveLinter:
 
         validator_issues = self.jython_validator.validate_script(script_content, context=context)
         for issue in validator_issues:
-            try:
-                severity = LintSeverity[issue.severity.name]
-            except KeyError:
-                severity = LintSeverity.INFO
-
-            suggestion_parts = []
-            if issue.line_number:
-                suggestion_parts.append(f"Line {issue.line_number}")
-            if issue.suggestion:
-                suggestion_parts.append(issue.suggestion)
-            line_hint = " - \n".join(suggestion_parts) if suggestion_parts else None
-
-            self.issues.append(LintIssue(
-                severity=severity,
-                code=issue.code,
-                message=issue.message,
-                file_path=file_path,
-                component_path=f"{component_path}.{prop_name}",
-                component_type=comp_type,
-                line_suggestion=line_hint
-            ))
+            issue.file_path = file_path
+            issue.component_path = f"{component_path}.{prop_name}"
+            issue.component_type = comp_type
+            self.issues.append(issue)
 
     def _validate_event_scripts(self, component: dict, file_path: str, component_path: str):
         """Validate Jython scripts in event handlers."""
@@ -550,6 +522,238 @@ class IgnitionPerspectiveLinter:
                                 prop_name = f"events.{event_category}.{event_name}"
                                 self._validate_jython_script(script_code, prop_name, context, file_path, component_path, comp_type)
     
+    def _validate_expressions(self, component: dict, file_path: str, component_path: str):
+        """Validate expression bindings and expression transforms in a component."""
+        prop_config = component.get('propConfig', {})
+        comp_type = component.get('type', 'unknown')
+
+        for prop_name, config in prop_config.items():
+            if not isinstance(config, dict):
+                continue
+
+            binding = config.get('binding')
+            if not isinstance(binding, dict):
+                continue
+
+            binding_type = binding.get('type')
+            binding_config = binding.get('config', {})
+
+            # expr bindings
+            if binding_type == 'expr' and isinstance(binding_config, dict):
+                expression = binding_config.get('expression', '')
+                if expression:
+                    self.issues.extend(self.expression_validator.validate_expression(
+                        expression, f"expr({prop_name})",
+                        file_path, f"{component_path}.propConfig.{prop_name}",
+                        comp_type,
+                    ))
+
+            # expr-struct bindings - each member has its own expression
+            if binding_type == 'expr-struct' and isinstance(binding_config, dict):
+                struct = binding_config.get('struct', {})
+                if isinstance(struct, dict):
+                    for member_name, member_expr in struct.items():
+                        if isinstance(member_expr, str) and member_expr.strip():
+                            self.issues.extend(self.expression_validator.validate_expression(
+                                member_expr, f"expr-struct({prop_name}.{member_name})",
+                                file_path, f"{component_path}.propConfig.{prop_name}.{member_name}",
+                                comp_type,
+                            ))
+
+            # Expression transforms
+            transforms = binding.get('transforms', [])
+            for i, transform in enumerate(transforms):
+                if isinstance(transform, dict) and transform.get('type') == 'expression':
+                    expr_text = transform.get('expression', '')
+                    if expr_text:
+                        self.issues.extend(self.expression_validator.validate_expression(
+                            expr_text, f"transform[{i}]({prop_name})",
+                            file_path, f"{component_path}.propConfig.{prop_name}.transforms[{i}]",
+                            comp_type,
+                        ))
+
+    def _validate_propconfig_expressions(self, prop_config: dict, file_path: str, context_prefix: str):
+        """Validate expression bindings in a propConfig dict (for view-level usage)."""
+        for prop_name, config in prop_config.items():
+            if not isinstance(config, dict):
+                continue
+
+            binding = config.get('binding')
+            if not isinstance(binding, dict):
+                continue
+
+            binding_type = binding.get('type')
+            binding_config = binding.get('config', {})
+
+            if binding_type == 'expr' and isinstance(binding_config, dict):
+                expression = binding_config.get('expression', '')
+                if expression:
+                    self.issues.extend(self.expression_validator.validate_expression(
+                        expression, f"view.expr({prop_name})",
+                        file_path, f"{context_prefix}.propConfig.{prop_name}",
+                        "view",
+                    ))
+
+            if binding_type == 'expr-struct' and isinstance(binding_config, dict):
+                struct = binding_config.get('struct', {})
+                if isinstance(struct, dict):
+                    for member_name, member_expr in struct.items():
+                        if isinstance(member_expr, str) and member_expr.strip():
+                            self.issues.extend(self.expression_validator.validate_expression(
+                                member_expr, f"view.expr-struct({prop_name}.{member_name})",
+                                file_path, f"{context_prefix}.propConfig.{prop_name}.{member_name}",
+                                "view",
+                            ))
+
+            transforms = binding.get('transforms', [])
+            for i, transform in enumerate(transforms):
+                if isinstance(transform, dict) and transform.get('type') == 'expression':
+                    expr_text = transform.get('expression', '')
+                    if expr_text:
+                        self.issues.extend(self.expression_validator.validate_expression(
+                            expr_text, f"view.transform[{i}]({prop_name})",
+                            file_path, f"{context_prefix}.propConfig.{prop_name}.transforms[{i}]",
+                            "view",
+                        ))
+
+    def _validate_onchange_scripts(self, component: dict, file_path: str, component_path: str):
+        """Validate onChange scripts within a component's propConfig."""
+        prop_config = component.get('propConfig', {})
+        comp_type = component.get('type', 'unknown')
+
+        for prop_name, config in prop_config.items():
+            on_change = config.get('onChange') if isinstance(config, dict) else None
+            if not isinstance(on_change, dict):
+                continue
+            script_code = on_change.get('script', '')
+            if script_code:
+                context = f"onChange({prop_name})"
+                self._validate_jython_script(
+                    script_code, f"propConfig.{prop_name}.onChange",
+                    context, file_path, component_path, comp_type,
+                )
+
+    def _validate_propconfig_scripts(self, prop_config: dict, file_path: str, context_prefix: str):
+        """Validate onChange and transform scripts in a propConfig dict (view-level or component-level)."""
+        for prop_name, config in prop_config.items():
+            if not isinstance(config, dict):
+                continue
+
+            # onChange scripts
+            on_change = config.get('onChange')
+            if isinstance(on_change, dict):
+                script_code = on_change.get('script', '')
+                if script_code:
+                    context = f"{context_prefix}.onChange({prop_name})"
+                    self._validate_jython_script(
+                        script_code, f"propConfig.{prop_name}.onChange",
+                        context, file_path, context_prefix, "view",
+                    )
+
+            # Transform scripts on bindings
+            binding = config.get('binding')
+            if isinstance(binding, dict):
+                transforms = binding.get('transforms', [])
+                for i, transform in enumerate(transforms):
+                    if isinstance(transform, dict) and transform.get('type') == 'script':
+                        script_code = transform.get('code', '')
+                        if script_code:
+                            context = f"{context_prefix}.binding.transform[{i}]"
+                            self._validate_jython_script(
+                                script_code, f"propConfig.{prop_name}.binding.transforms[{i}]",
+                                context, file_path, context_prefix, "view",
+                            )
+
+    @staticmethod
+    def _collect_all_strings(obj: Any) -> List[str]:
+        """Recursively collect all string values from a JSON structure."""
+        strings: List[str] = []
+        if isinstance(obj, str):
+            strings.append(obj)
+        elif isinstance(obj, dict):
+            for v in obj.values():
+                strings.extend(IgnitionPerspectiveLinter._collect_all_strings(v))
+        elif isinstance(obj, list):
+            for item in obj:
+                strings.extend(IgnitionPerspectiveLinter._collect_all_strings(item))
+        return strings
+
+    @staticmethod
+    def _collect_propconfig_keys(obj: Any, prefix: str = "") -> Set[str]:
+        """Recursively collect all propConfig key paths from a JSON structure."""
+        keys: Set[str] = set()
+        if isinstance(obj, dict):
+            prop_config = obj.get('propConfig', {})
+            if isinstance(prop_config, dict):
+                for k in prop_config:
+                    keys.add(k)
+            for v in obj.values():
+                keys.update(IgnitionPerspectiveLinter._collect_propconfig_keys(v))
+        elif isinstance(obj, list):
+            for item in obj:
+                keys.update(IgnitionPerspectiveLinter._collect_propconfig_keys(item))
+        return keys
+
+    def _check_unused_properties(self, view_data: dict, file_path: str):
+        """Check for custom and param properties that appear unreferenced within the view."""
+        custom_props = view_data.get('custom', {})
+        params_props = view_data.get('params', {})
+
+        if not custom_props and not params_props:
+            return
+
+        # Collect all strings and propConfig keys from the entire view
+        all_strings = self._collect_all_strings(view_data)
+        all_text = "\n".join(all_strings)
+        propconfig_keys = self._collect_propconfig_keys(view_data)
+
+        # Check custom properties
+        if isinstance(custom_props, dict):
+            for prop_name in custom_props:
+                # Search for references in expressions, scripts, and propConfig keys
+                expr_ref = f"view.custom.{prop_name}"
+                script_ref = f"self.view.custom.{prop_name}"
+                binding_target = f"custom.{prop_name}"
+
+                found = (
+                    expr_ref in all_text
+                    or script_ref in all_text
+                    or binding_target in propconfig_keys
+                )
+                if not found:
+                    self.issues.append(LintIssue(
+                        severity=LintSeverity.WARNING,
+                        code="UNUSED_CUSTOM_PROPERTY",
+                        message=f"Custom property '{prop_name}' appears unreferenced in this view",
+                        file_path=file_path,
+                        component_path=f"custom.{prop_name}",
+                        component_type="view",
+                        suggestion="Remove if unused, or verify it's referenced by an embedding view",
+                    ))
+
+        # Check param properties
+        if isinstance(params_props, dict):
+            for prop_name in params_props:
+                expr_ref = f"view.params.{prop_name}"
+                script_ref = f"self.view.params.{prop_name}"
+                binding_target = f"params.{prop_name}"
+
+                found = (
+                    expr_ref in all_text
+                    or script_ref in all_text
+                    or binding_target in propconfig_keys
+                )
+                if not found:
+                    self.issues.append(LintIssue(
+                        severity=LintSeverity.INFO,
+                        code="UNUSED_PARAM_PROPERTY",
+                        message=f"Param property '{prop_name}' appears unreferenced in this view",
+                        file_path=file_path,
+                        component_path=f"params.{prop_name}",
+                        component_type="view",
+                        suggestion="Params may be set by embedding views; verify before removing",
+                    ))
+
     def lint_file(self, file_path: str, target_component_type: Optional[str] = None) -> bool:
         """Lint a single view.json file."""
         try:
@@ -563,7 +767,7 @@ class IgnitionPerspectiveLinter:
                 file_path=file_path,
                 component_path="file",
                 component_type="view",
-                line_suggestion=f"Line {e.lineno}: {e.msg}"
+                suggestion=f"Line {e.lineno}: {e.msg}"
             ))
             return False
         except Exception as e:
@@ -577,6 +781,12 @@ class IgnitionPerspectiveLinter:
             ))
             return False
         
+        # Validate view-level propConfig (onChange scripts, transform scripts, expressions)
+        view_prop_config = view_data.get('propConfig', {})
+        if isinstance(view_prop_config, dict):
+            self._validate_propconfig_scripts(view_prop_config, file_path, "view")
+            self._validate_propconfig_expressions(view_prop_config, file_path, "view")
+
         # Extract components
         components = self.extract_components_with_context(view_data, file_path)
         
@@ -615,7 +825,10 @@ class IgnitionPerspectiveLinter:
             
             # Accessibility checks
             self.check_component_accessibility(component, file_path, component_path)
-        
+
+        # Check for unused custom/param properties (per-view)
+        self._check_unused_properties(view_data, file_path)
+
         return file_valid
     
     def lint_project(self, target_path: str, target_component_type: Optional[str] = None) -> Dict[str, Any]:
@@ -684,7 +897,7 @@ class IgnitionPerspectiveLinter:
         for severity in LintSeverity:
             count = severity_counts.get(severity, 0)
             if count > 0:
-                icon = {"ERROR": "❌", "WARNING": "⚠️", "INFO": "ℹ️", "STYLE": "💄"}[severity.value]
+                icon = {"error": "❌", "warning": "⚠️", "info": "ℹ️", "style": "💄"}[severity.value]
                 report.append(f"   {icon} {severity.value}: {count}")
         
         # Issues by component type
@@ -728,14 +941,14 @@ class IgnitionPerspectiveLinter:
                 
                 for issue in file_issues:
                     severity_icon = {
-                        "ERROR": "❌", "WARNING": "⚠️", 
-                        "INFO": "ℹ️", "STYLE": "💄"
+                        "error": "❌", "warning": "⚠️",
+                        "info": "ℹ️", "style": "💄"
                     }[issue.severity.value]
                     
                     report.append(f"   {severity_icon} {issue.code}: {issue.message}")
                     report.append(f"      Component: {issue.component_type} at {issue.component_path}")
-                    if issue.line_suggestion:
-                        report.append(f"      Suggestion: {issue.line_suggestion}")
+                    if issue.suggestion:
+                        report.append(f"      Suggestion: {issue.suggestion}")
                     report.append("")
         
         return "\n".join(report)

@@ -5,15 +5,32 @@ title: Basic Usage
 
 # Basic Usage
 
-## Lint an Entire Project
+## Lint Any Directory
 
-Point the linter at your Ignition project root to run all checks:
+Point the linter at **any** directory and it recursively finds and lints all `view.json` and `.py` files:
+
+```bash
+# Lint everything under a directory
+ignition-lint --target /path/to/any/folder
+
+# Lint just Perspective views in a subfolder
+ignition-lint -t /path/to/views/ScheduleManagement --checks perspective
+
+# Lint only scripts, output as JSON (for AI agents / MCP)
+ignition-lint -t /path/to/scripts --checks scripts --report-format json
+```
+
+This is the recommended mode for AI agents, MCP integrations, and ad-hoc subdirectory linting.
+
+## Lint a Full Ignition Project
+
+If your directory follows the standard Ignition layout, `--project` auto-discovers the conventional paths:
 
 ```bash
 ignition-lint --project /path/to/ignition/project --profile full
 ```
 
-This runs Perspective schema validation, naming convention checks, and script analysis in one pass.
+This looks for `com.inductiveautomation.perspective/views/` and `ignition/script-python/` and runs Perspective schema validation, naming convention checks, and script analysis in one pass.
 
 ## Lint Specific Files
 

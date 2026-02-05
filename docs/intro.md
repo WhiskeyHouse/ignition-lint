@@ -10,11 +10,13 @@ A comprehensive linting toolkit for Ignition SCADA projects that combines naming
 
 ## What It Does
 
-**ignition-lint** validates your Ignition project files across three dimensions:
+**ignition-lint** validates your Ignition project files across five dimensions:
 
-- **Perspective Linting** — Schema-aware checks against `view.json` files using production-validated rules from 12,000+ real industrial components
+- **Perspective Linting** — Schema-aware checks against `view.json` files, bindings, event handlers, and onChange scripts using production-validated rules from 12,000+ real industrial components
+- **Expression Validation** — Detects `now()` polling issues, unknown expression functions, malformed property references, and fragile component-tree traversal in Ignition expressions
 - **Naming Validation** — Enforces component, parameter, and custom property naming styles (PascalCase, camelCase, snake_case, or custom regex)
-- **Script Analysis** — Lints Jython inline scripts (from `view.json` bindings) and standalone Python files in `script-python` directories
+- **Script Analysis** — Lints Jython inline scripts (from `view.json` bindings, event handlers, onChange, and transforms) and standalone Python files in `script-python` directories
+- **Unused Property Detection** — Flags unreferenced `custom` and `params` properties on a per-view basis
 
 ## Why Use It
 
@@ -25,6 +27,9 @@ Ignition projects grow fast in industrial environments. Without consistent valid
 - Jython syntax issues that only surface at runtime
 - Deprecated API usage (`print` statements, `.iteritems()`, `xrange()`)
 - Hardcoded gateway URLs and overridden `system` variables
+- `now()` expressions polling at 1 000 ms by default, causing unnecessary load
+- Dead custom properties that accumulate over time
+- Fragile `getSibling()` / `getChild()` calls that break when views are refactored
 
 **ignition-lint** catches these issues early — in your editor, in pre-commit hooks, or in CI.
 
@@ -36,11 +41,13 @@ This project extends the foundational work by [Eric Knorr](https://github.com/ia
 |---|---|---|
 | View.json naming validation | Yes | Yes (enhanced) |
 | GitHub Actions integration | Yes | Yes (enhanced) |
-| CLI tool | No | Yes |
+| CLI tool | No | Yes (`--target` any dir, `--project` Ignition layout) |
 | Project-wide linting | No | Yes |
-| Script validation | No | Yes |
+| Script validation | No | Yes (inline Jython + standalone `.py`) |
 | Empirical schema validation | No | Yes |
-| MCP/AI integration | No | Yes |
+| Expression validation | No | Yes (polling, functions, property refs) |
+| Unused property detection | No | Yes (per-view `custom`/`params` analysis) |
+| MCP/AI integration | No | Yes (FastMCP server + JSON output) |
 | Lint suppression | No | Yes |
 
 Use **ia-eknorr/ignition-lint** if you only need the original naming checks and a lightweight GitHub Action. Use **whiskeyhouse/ignition-lint** for local CLI tooling, schema validation, script linting, MCP integration, or suppression support.

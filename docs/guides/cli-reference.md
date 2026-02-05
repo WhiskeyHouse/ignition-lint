@@ -15,21 +15,30 @@ ignition-lint [OPTIONS]
 
 | Option | Short | Description | Default |
 |---|---|---|---|
-| `--project` | `-p` | Path to Ignition project directory | — |
-| `--files` | `-f` | Comma-separated file globs to lint | `**/view.json` |
-| `--profile` | | Lint profile (`full`, `naming`, `perspective`, `scripts`) | — |
+| `--project` | `-p` | Path to Ignition project directory (expects standard Ignition layout) | — |
+| `--target` | `-t` | Path to **any** directory — recursively lints all `view.json` and `.py` files found | — |
+| `--files` | | Comma-separated file globs for naming-only linting | — |
+| `--profile` | | Lint profile (`default`, `full`, `perspective-only`, `scripts-only`, `naming-only`) | `default` |
+| `--checks` | | Comma-separated list of checks: `perspective`, `naming`, `scripts` | per profile |
 | `--naming-only` | | Only run naming convention checks | `false` |
 | `--component-style` | | Naming style for components | `PascalCase` |
 | `--parameter-style` | | Naming style for parameters | `camelCase` |
 | `--component-style-rgx` | | Custom regex for component names | — |
 | `--parameter-style-rgx` | | Custom regex for parameter names | — |
 | `--allow-acronyms` | | Allow acronyms in names | `false` |
-| `--component-type` | `-c` | Filter to a specific component type | — |
-| `--schema` | | Custom schema file path | robust mode |
+| `--component` | `-c` | Filter Perspective linting to a component type prefix | — |
+| `--schema-mode` | | Schema strictness: `strict`, `robust`, `permissive` | `robust` |
 | `--verbose` | `-v` | Show detailed output | `false` |
-| `--output` | `-o` | Save report to file | stdout |
+| `--report-format` | | Output format: `text` or `json` | `text` |
+| `--fail-on` | | Severity threshold for non-zero exit: `error`, `warning`, `info`, `style` | `error` |
 | `--ignore-codes` | | Comma-separated rule codes to suppress | — |
 | `--ignore-file` | | Path to ignore file | `.ignition-lintignore` |
+| `--check-linter` | | Verify schema assets are available and exit | — |
+
+### `--project` vs `--target`
+
+- **`--project`** expects the standard Ignition project layout and looks for `com.inductiveautomation.perspective/views/` and `ignition/script-python/` subdirectories.
+- **`--target`** accepts **any** directory and recursively discovers `view.json` and `.py` files wherever they appear. This is the preferred mode for AI agents, MCP integrations, and ad-hoc linting of subdirectories.
 
 ## Naming Styles
 
@@ -43,7 +52,20 @@ ignition-lint [OPTIONS]
 
 ## Examples
 
-### Full project lint
+### Lint any directory recursively
+
+```bash
+# Lint everything under a directory (finds view.json and .py files automatically)
+ignition-lint --target /path/to/any/folder
+
+# Lint only Perspective views in a subdirectory
+ignition-lint -t /path/to/views/ScheduleManagement --checks perspective
+
+# Lint only scripts, output as JSON for AI agent consumption
+ignition-lint -t /path/to/scripts --checks scripts --report-format json
+```
+
+### Full project lint (standard Ignition layout)
 
 ```bash
 ignition-lint --project /path/to/project --profile full
@@ -65,7 +87,13 @@ ignition-lint \
 ignition-lint \
   --project /path/to/project \
   --profile full \
-  --component-type ia.display.label
+  --component ia.display.label
+```
+
+### JSON output for programmatic use
+
+```bash
+ignition-lint -t /path/to/project --report-format json
 ```
 
 ### Suppress rules during adoption
@@ -73,12 +101,6 @@ ignition-lint \
 ```bash
 ignition-lint -p ./project --profile full \
   --ignore-codes NAMING_PARAMETER,NAMING_COMPONENT,MISSING_DOCSTRING,LONG_LINE
-```
-
-### Save report to file
-
-```bash
-ignition-lint --project /path/to/project --profile full --output report.txt
 ```
 
 ### Verbose output

@@ -212,3 +212,15 @@ class JythonValidator:
                         message=f"Consider wrapping {func} usage in error handling.",
                     )
                 )
+
+        # Flag fragile component tree traversal
+        for func in ["getSibling", "getParent", "getChild", "getComponent"]:
+            if re.search(rf"\b{func}\s*\(", script):
+                self.issues.append(
+                    JythonIssue(
+                        severity=LintSeverity.WARNING,
+                        code="JYTHON_BAD_COMPONENT_REF",
+                        message=f"Component tree traversal '{func}()' is fragile and breaks on refactoring",
+                        suggestion="Use view custom properties or message handlers instead",
+                    )
+                )

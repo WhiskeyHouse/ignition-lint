@@ -44,39 +44,40 @@ pip install -r requirements.txt
 
 ## 🎯 Basic Usage
 
-### 1. Validate Your First Component
+### 1. Lint Any Directory
 
-Start by validating a single Perspective view:
+Point the linter at any directory and it recursively finds `view.json` and `.py` files:
 
 ```bash
-# Basic validation
-uv run python tools/ignition-perspective-linter.py --target /path/to/your/view.json
+# Lint everything under a folder
+ignition-lint --target /path/to/any/folder
 
 # With detailed output
-uv run python tools/ignition-perspective-linter.py --target /path/to/your/view.json --verbose
+ignition-lint -t /path/to/any/folder --verbose
+
+# JSON output for programmatic use
+ignition-lint -t /path/to/any/folder --report-format json
 ```
 
-### 2. Validate an Entire Project
+### 2. Lint a Full Ignition Project
 
-Lint all Perspective views in your project:
+If your directory follows the standard Ignition layout:
 
 ```bash
-# Validate complete perspective views directory
-uv run python tools/ignition-perspective-linter.py \
-  --target /path/to/ignition/project/com.inductiveautomation.perspective/views \
-  --output validation-results.json
+# All checks (Perspective, naming, scripts)
+ignition-lint --project /path/to/ignition/project --profile full
 ```
 
-### 3. Validate Python Scripts
+### 3. Lint a Subdirectory
 
-Check your Ignition Python scripts for compatibility issues:
+Focus on just one part of the project:
 
 ```bash
-# Validate script-python directory
-uv run python tools/ignition-script-linter.py \
-  --target /path/to/ignition/project/ignition/script-python \
-  --output script-results.json \
-  --verbose
+# Only Perspective views in a specific folder
+ignition-lint -t /path/to/views/MyScreen --checks perspective
+
+# Only scripts
+ignition-lint -t /path/to/scripts --checks scripts
 ```
 
 ## 📊 Understanding Results

@@ -9,11 +9,7 @@ from pathlib import Path
 from typing import Iterable, List, Optional, Sequence, Set
 
 from .json_linter import JsonLinter, ValidationError as NamingError
-from .perspective.linter import (
-    IgnitionPerspectiveLinter,
-    LintIssue as PerspectiveIssue,
-    LintSeverity as PerspectiveSeverity,
-)
+from .perspective.linter import IgnitionPerspectiveLinter
 from .reporting import LintIssue, LintReport, LintSeverity, format_report_text
 from .schemas import SCHEMA_FILES, schema_path_for
 from .scripts.linter import IgnitionScriptLinter, LintSeverity as ScriptSeverity, ScriptLintIssue
@@ -42,25 +38,6 @@ def check_linter_availability(schema_mode: str) -> bool:
     print("✅ Perspective schema available")
     print(f"   Mode: {schema_mode} -> {path}")
     return True
-
-
-def convert_perspective_issues(issues: Sequence[PerspectiveIssue]) -> Iterable[LintIssue]:
-    severity_map = {
-        PerspectiveSeverity.ERROR: LintSeverity.ERROR,
-        PerspectiveSeverity.WARNING: LintSeverity.WARNING,
-        PerspectiveSeverity.INFO: LintSeverity.INFO,
-        PerspectiveSeverity.STYLE: LintSeverity.STYLE,
-    }
-    for issue in issues:
-        yield LintIssue(
-            severity=severity_map.get(issue.severity, LintSeverity.INFO),
-            code=issue.code,
-            message=issue.message,
-            file_path=issue.file_path,
-            component_path=issue.component_path,
-            component_type=getattr(issue, "component_type", None),
-            suggestion=getattr(issue, "line_suggestion", None),
-        )
 
 
 def convert_script_issues(issues: Sequence[ScriptLintIssue]) -> Iterable[LintIssue]:
@@ -107,7 +84,22 @@ def lint_perspective(
     schema_path = schema_path_for(schema_mode)
     linter = IgnitionPerspectiveLinter(str(schema_path))
     linter.lint_project(str(target), target_component_type=component_type)
-    report.extend(convert_perspective_issues(linter.issues))
+    report.extend(linter.issues)
+    return report
+
+
+def lint_perspective_files(
+    view_files: List[Path],
+    schema_mode: str,
+    component_type: Optional[str],
+) -> LintReport:
+    """Lint an explicit list of view.json files."""
+    report = LintReport()
+    schema_path = schema_path_for(schema_mode)
+    linter = IgnitionPerspectiveLinter(str(schema_path))
+    for vf in view_files:
+        linter.lint_file(str(vf), target_component_type=component_type)
+    report.extend(linter.issues)
     return report
 
 
@@ -116,6 +108,53 @@ def lint_scripts(target: Path, verbose: bool) -> LintReport:
     linter = IgnitionScriptLinter()
     linter.lint_directory(str(target))
     report.extend(convert_script_issues(linter.issues))
+    return report
+
+
+def lint_target_directory(
+    target: Path,
+    schema_mode: str,
+    component_type: Optional[str],
+    checks: Set[str],
+    component_style: str,
+    parameter_style: str,
+    component_style_rgx: Optional[str],
+    parameter_style_rgx: Optional[str],
+    allow_acronyms: bool,
+) -> LintReport:
+    """Lint an arbitrary directory recursively, auto-discovering view.json and .py files."""
+    report = LintReport()
+
+    view_files = list(target.rglob("view.json"))
+    py_files = list(target.rglob("*.py"))
+
+    if not view_files and not py_files:
+        print(f"ℹ️  No view.json or .py files found under {target}")
+        return report
+
+    # Perspective checks on any view.json found
+    if "perspective" in checks and view_files:
+        print(f"📁 Found {len(view_files)} view.json files")
+        report.merge(lint_perspective_files(view_files, schema_mode, component_type))
+
+    # Naming checks on any view.json found
+    if "naming" in checks and view_files:
+        pattern = str(target / "**/view.json")
+        report.merge(
+            lint_naming(
+                [pattern],
+                component_style,
+                parameter_style,
+                component_style_rgx,
+                parameter_style_rgx,
+                allow_acronyms,
+            )
+        )
+
+    # Script checks on any .py files found
+    if "scripts" in checks and py_files:
+        report.merge(lint_scripts(target, verbose=False))
+
     return report
 
 
@@ -152,7 +191,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Lint Ignition projects using built-in validators", formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("--project", "-p", help="Path to Ignition project directory")
+    parser.add_argument("--project", "-p", help="Path to Ignition project directory (expects standard Ignition layout)")
+    parser.add_argument("--target", "-t", help="Path to any directory; recursively lints all view.json and .py files found")
     parser.add_argument("--files", help="Comma-separated list of file patterns for naming linting")
     parser.add_argument("--component", "-c", help="Filter Perspective linting to component type prefix")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose diagnostic output")
@@ -180,10 +220,11 @@ def main() -> int:
         return 0 if check_linter_availability(args.schema_mode) else 1
 
     project_root = Path(args.project).resolve() if args.project else None
+    target_root = Path(args.target).resolve() if getattr(args, "target", None) else None
     ignore_file = Path(args.ignore_file) if args.ignore_file else None
     suppression = build_suppression_config(
         ignore_codes=args.ignore_codes,
-        project_root=project_root,
+        project_root=project_root or target_root,
         ignore_file=ignore_file,
     )
     report = LintReport(suppression=suppression)
@@ -201,11 +242,30 @@ def main() -> int:
                 args.allow_acronyms,
             )
         )
-    else:
-        if not args.project:
-            print("❌ Project path is required when --files is not provided")
+    elif target_root:
+        # --target: scan any directory recursively for view.json and .py
+        if not target_root.exists():
+            print(f"❌ Target path does not exist: {target_root}")
+            return 1
+        if not target_root.is_dir():
+            print(f"❌ Target path is not a directory: {target_root}")
             return 1
 
+        checks = determine_checks(args.profile, args.checks, args.naming_only)
+        report.merge(
+            lint_target_directory(
+                target_root,
+                args.schema_mode,
+                args.component,
+                checks,
+                args.component_style,
+                args.parameter_style,
+                args.component_style_rgx,
+                args.parameter_style_rgx,
+                args.allow_acronyms,
+            )
+        )
+    elif args.project:
         project_path = Path(args.project).resolve()
         if not project_path.exists():
             print(f"❌ Project path does not exist: {project_path}")
@@ -250,6 +310,9 @@ def main() -> int:
                 report.merge(lint_scripts(scripts_path, args.verbose))
             else:
                 print(f"ℹ️  No script-python directory found at {scripts_path}")
+    else:
+        print("❌ One of --project, --target, or --files is required")
+        return 1
 
     if args.report_format == "json":
         output = {

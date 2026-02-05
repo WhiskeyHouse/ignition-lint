@@ -1,34 +1,51 @@
-# Ignition Perspective Linter Usage Guide
+# Ignition Lint Usage Guide
 
 ## Overview
 
-The `ignition-perspective-linter.py` is a robust Python tool that validates Ignition Perspective view.json files against empirical schemas and best practices. It provides comprehensive analysis of component structure, compliance, and code quality.
+`ignition-lint` is a comprehensive linting toolkit for Ignition SCADA projects. It validates Perspective `view.json` files against empirical schemas, checks expression bindings, validates Jython scripts, enforces naming conventions, and detects unused properties.
 
 ## Quick Start
 
 ```bash
-# Basic linting of entire project
-uv run python ignition-perspective-linter.py --target /path/to/ignition/project
+# Lint any directory recursively (finds view.json + .py files automatically)
+ignition-lint --target /path/to/any/folder
 
-# Verbose output with all issues
-uv run python ignition-perspective-linter.py --target /path/to/ignition/project --verbose
+# Lint a standard Ignition project with all checks
+ignition-lint --project /path/to/ignition/project --profile full
+
+# Lint just Perspective views in a subdirectory
+ignition-lint -t /path/to/views/MyScreen --checks perspective
+
+# JSON output for AI agents / MCP
+ignition-lint -t /path/to/folder --report-format json
 
 # Filter by component type
-uv run python ignition-perspective-linter.py --target /path/to/ignition/project --component-type ia.display.label
+ignition-lint --project /path/to/project --component ia.display.label
 
-# Save report to file
-uv run python ignition-perspective-linter.py --target /path/to/ignition/project --output report.txt
+# Verbose output
+ignition-lint --project /path/to/project --verbose
 ```
 
 ## Command Line Options
 
 | Option | Short | Description | Example |
 |--------|-------|-------------|---------|
-| `--target` | `-t` | **Required.** Path to Ignition project or view file | `/path/to/project` |
+| `--target` | `-t` | Path to **any** directory; recursively lints all `view.json` and `.py` files | `/path/to/any/folder` |
+| `--project` | `-p` | Path to Ignition project directory (expects standard layout) | `/path/to/project` |
+| `--checks` | | Comma-separated: `perspective`, `naming`, `scripts` | `--checks perspective,scripts` |
+| `--profile` | | Preset: `default`, `full`, `perspective-only`, `scripts-only`, `naming-only` | `--profile full` |
+| `--component` | `-c` | Filter Perspective linting to component type prefix | `-c ia.display.label` |
+| `--schema-mode` | | Schema strictness: `strict`, `robust`, `permissive` | `--schema-mode robust` |
 | `--verbose` | `-v` | Show detailed output with all issues | `--verbose` |
-| `--component-type` | `-c` | Filter to specific component type | `--component-type ia.display.label` |
-| `--schema` | | Custom schema file path | `--schema my-schema.json` |
-| `--output` | `-o` | Save report to file | `--output report.txt` |
+| `--report-format` | | Output format: `text` or `json` | `--report-format json` |
+| `--fail-on` | | Severity threshold for non-zero exit | `--fail-on warning` |
+| `--ignore-codes` | | Comma-separated rule codes to suppress | `--ignore-codes LONG_LINE` |
+| `--ignore-file` | | Path to ignore file | `--ignore-file .lintignore` |
+
+### `--target` vs `--project`
+
+- **`--target`** accepts any directory and recursively discovers files. This is the preferred mode for AI agents, MCP integrations, and ad-hoc linting.
+- **`--project`** expects the standard Ignition layout (`com.inductiveautomation.perspective/views/` and `ignition/script-python/`).
 
 ## Issue Severity Levels
 
@@ -36,16 +53,22 @@ uv run python ignition-perspective-linter.py --target /path/to/ignition/project 
 - **Schema validation failures** - Component structure doesn't match expected schema
 - **Missing required properties** - Essential properties like icon paths are missing
 - **Type mismatches** - Properties have wrong data types
+- **Expression errors** - Malformed property references in expressions
 
 ### ⚠️ WARNING (Important)
 - **Missing meta properties** - Components lack required metadata like names
 - **Missing content** - Labels without text, missing child positioning
 - **Accessibility concerns** - Interactive elements without proper labeling
+- **Polling issues** - `now()` without explicit rate defaults to 1 000 ms
+- **Fragile references** - `getSibling()`, `getParent()`, `getChild()` in scripts or expressions
+- **Unused properties** - Custom properties defined but never referenced
 
 ### ℹ️ INFO (Informational)
 - **Performance considerations** - Components that may impact performance
 - **Best practice suggestions** - Recommendations for better structure
 - **Layout recommendations** - Flex container usage patterns
+- **Unknown functions** - Expression functions not in the known Ignition catalog
+- **Low polling rates** - `now(N)` with N < 5 000 ms
 
 ### 💄 STYLE (Cosmetic)
 - **Generic naming** - Components with non-descriptive names

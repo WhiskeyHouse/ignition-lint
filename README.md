@@ -7,11 +7,14 @@ A comprehensive linting toolkit for Ignition® projects that combines naming con
 ## ✨ Features
 
 - **🎯 Naming Validation** – Enforces component and parameter styles across `view.json` files
-- **📋 Perspective Linting** – Runs schema-aware checks against Perspective views and resources
+- **📋 Perspective Linting** – Schema-aware checks against Perspective views, bindings, and event scripts
+- **🔢 Expression Validation** – Detects `now()` polling issues, unknown functions, and fragile component references in Ignition expressions
+- **📜 Script Analysis** – Validates inline Jython (from `view.json`) and standalone Python scripts in `script-python` directories
+- **🔍 Unused Property Detection** – Flags unreferenced `custom` and `params` properties per view
 - **🔇 Lint Suppression** – Suppress rules via CLI flags, ignore files, or inline comments
 - **⚡ FastMCP Server** – Provides AI agent integration for real-time validation workflows
 - **🚀 GitHub Action** – Drop-in CI integration for automated linting on push or PR
-- **🔧 CLI Tooling** – Local developer workflow with project-wide linting modes
+- **🔧 CLI Tooling** – `--target` for any directory, `--project` for Ignition layouts, JSON output for agents
 - **📊 Production Data** – Rules validated across 12,220+ real industrial components
 
 ## 🔄 Relationship to ia-eknorr/ignition-lint
@@ -50,10 +53,16 @@ uv sync
 ### CLI Usage
 
 ```bash
-# Lint view.json files for naming conventions
-ignition-lint --files "**/view.json" --component-style PascalCase --parameter-style camelCase
+# Lint any directory recursively (finds view.json + .py files automatically)
+ignition-lint --target /path/to/any/folder
 
-# Lint an entire Ignition project with all checks
+# Lint a subdirectory for just Perspective views
+ignition-lint -t /path/to/views/MyScreen --checks perspective
+
+# Lint scripts only, JSON output for AI agent / MCP consumption
+ignition-lint -t /path/to/scripts --checks scripts --report-format json
+
+# Lint a standard Ignition project with all checks
 ignition-lint --project /path/to/project --profile full
 
 # Naming convention validation only
