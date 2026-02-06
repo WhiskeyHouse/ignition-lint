@@ -227,7 +227,7 @@ def compare_codebases(results: list[dict[str, Any]]) -> dict[str, Any]:
             if other_result["codebase"] != result["codebase"]:
                 other_types.update(other_result["component_types"])
 
-        unique_types = codebase_types - other_types
+        unique_types = set(codebase_types) - other_types
         if unique_types:
             print(f"      Unique to this codebase: {sorted(unique_types)}")
 

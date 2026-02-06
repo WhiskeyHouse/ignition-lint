@@ -20,9 +20,7 @@ class IgnitionLSPServer:
         import os
         import tempfile
 
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".json", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write(content)
             temp_path = f.name
 
@@ -71,7 +69,10 @@ class IgnitionLSPServer:
                 }
             ]
         finally:
-            os.unlink(temp_path)
+            try:
+                os.unlink(temp_path)
+            except Exception:
+                pass
 
 
 def main():
