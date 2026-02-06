@@ -43,10 +43,12 @@ def apply_final_fixes():
     props = schema["properties"]["props"]["properties"]
     if "text" in props:
         current_type = props["text"].get("type", ["string", "null"])
+        if isinstance(current_type, str):
+            current_type = [current_type]
         if "number" not in current_type:
-            props["text"]["type"] = ["string", "null", "number"]
+            props["text"]["type"] = current_type + ["number"]
             fixes_applied.append(
-                "props.text: ['string', 'null'] → ['string', 'null', 'number']"
+                f"props.text: {current_type} → {current_type + ['number']}"
             )
 
     # 3. Fix meta.visible to allow null values
@@ -55,10 +57,12 @@ def apply_final_fixes():
         current_type = meta_props["visible"].get(
             "type", ["boolean", "string", "number"]
         )
+        if isinstance(current_type, str):
+            current_type = [current_type]
         if "null" not in current_type:
-            meta_props["visible"]["type"] = ["boolean", "string", "number", "null"]
+            meta_props["visible"]["type"] = current_type + ["null"]
             fixes_applied.append(
-                "meta.visible: ['boolean', 'string', 'number'] → ['boolean', 'string', 'number', 'null']"
+                f"meta.visible: {current_type} → {current_type + ['null']}"
             )
 
     return schema, fixes_applied

@@ -145,9 +145,12 @@ def analyze_type_mismatches():
     print("📊 Analysis Results:")
     print(f"   Total components: {total_components}")
     print(f"   Failing components: {failing_components}")
-    print(
-        f"   Success rate: {((total_components - failing_components) / total_components * 100):.1f}%"
-    )
+    if total_components > 0:
+        print(
+            f"   Success rate: {((total_components - failing_components) / total_components * 100):.1f}%"
+        )
+    else:
+        print("   Success rate: N/A (no components found)")
 
     print("\n🎯 Top Type Mismatch Patterns:")
     print("-" * 60)

@@ -34,11 +34,8 @@ class IgnitionLSPServer:
 
             # lint_file returns bool; issues accumulate in self.linter.issues
             self.linter.issues.clear()
-            success = self.linter.lint_file(temp_path)
+            self.linter.lint_file(temp_path)
             diagnostics = []
-
-            if not success:
-                return diagnostics
 
             for issue in self.linter.issues:
                 line = (issue.line_number if issue.line_number is not None else 1) - 1

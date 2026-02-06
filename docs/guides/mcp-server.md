@@ -7,13 +7,31 @@ title: MCP Server
 
 ignition-lint includes a [FastMCP](https://github.com/jlowin/fastmcp) server that exposes linting capabilities to AI agents and MCP-compatible clients.
 
+## Prerequisites
+
+Install the MCP extra:
+
+```bash
+pip install "ignition-lint-toolkit[mcp]"
+```
+
 ## Starting the Server
 
 ```bash
-ignition-lint-server --project /path/to/project
+ignition-lint-server
 ```
 
-The server starts and registers tools and resources that MCP clients can discover and invoke.
+The server starts and registers tools and resources that MCP clients can discover and invoke. The server itself is stateless — project paths are passed to individual tool calls rather than at startup.
+
+## Schema Modes
+
+The server uses the `robust` schema mode by default. Three modes are available across the linter:
+
+| Mode | Behavior |
+|---|---|
+| `strict` | Rejects any property not in the schema |
+| `robust` | Allows additional properties but validates known ones (default) |
+| `permissive` | Minimal validation, accepts most structures |
 
 ## Available Tools
 

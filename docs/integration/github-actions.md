@@ -41,6 +41,10 @@ jobs:
 | `lint_type` | No | `perspective` | Type of linting: `perspective`, `scripts`, or `all` |
 | `naming_only` | No | `true` | Only run naming convention checks |
 | `ignore_codes` | No | — | Comma-separated rule codes to suppress |
+| `schema_mode` | No | `robust` | Schema strictness: `strict`, `robust`, or `permissive` |
+| `fail_on` | No | `error` | Minimum severity that causes a non-zero exit: `error`, `warning`, `info`, `style` |
+| `component` | No | — | Filter Perspective linting to a specific component type prefix |
+| `version` | No | latest | Version of ignition-lint-toolkit to install from PyPI |
 
 ## Action Outputs
 

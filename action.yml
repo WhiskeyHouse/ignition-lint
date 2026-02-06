@@ -44,6 +44,17 @@ inputs:
     description: 'Comma-separated rule codes to suppress globally'
     required: false
     default: ''
+  schema_mode:
+    description: 'Schema strictness level (strict, robust, permissive)'
+    required: false
+    default: 'robust'
+  fail_on:
+    description: 'Minimum severity that causes a non-zero exit (error, warning, info, style)'
+    required: false
+    default: 'error'
+  component:
+    description: 'Filter Perspective linting to a specific component type prefix (e.g. ia.display.label)'
+    required: false
 
 outputs:
   result:
@@ -84,4 +95,7 @@ runs:
         INPUT_LINT_TYPE: ${{ inputs.lint_type }}
         INPUT_NAMING_ONLY: ${{ inputs.naming_only }}
         INPUT_IGNORE_CODES: ${{ inputs.ignore_codes }}
+        INPUT_SCHEMA_MODE: ${{ inputs.schema_mode }}
+        INPUT_FAIL_ON: ${{ inputs.fail_on }}
+        INPUT_COMPONENT: ${{ inputs.component }}
       run: ignition-lint-action

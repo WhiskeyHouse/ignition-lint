@@ -7,7 +7,7 @@ title: Installation
 
 ## Prerequisites
 
-- **Python 3.8+**
+- **Python 3.10+**
 - **pip** or **uv** package manager
 - Access to Ignition Perspective project files
 
