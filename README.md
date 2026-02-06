@@ -1,80 +1,110 @@
-# Ignition Lint
+# ignition-lint
 
-A comprehensive linting toolkit for Ignition® projects that combines naming convention validation, empirical schema checks, and CI/CD automation.
+[![PyPI](https://img.shields.io/pypi/v/ignition-lint-toolkit)](https://pypi.org/project/ignition-lint-toolkit/)
+[![Python](https://img.shields.io/pypi/pyversions/ignition-lint-toolkit)](https://pypi.org/project/ignition-lint-toolkit/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/WhiskeyHouse/ignition-lint/actions/workflows/ci.yml/badge.svg)](https://github.com/WhiskeyHouse/ignition-lint/actions/workflows/ci.yml)
 
-> **🙏 Acknowledgments**: The naming convention validation features in this project were inspired by the excellent work by [Eric Knorr](https://github.com/ia-eknorr) in the [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint) repository. We extend that foundation with broader project linting and automation support.
+A comprehensive linting toolkit for [Ignition SCADA](https://inductiveautomation.com/) projects. Validates Perspective views, Jython scripts, naming conventions, expressions, and more.
 
-## ✨ Features
+> This project extends the foundational work by [Eric Knorr](https://github.com/ia-eknorr) in [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint), which pioneered naming convention validation for Ignition view.json files. See [credits](https://WhiskeyHouse.github.io/ignition-lint/credits) for the full story.
 
-- **🎯 Naming Validation** – Enforces component and parameter styles across `view.json` files
-- **📋 Perspective Linting** – Schema-aware checks against Perspective views, bindings, and event scripts
-- **🔢 Expression Validation** – Detects `now()` polling issues, unknown functions, and fragile component references in Ignition expressions
-- **📜 Script Analysis** – Validates inline Jython (from `view.json`) and standalone Python scripts in `script-python` directories
-- **🔍 Unused Property Detection** – Flags unreferenced `custom` and `params` properties per view
-- **🔇 Lint Suppression** – Suppress rules via CLI flags, ignore files, or inline comments
-- **⚡ FastMCP Server** – Provides AI agent integration for real-time validation workflows
-- **🚀 GitHub Action** – Drop-in CI integration for automated linting on push or PR
-- **🔧 CLI Tooling** – `--target` for any directory, `--project` for Ignition layouts, JSON output for agents
-- **📊 Production Data** – Rules validated across 12,220+ real industrial components
-
-## 🔄 Relationship to ia-eknorr/ignition-lint
-
-| Feature | ia-eknorr/ignition-lint | whiskeyhouse/ignition-lint |
-|---------|------------------------|---------------------------|
-| **View.json naming validation** | ✅ Core feature | ✅ Enhanced implementation |
-| **Component style checking** | ✅ PascalCase, camelCase, etc. | ✅ Same styles + custom regex |
-| **Parameter style checking** | ✅ Multiple styles supported | ✅ Same + enhanced validation |
-| **GitHub Actions integration** | ✅ Simple action | ✅ Enhanced action + examples |
-| **CLI tool** | ❌ Action-only | ✅ Full CLI with local development |
-| **Project-wide linting** | ❌ Files only | ✅ Entire Ignition projects |
-| **Script validation** | ❌ View.json only | ✅ Python/Jython scripts |
-| **Empirical validation** | ❌ Naming only | ✅ Production-validated rules |
-| **MCP/AI integration** | ❌ Not available | ✅ FastMCP server for AI agents |
-| **Installation method** | GitHub Action only | ✅ `pip` / `uv` + GitHub Action |
-
-### When To Use Which
-
-Use [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint) when you only need the original naming checks and a lightweight GitHub Action.
-
-Use **whiskeyhouse/ignition-lint** when you want local CLI tooling, broader schema validation, MCP integration, or multiple lint types in CI.
-
-## 🚀 Quick Start
-
-### Install
+## Installation
 
 ```bash
-# Install from PyPI
-pip install ignition-lint
-
-# Or use uv for workspace management
-uv sync
+pip install ignition-lint-toolkit
 ```
 
-### CLI Usage
+Or with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-# Lint any directory recursively (finds view.json + .py files automatically)
-ignition-lint --target /path/to/any/folder
+uv pip install ignition-lint-toolkit
+```
 
-# Lint a subdirectory for just Perspective views
-ignition-lint -t /path/to/views/MyScreen --checks perspective
+Verify the install:
 
-# Lint scripts only, JSON output for AI agent / MCP consumption
+```bash
+ignition-lint --help
+```
+
+### Optional: MCP server support
+
+```bash
+pip install "ignition-lint-toolkit[mcp]"
+```
+
+## Quick start
+
+### Lint any directory
+
+Point the linter at any directory and it recursively finds `view.json` and `.py` files:
+
+```bash
+ignition-lint --target /path/to/your/project
+```
+
+### Lint a full Ignition project
+
+If your directory follows the standard Ignition layout:
+
+```bash
+ignition-lint --project /path/to/ignition/project --profile full
+```
+
+### Pick specific checks
+
+```bash
+# Only Perspective views
+ignition-lint -t /path/to/views --checks perspective
+
+# Only scripts, JSON output for programmatic use
 ignition-lint -t /path/to/scripts --checks scripts --report-format json
 
-# Lint a standard Ignition project with all checks
-ignition-lint --project /path/to/project --profile full
-
-# Naming convention validation only
+# Naming conventions only
 ignition-lint --project /path/to/project --naming-only
-
-# Suppress specific rules globally
-ignition-lint --project /path/to/project --profile full --ignore-codes NAMING_PARAMETER,LONG_LINE
 ```
+
+### Suppress noisy rules during adoption
+
+```bash
+ignition-lint -t ./project --ignore-codes NAMING_PARAMETER,MISSING_DOCSTRING,LONG_LINE
+```
+
+## What it checks
+
+| Category | Examples |
+|---|---|
+| **Perspective schema** | Component structure, binding types, transform validity, missing props |
+| **Expressions** | `now()` polling intervals, unknown functions, malformed property refs, fragile component traversal |
+| **Naming conventions** | Component, parameter, and custom property naming (PascalCase, camelCase, snake_case, or custom regex) |
+| **Jython inline scripts** | Syntax errors, indentation, `print` statements, hardcoded URLs, missing error handling |
+| **Standalone scripts** | Python syntax, docstrings, deprecated APIs, `system` overrides, line length |
+| **Unused properties** | Unreferenced `custom` and `params` properties per view |
+
+## Severity levels
+
+| Level | Meaning |
+|---|---|
+| **ERROR** | Critical issues that cause runtime failures |
+| **WARNING** | Compatibility or best practice issues |
+| **INFO** | Informational insights and suggestions |
+| **STYLE** | Code style and documentation improvements |
+
+## Lint suppression
+
+Three mechanisms let you control which rules fire and where:
+
+1. **`--ignore-codes` flag** -- suppress rules globally for an entire run
+2. **`.ignition-lintignore` file** -- gitignore-style patterns with optional rule scoping per path
+3. **Inline comments** -- `# ignition-lint: disable=CODE` directives in Python scripts
+
+See the [suppression guide](https://WhiskeyHouse.github.io/ignition-lint/guides/suppression) for the full reference.
+
+## Integrations
 
 ### GitHub Actions
 
-Add to `.github/workflows/ignition-lint.yml`:
+Create `.github/workflows/ignition-lint.yml`:
 
 ```yaml
 name: Ignition Lint
@@ -90,86 +120,47 @@ jobs:
           files: "**/view.json"
           component_style: "PascalCase"
           parameter_style: "camelCase"
-          ignore_codes: ""  # optional: comma-separated rule codes to suppress
 ```
 
-## 🛠️ Tooling Overview
+### Pre-commit hook
 
-- `ignition-lint` – CLI entry point for project and file linting
-- `ignition-lint-server` – FastMCP server for agent integrations
-- `ignition-lint-action` – Wrapper used by the GitHub Action
-
-## 📁 Project Layout
-
-```
-.
-├── src/ignition_lint/           # Core package modules (CLI, server, checkers)
-├── docs/                        # Detailed strategy and integration guides
-├── examples/                    # Example scripts and views for demo scenarios
-├── schemas/                     # Component schemas and supporting data
-├── scripts/                     # Analysis tooling and supporting utilities
-├── tests/                       # Automated tests
-├── ignition-lint                # Convenience entry point for the CLI
-├── action.yml                   # GitHub Action definition
-├── pyproject.toml               # Project metadata and build configuration
-└── uv.lock                      # Resolved dependency versions (uv)
+```yaml
+repos:
+  - repo: https://github.com/WhiskeyHouse/ignition-lint
+    rev: v1
+    hooks:
+      - id: ignition-perspective-lint
 ```
 
-## 📚 Documentation Highlights
-
-- `docs/SUPPRESSION.md` – Suppressing rules: CLI flags, ignore files, inline comments
-- `docs/IGNITION-LINTER-INTEGRATION.md` – Integrating the linter into Ignition projects
-- `docs/LINTER-INTEGRATION-STRATEGY.md` – Recommended adoption patterns
-- `docs/VALIDATION-LINTING-STRATEGY.md` – Deep dive into validation methodology
-- `examples/` – Ready-to-run scenarios for demonstrating linting outcomes
-
-## 🔇 Lint Suppression
-
-Three mechanisms let you control which rules fire and where:
-
-1. **`--ignore-codes` flag** – Suppress rules globally across the entire run
-2. **`.ignition-lintignore` file** – Gitignore-style patterns with optional rule scoping per path
-3. **Inline comments** – `# ignition-lint: disable=CODE` directives in Python scripts
+### MCP server (AI agents)
 
 ```bash
-# Suppress rules from the command line
-ignition-lint -p ./project --profile full --ignore-codes NAMING_PARAMETER,NAMING_COMPONENT
+ignition-lint-server
 ```
 
-```gitignore
-# .ignition-lintignore — place in your --project root
-scripts/generated/**
-com.inductiveautomation.perspective/views/_REFERENCE/**:NAMING_COMPONENT,GENERIC_COMPONENT_NAME
-```
+## Tooling overview
 
-```python
-# ignition-lint: disable-file=MISSING_DOCSTRING
-def legacy_helper():
-    pass
-```
+| Command | Purpose |
+|---|---|
+| `ignition-lint` | CLI entry point for project and file linting |
+| `ignition-lint-server` | FastMCP server for AI agent integrations |
+| `ignition-lint-action` | Wrapper used by the GitHub Action |
 
-See **[docs/SUPPRESSION.md](docs/SUPPRESSION.md)** for the full guide including all directive types, pattern syntax, rule code reference, and CI/CD examples.
+## Documentation
 
-## 🤖 FastMCP Integration
+Full documentation at [WhiskeyHouse.github.io/ignition-lint](https://WhiskeyHouse.github.io/ignition-lint/):
 
-Run the FastMCP server to expose linting capabilities to AI agents:
+- [Installation](https://WhiskeyHouse.github.io/ignition-lint/getting-started/installation)
+- [Basic usage](https://WhiskeyHouse.github.io/ignition-lint/getting-started/basic-usage)
+- [CLI reference](https://WhiskeyHouse.github.io/ignition-lint/guides/cli-reference)
+- [Rule codes](https://WhiskeyHouse.github.io/ignition-lint/guides/rule-codes)
+- [Suppression guide](https://WhiskeyHouse.github.io/ignition-lint/guides/suppression)
+- [GitHub Actions](https://WhiskeyHouse.github.io/ignition-lint/integration/github-actions)
 
-```bash
-ignition-lint-server --project /path/to/project
-```
+## Contributing
 
-Connect FastMCP-compatible clients to the server for conversational linting, contextual file inspection, and auto-fix suggestions.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, project structure, and guidelines.
 
-## 🧪 Testing
+## License
 
-Use `uv` or `pytest` to run the test suite:
-
-```bash
-uv run pytest
-# or
-pytest
-```
-
-## 📄 License
-
-MIT License. See `LICENSE` for details.
+[MIT](LICENSE) &copy; Whiskey House Labs

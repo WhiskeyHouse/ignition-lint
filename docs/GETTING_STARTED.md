@@ -1,4 +1,9 @@
-# Getting Started Guide
+# Getting Started Guide (Deprecated)
+
+> **This page is outdated.** Please refer to the current documentation:
+> - [Installation](./getting-started/installation.md)
+> - [Basic Usage](./getting-started/basic-usage.md)
+> - [CLI Reference](./guides/cli-reference.md)
 
 **Quick setup guide for using the Empirical Ignition Perspective Component Schema validation tools.**
 
@@ -6,7 +11,7 @@
 
 Before you begin, ensure you have:
 
-- **Python 3.8 or higher** installed
+- **Python 3.10 or newer** installed
 - **UV package manager** (recommended) or pip
 - Access to **Ignition Perspective project files**
 - Basic familiarity with **Ignition development**

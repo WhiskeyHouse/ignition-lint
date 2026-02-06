@@ -1,5 +1,10 @@
 # Ignition Lint Usage Guide
 
+> **Note:** For the latest documentation, see:
+> - [CLI Reference](./guides/cli-reference.md)
+> - [Basic Usage](./getting-started/basic-usage.md)
+> - [Rule Codes](./guides/rule-codes.md)
+
 ## Overview
 
 `ignition-lint` is a comprehensive linting toolkit for Ignition SCADA projects. It validates Perspective `view.json` files against empirical schemas, checks expression bindings, validates Jython scripts, enforces naming conventions, and detects unused properties.

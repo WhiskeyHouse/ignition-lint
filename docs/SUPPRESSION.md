@@ -1,5 +1,7 @@
 # Lint Suppression Guide
 
+> **Note:** The canonical version of this guide is [docs/guides/suppression.md](./guides/suppression.md). This file is kept for backwards compatibility.
+
 Control which rules fire and where. Ignition Lint provides three complementary suppression mechanisms, each suited to a different scope:
 
 | Mechanism | Scope | Applies To | How |
@@ -189,8 +191,7 @@ Below is a non-exhaustive list of rule codes you can suppress. Run the linter wi
 | Code | Severity | Description |
 |------|----------|-------------|
 | `NAMING_COMPONENT` | STYLE | Component name doesn't match naming style |
-| `NAMING_PARAMETER` | STYLE | Parameter name doesn't match naming style |
-| `NAMING_CUSTOM` | STYLE | Custom property key doesn't match style |
+| `NAMING_PARAMETER` | STYLE | Parameter or custom property key doesn't match naming style |
 
 ### Script Rules
 

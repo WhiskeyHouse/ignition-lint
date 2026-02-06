@@ -531,7 +531,7 @@ def main():
     parser.add_argument(
         "--recursive",
         "-r",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
         default=True,
         help="Scan recursively (default: True)",
     )

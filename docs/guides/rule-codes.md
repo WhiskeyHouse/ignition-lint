@@ -63,8 +63,7 @@ Per-view analysis that detects custom and param properties with no apparent refe
 | Code | Severity | Description |
 |---|---|---|
 | `NAMING_COMPONENT` | STYLE | Component name doesn't match the configured naming style |
-| `NAMING_PARAMETER` | STYLE | Parameter name doesn't match the configured naming style |
-| `NAMING_CUSTOM` | STYLE | Custom property key doesn't match the configured naming style |
+| `NAMING_PARAMETER` | STYLE | Parameter or custom property key doesn't match the configured naming style |
 
 ## Script Rules (standalone `.py` files)
 

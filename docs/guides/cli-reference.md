@@ -17,7 +17,7 @@ ignition-lint [OPTIONS]
 |---|---|---|---|
 | `--project` | `-p` | Path to Ignition project directory (expects standard Ignition layout) | — |
 | `--target` | `-t` | Path to **any** directory — recursively lints all `view.json` and `.py` files found | — |
-| `--files` | | Comma-separated file globs for naming-only linting | — |
+| `--files` | | Comma-separated file globs — **forces naming-only mode** (ignores `--checks` and `--profile`) | — |
 | `--profile` | | Lint profile (`default`, `full`, `perspective-only`, `scripts-only`, `naming-only`) | `default` |
 | `--checks` | | Comma-separated list of checks: `perspective`, `naming`, `scripts` | per profile |
 | `--naming-only` | | Only run naming convention checks | `false` |
@@ -30,10 +30,18 @@ ignition-lint [OPTIONS]
 | `--schema-mode` | | Schema strictness: `strict`, `robust`, `permissive` | `robust` |
 | `--verbose` | `-v` | Show detailed output | `false` |
 | `--report-format` | | Output format: `text` or `json` | `text` |
-| `--fail-on` | | Severity threshold for non-zero exit: `error`, `warning`, `info`, `style` | `error` |
+| `--fail-on` | | Minimum severity that causes a non-zero exit code: `error`, `warning`, `info`, `style` | `error` |
 | `--ignore-codes` | | Comma-separated rule codes to suppress | — |
-| `--ignore-file` | | Path to ignore file | `.ignition-lintignore` |
-| `--check-linter` | | Verify schema assets are available and exit | — |
+| `--ignore-file` | | Path to ignore file (defaults to `.ignition-lintignore` in the project or target root, if it exists) | — |
+| `--check-linter` | | Verify that Perspective schema files are available for the current `--schema-mode` and exit (useful for CI setup validation) | — |
+
+### Option precedence
+
+One of `--files`, `--target`, or `--project` is required. They are evaluated in this order:
+
+1. **`--files`** — naming-only mode. All other check options (`--checks`, `--profile`, `--naming-only`) are ignored.
+2. **`--target`** — recursive directory mode. Respects `--checks` and `--profile`.
+3. **`--project`** — standard Ignition layout mode. Respects `--checks` and `--profile`.
 
 ### `--project` vs `--target`
 

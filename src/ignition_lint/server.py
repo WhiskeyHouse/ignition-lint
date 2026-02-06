@@ -194,5 +194,10 @@ def lint_ignition_project(
     return format_report_text(aggregate)
 
 
-if __name__ == "__main__":  # pragma: no cover
+def main() -> None:  # pragma: no cover
+    """Entry point for the ``ignition-lint-server`` console script."""
     mcp.run()
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()
