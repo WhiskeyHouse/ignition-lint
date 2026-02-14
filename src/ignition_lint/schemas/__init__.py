@@ -10,14 +10,28 @@ SCHEMA_FILES = {
     "permissive": "core-ia-components-schema-permissive.json",
 }
 
+TAG_SCHEMA_FILES = {
+    "robust": "tag-schema-robust.json",
+}
+
 _SCHEMA_DIR = Path(__file__).parent
 
 
 def schema_path_for(mode: str) -> Path:
-    """Return the absolute path to the schema file for the given mode."""
+    """Return the absolute path to the Perspective schema file for the given mode."""
     normalized = mode.lower()
     if normalized not in SCHEMA_FILES:
         raise ValueError(
             f"Unknown schema mode '{mode}'. Options: {', '.join(SCHEMA_FILES)}"
         )
     return _SCHEMA_DIR / SCHEMA_FILES[normalized]
+
+
+def tag_schema_path_for(mode: str) -> Path:
+    """Return the absolute path to the tag schema file for the given mode."""
+    normalized = mode.lower()
+    if normalized not in TAG_SCHEMA_FILES:
+        raise ValueError(
+            f"Unknown tag schema mode '{mode}'. Options: {', '.join(TAG_SCHEMA_FILES)}"
+        )
+    return _SCHEMA_DIR / TAG_SCHEMA_FILES[normalized]

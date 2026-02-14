@@ -1,0 +1,307 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ignition-lint.whiskeyhouse.dev/schemas/tag-schema-robust.json",
+  "title": "Ignition Tag/UDT Schema (Robust)",
+  "description": "Validates Ignition tag and UDT JSON structures with conditional validation by tagType.",
+  "$ref": "#/definitions/tagNode",
+
+  "definitions": {
+    "tagNode": {
+      "type": "object",
+      "required": ["tagType"],
+      "properties": {
+        "name": { "type": "string" },
+        "tagType": {
+          "type": "string",
+          "enum": ["AtomicTag", "UdtType", "UdtInstance", "Folder", "Provider"]
+        },
+        "documentation": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tooltip": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/tagNode" }
+        },
+        "tagGroup": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "tagType": { "const": "AtomicTag" } },
+            "required": ["tagType"]
+          },
+          "then": { "$ref": "#/definitions/atomicTagProps" }
+        },
+        {
+          "if": {
+            "properties": { "tagType": { "const": "UdtType" } },
+            "required": ["tagType"]
+          },
+          "then": { "$ref": "#/definitions/udtTypeProps" }
+        },
+        {
+          "if": {
+            "properties": { "tagType": { "const": "UdtInstance" } },
+            "required": ["tagType"]
+          },
+          "then": { "$ref": "#/definitions/udtInstanceProps" }
+        },
+        {
+          "if": {
+            "properties": { "tagType": { "const": "Folder" } },
+            "required": ["tagType"]
+          },
+          "then": { "$ref": "#/definitions/folderProps" }
+        },
+        {
+          "if": {
+            "properties": { "tagType": { "const": "Provider" } },
+            "required": ["tagType"]
+          },
+          "then": { "$ref": "#/definitions/providerProps" }
+        }
+      ]
+    },
+
+    "atomicTagProps": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tagType": { "const": "AtomicTag" },
+        "dataType": {
+          "type": "string",
+          "enum": [
+            "Int1", "Int2", "Int4", "Int8",
+            "Float4", "Float8",
+            "Boolean",
+            "String",
+            "DateTime",
+            "Text",
+            "DataSet",
+            "Document",
+            "Int1Array", "Int2Array", "Int4Array", "Int8Array",
+            "Float4Array", "Float8Array",
+            "BooleanArray",
+            "StringArray",
+            "DateTimeArray"
+          ]
+        },
+        "valueSource": {
+          "type": "string",
+          "enum": ["memory", "opc", "expr", "derived", "db", "reference"]
+        },
+        "value": {},
+        "engUnit": { "type": "string" },
+        "engLow": { "type": "number" },
+        "engHigh": { "type": "number" },
+        "engLimitMode": { "type": "string" },
+        "rawLow": { "type": "number" },
+        "rawHigh": { "type": "number" },
+        "clampMode": { "type": "string" },
+        "scaleMode": { "type": "string" },
+        "scaleFactor": { "type": "number" },
+        "deadband": { "type": "number" },
+        "deadbandMode": { "type": "string" },
+        "formatString": { "type": "string" },
+        "tooltip": { "type": "string" },
+        "documentation": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tagGroup": { "type": "string" },
+        "opcServer": { "type": "string" },
+        "opcItemPath": {},
+        "sourceTagPath": { "type": "string" },
+        "expression": { "type": "string" },
+        "query": { "type": "string" },
+        "queryType": { "type": "string" },
+        "datasource": { "type": "string" },
+        "historyEnabled": { "type": "boolean" },
+        "historyProvider": { "type": "string" },
+        "historySampleRate": { "type": "integer" },
+        "historySampleRateUnits": { "type": "string" },
+        "historyMaxAge": { "type": "integer" },
+        "historyMaxAgeUnits": { "type": "string" },
+        "historyTagGroup": { "type": "string" },
+        "historyTimeDeadband": { "type": "integer" },
+        "historyTimeDeadbandUnits": { "type": "string" },
+        "historyDeadband": { "type": "number" },
+        "historyDeadbandMode": { "type": "string" },
+        "historyDeadbandStyle": { "type": "string" },
+        "sampleMode": { "type": "string" },
+        "executionMode": { "type": "string" },
+        "executionRate": { "type": "integer" },
+        "readOnly": { "type": "boolean" },
+        "readPermissions": {},
+        "writePermissions": {},
+        "deriveExpressionGetter": { "type": "string" },
+        "deriveExpressionSetter": { "type": "string" },
+        "permanentFilter": { "type": "string" },
+        "rand": { "type": "boolean" },
+        "eventScripts": { "$ref": "#/definitions/eventScripts" },
+        "alarms": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/alarmObject" }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/tagNode" }
+        },
+        "references": { "type": "object" },
+        "parameters": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+
+    "udtTypeProps": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tagType": { "const": "UdtType" },
+        "typeId": { "type": "string" },
+        "typeColor": { "type": "string" },
+        "documentation": { "type": "string" },
+        "tooltip": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tagGroup": { "type": "string" },
+        "parameters": { "type": "object" },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/tagNode" }
+        },
+        "eventScripts": { "$ref": "#/definitions/eventScripts" },
+        "alarms": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/alarmObject" }
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "udtInstanceProps": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tagType": { "const": "UdtInstance" },
+        "typeId": { "type": "string" },
+        "documentation": { "type": "string" },
+        "tooltip": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tagGroup": { "type": "string" },
+        "parameters": { "type": "object" },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/tagNode" }
+        },
+        "eventScripts": { "$ref": "#/definitions/eventScripts" },
+        "alarms": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/alarmObject" }
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "folderProps": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tagType": { "const": "Folder" },
+        "documentation": { "type": "string" },
+        "tooltip": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tagGroup": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/tagNode" }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "providerProps": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tagType": { "const": "Provider" },
+        "documentation": { "type": "string" },
+        "tooltip": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tagGroup": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/tagNode" }
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "alarmObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "priority": { "type": "string" },
+        "displayPath": { "type": "string" },
+        "notes": { "type": "string" },
+        "label": { "type": "string" },
+        "mode": { "type": "string" },
+        "setpointA": {},
+        "setpointB": {},
+        "inclusiveA": { "type": "boolean" },
+        "inclusiveB": { "type": "boolean" },
+        "deadband": { "type": "number" },
+        "deadbandMode": { "type": "string" },
+        "timestampSource": { "type": "string" },
+        "activeCondition": {},
+        "clearCondition": {},
+        "ackMode": { "type": "string" },
+        "ackPipeline": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+
+    "eventScripts": {
+      "oneOf": [
+        {
+          "type": "object",
+          "patternProperties": {
+            ".*": { "$ref": "#/definitions/eventScriptsDictEntry" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/eventScriptEntry" }
+        }
+      ]
+    },
+
+    "eventScriptsDictEntry": {
+      "type": "object",
+      "properties": {
+        "eventScript": { "type": "string" },
+        "enabled": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+
+    "eventScriptEntry": {
+      "type": "object",
+      "properties": {
+        "eventid": { "type": "string" },
+        "script": { "type": "string" },
+        "enabled": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+
+    "bindingObject": {
+      "type": "object",
+      "properties": {
+        "bindType": { "type": "string" },
+        "binding": { "type": "string" },
+        "value": {}
+      },
+      "required": ["bindType"]
+    }
+  }
+}

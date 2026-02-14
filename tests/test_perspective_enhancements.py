@@ -160,6 +160,120 @@ class TestUnusedProperties:
         assert all(i.severity == LintSeverity.INFO for i in param_issues)
 
 
+class TestUnknownPropValidation:
+    def test_unknown_prop_flagged(self):
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.display.label",
+                "meta": {"name": "MyLabel"},
+                "props": {"text": "Hello", "random": True},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        unknown = [i for i in issues if i.code == "UNKNOWN_PROP"]
+        assert len(unknown) == 1
+        assert "random" in unknown[0].message
+
+    def test_known_props_not_flagged(self):
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.display.label",
+                "meta": {"name": "MyLabel"},
+                "props": {"text": "Hello", "style": {"color": "red"}, "visible": True},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        assert "UNKNOWN_PROP" not in _codes(issues)
+
+    def test_unknown_prop_severity_is_style(self):
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "props": {"bogus": 42},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        unknown = [i for i in issues if i.code == "UNKNOWN_PROP"]
+        from ignition_lint.reporting import LintSeverity
+
+        assert all(i.severity == LintSeverity.STYLE for i in unknown)
+
+    def test_multiple_unknown_props(self):
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "props": {"foo": 1, "xyzzy": 2, "direction": "row"},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        unknown = [i for i in issues if i.code == "UNKNOWN_PROP"]
+        assert len(unknown) == 2
+        flagged_names = {i.message.split("'")[1] for i in unknown}
+        assert flagged_names == {"foo", "xyzzy"}
+
+    def test_empty_props_safe(self):
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "props": {},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        assert "UNKNOWN_PROP" not in _codes(issues)
+
+    def test_no_props_key_safe(self):
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        assert "UNKNOWN_PROP" not in _codes(issues)
+
+    def test_image_fit_prop_not_flagged(self):
+        """Regression: 'fit' is a valid prop for ia.display.image."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.display.image",
+                "meta": {"name": "MyImage"},
+                "props": {
+                    "source": "/images/logo.png",
+                    "fit": {"mode": "contain"},
+                    "alt": "Logo",
+                },
+            },
+        }
+        issues = _lint_view(view)
+        assert "UNKNOWN_PROP" not in _codes(issues)
+
+    def test_known_props_from_schema(self):
+        """Known prop names are derived from the component schema, not hardcoded."""
+        linter = IgnitionPerspectiveLinter()
+        # These should all be in the schema's props.properties
+        assert "fit" in linter.known_prop_names
+        assert "tagPath" in linter.known_prop_names
+        assert "viewPath" in linter.known_prop_names
+        assert "style" in linter.known_prop_names
+        assert "text" in linter.known_prop_names
+
+
 class TestExpressionValidation:
     def test_now_default_polling_flagged(self):
         view = {

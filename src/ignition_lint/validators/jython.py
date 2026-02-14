@@ -9,6 +9,81 @@ from dataclasses import dataclass
 
 from ..reporting import LintIssue, LintSeverity
 
+# Known Java packages available in Ignition's Jython runtime.
+# This is a lightweight subset — just enough to distinguish real packages from typos.
+KNOWN_JAVA_PACKAGES: frozenset[str] = frozenset(
+    {
+        # Java standard library
+        "java.lang",
+        "java.lang.management",
+        "java.util",
+        "java.util.concurrent",
+        "java.util.concurrent.atomic",
+        "java.util.concurrent.locks",
+        "java.util.function",
+        "java.util.regex",
+        "java.util.stream",
+        "java.util.zip",
+        "java.io",
+        "java.net",
+        "java.math",
+        "java.time",
+        "java.time.format",
+        "java.time.temporal",
+        "java.sql",
+        "java.text",
+        "java.nio",
+        "java.nio.charset",
+        "java.nio.channels",
+        "java.nio.file",
+        "java.security",
+        "java.security.cert",
+        "java.security.interfaces",
+        "java.awt",
+        "java.awt.datatransfer",
+        "java.awt.event",
+        "java.awt.geom",
+        "javax.swing",
+        "javax.swing.border",
+        "javax.swing.table",
+        "javax.crypto",
+        "javax.imageio",
+        "javax.naming.ldap",
+        "javax.net.ssl",
+        "javax.security.auth.x500",
+        "javax.servlet",
+        "javax.servlet.http",
+        "javax.xml.parsers",
+        # Ignition SDK — common
+        "com.inductiveautomation.ignition.common",
+        "com.inductiveautomation.ignition.common.document",
+        "com.inductiveautomation.ignition.common.execution",
+        "com.inductiveautomation.ignition.common.execution.impl",
+        "com.inductiveautomation.ignition.common.logging",
+        "com.inductiveautomation.ignition.common.model",
+        "com.inductiveautomation.ignition.common.model.values",
+        "com.inductiveautomation.ignition.common.script",
+        "com.inductiveautomation.ignition.common.script.builtin",
+        "com.inductiveautomation.ignition.common.tags.browsing",
+        "com.inductiveautomation.ignition.common.user",
+        "com.inductiveautomation.ignition.common.util",
+        "com.inductiveautomation.ignition.common.util.logutil",
+        # Ignition SDK — gateway
+        "com.inductiveautomation.ignition.gateway",
+        "com.inductiveautomation.ignition.gateway.datasource",
+        # Ignition SDK — designer
+        "com.inductiveautomation.ignition.designer",
+        # Ignition SDK — client
+        "com.inductiveautomation.ignition.client.images",
+        # Ignition SDK — Perspective
+        "com.inductiveautomation.perspective.common",
+        "com.inductiveautomation.perspective.gateway",
+        # Ignition SDK — Vision (FactoryPMI)
+        "com.inductiveautomation.factorypmi.application",
+        "com.inductiveautomation.factorypmi.application.components.template",
+    }
+)
+
 
 def _preprocess_py2(source: str) -> str:
     """Transform common Python 2 constructs to Python 3 so ast.parse() succeeds.
@@ -84,6 +159,7 @@ class JythonValidator:
         self._check_indentation(script_content, context)
         self._check_syntax(script_content, context)
         self._check_ignition_patterns(script_content, context)
+        self._check_java_imports(script_content, context)
 
         lint_issues: list[LintIssue] = []
         for issue in self.issues:
@@ -101,6 +177,13 @@ class JythonValidator:
         return lint_issues
 
     def _check_indentation(self, script: str, context: str) -> None:
+        # Skip indentation heuristics for standalone .py files. Python's own
+        # compiler (in _check_syntax) catches real errors; our custom checks
+        # are only useful for embedded scripts in JSON event handlers.
+        is_standalone = context.endswith(".py") or ".py]" in context
+        if is_standalone:
+            return
+
         lines = script.split("\n")
         mixed_lines = []
         tab_lines = []
@@ -273,3 +356,111 @@ class JythonValidator:
                         suggestion="Use view custom properties or message handlers instead",
                     )
                 )
+
+    # -- Java import checks --------------------------------------------------
+
+    _FROM_IMPORT_RE = re.compile(r"^\s*from\s+([\w.]+)\s+import\s+(.*)", re.MULTILINE)
+    _IMPORT_STAR_RE = re.compile(r"^\s*from\s+([\w.]+)\s+import\s+\*", re.MULTILINE)
+
+    def _check_java_imports(self, script: str, context: str) -> None:
+        """Flag invalid or suspicious Java import patterns."""
+        dedented = textwrap.dedent(script)
+        imported_names: list[tuple[str, int]] = []  # (name, line_number)
+
+        for line_num, line in enumerate(dedented.splitlines(), 1):
+            stripped = line.strip()
+
+            # Skip comments
+            if stripped.startswith("#"):
+                continue
+
+            # Check wildcard imports: from java.util import *
+            star_match = self._IMPORT_STAR_RE.match(stripped)
+            if star_match:
+                pkg = star_match.group(1)
+                if self._is_java_package(pkg):
+                    self.issues.append(
+                        JythonIssue(
+                            severity=LintSeverity.WARNING,
+                            code="JYTHON_IMPORT_STAR",
+                            message=f"Wildcard import 'from {pkg} import *' — import specific classes instead",
+                            suggestion=f"Replace with explicit imports, e.g. 'from {pkg} import ClassName'",
+                            line_number=line_num,
+                        )
+                    )
+                elif self._looks_like_java_package(pkg):
+                    # Looks like a Java package but not in known set
+                    self.issues.append(
+                        JythonIssue(
+                            severity=LintSeverity.INFO,
+                            code="JYTHON_UNKNOWN_JAVA_PACKAGE",
+                            message=f"Unknown Java package '{pkg}' — may be valid but is not recognized",
+                            suggestion="Verify the package name is correct",
+                            line_number=line_num,
+                        )
+                    )
+                continue
+
+            # Check from ... import ... style
+            from_match = self._FROM_IMPORT_RE.match(stripped)
+            if from_match:
+                pkg = from_match.group(1)
+                names_str = from_match.group(2).strip()
+
+                if self._is_java_package(pkg):
+                    # Known Java package — collect imported names for unused check
+                    for part in names_str.split(","):
+                        part = part.strip()
+                        if not part:
+                            continue
+                        # Handle "as" aliases: Exception as JException
+                        if " as " in part:
+                            _orig, _, alias = part.partition(" as ")
+                            imported_names.append((alias.strip(), line_num))
+                        else:
+                            imported_names.append((part, line_num))
+                elif self._looks_like_java_package(pkg):
+                    # Looks like a Java package but not in known set
+                    self.issues.append(
+                        JythonIssue(
+                            severity=LintSeverity.INFO,
+                            code="JYTHON_UNKNOWN_JAVA_PACKAGE",
+                            message=f"Unknown Java package '{pkg}' — may be valid but is not recognized",
+                            suggestion="Verify the package name is correct",
+                            line_number=line_num,
+                        )
+                    )
+
+        # Check for unused Java imports
+        if imported_names:
+            # Build the body text (everything that isn't an import line)
+            body_lines = []
+            for line in dedented.splitlines():
+                stripped = line.strip()
+                if stripped.startswith("from ") or stripped.startswith("import "):
+                    continue
+                body_lines.append(line)
+            body = "\n".join(body_lines)
+
+            for name, line_num in imported_names:
+                # Check if the name appears anywhere in the non-import body
+                if not re.search(rf"\b{re.escape(name)}\b", body):
+                    self.issues.append(
+                        JythonIssue(
+                            severity=LintSeverity.INFO,
+                            code="JYTHON_UNUSED_JAVA_IMPORT",
+                            message=f"Imported Java class '{name}' is not used in the script",
+                            suggestion=f"Remove unused import '{name}'",
+                            line_number=line_num,
+                        )
+                    )
+
+    @staticmethod
+    def _is_java_package(pkg: str) -> bool:
+        """Check if a package name is in the known Java packages set."""
+        return pkg in KNOWN_JAVA_PACKAGES
+
+    @staticmethod
+    def _looks_like_java_package(pkg: str) -> bool:
+        """Heuristic: does this look like a Java/Ignition package name?"""
+        return pkg.startswith(("java.", "javax.", "com.inductiveautomation."))
