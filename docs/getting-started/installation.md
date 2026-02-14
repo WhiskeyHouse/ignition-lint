@@ -26,7 +26,7 @@ pip install ignition-lint-toolkit
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone and set up the project
-git clone https://github.com/WhiskeyHouse/ignition-lint.git
+git clone https://github.com/TheThoughtagen/ignition-lint.git
 cd ignition-lint
 
 # Install dependencies
@@ -36,7 +36,7 @@ uv sync
 ## Install from source
 
 ```bash
-git clone https://github.com/WhiskeyHouse/ignition-lint.git
+git clone https://github.com/TheThoughtagen/ignition-lint.git
 cd ignition-lint
 
 # Create a virtual environment

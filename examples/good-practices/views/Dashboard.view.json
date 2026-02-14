@@ -1,0 +1,70 @@
+{
+  "custom": {
+    "refreshInterval": {
+      "value": 5000
+    }
+  },
+  "params": {
+    "lineNumber": {
+      "value": 1
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "width": 1200,
+      "height": 800
+    }
+  },
+  "root": {
+    "type": "ia.container.flex",
+    "props": {
+      "direction": "column"
+    },
+    "children": [
+      {
+        "type": "ia.display.label",
+        "meta": {
+          "name": "DashboardTitle"
+        },
+        "props": {
+          "text": "Production Dashboard",
+          "style": {
+            "classes": "header-text"
+          }
+        }
+      },
+      {
+        "type": "ia.display.label",
+        "meta": {
+          "name": "ProductionCountLabel"
+        },
+        "props": {
+          "text": {
+            "binding": {
+              "type": "expr",
+              "config": {
+                "expression": "{view.params.lineNumber}"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "ia.input.button",
+        "meta": {
+          "name": "RefreshButton"
+        },
+        "propConfig": {
+          "props.text": "Refresh Data"
+        },
+        "events": {
+          "onClick": {
+            "script": {
+              "value": "# Refresh dashboard data\nimport system.perspective\n\ntry:\n    logger = system.util.getLogger('Dashboard')\n    logger.info('Refreshing dashboard')\n    system.perspective.sendMessage('refresh-data', {}, 'page')\nexcept Exception as e:\n    logger.error('Failed to refresh: %s' % str(e))"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: whiskeyhouse/ignition-lint@v1
+      - uses: TheThoughtagen/ignition-lint@v1
         with:
           files: "**/view.json"
           component_style: "PascalCase"
@@ -57,7 +57,7 @@ jobs:
 ### Full project lint
 
 ```yaml
-- uses: whiskeyhouse/ignition-lint@v1
+- uses: TheThoughtagen/ignition-lint@v1
   with:
     project_path: .
     lint_type: all
@@ -67,7 +67,7 @@ jobs:
 ### Naming only with acronym support
 
 ```yaml
-- uses: whiskeyhouse/ignition-lint@v1
+- uses: TheThoughtagen/ignition-lint@v1
   with:
     files: "**/view.json"
     component_style: "PascalCase"
@@ -78,7 +78,7 @@ jobs:
 ### Custom regex patterns
 
 ```yaml
-- uses: whiskeyhouse/ignition-lint@v1
+- uses: TheThoughtagen/ignition-lint@v1
   with:
     files: "**/view.json"
     component_style_rgx: "^[A-Z][a-zA-Z0-9]*$"
@@ -88,7 +88,7 @@ jobs:
 ### Suppress rules during adoption
 
 ```yaml
-- uses: whiskeyhouse/ignition-lint@v1
+- uses: TheThoughtagen/ignition-lint@v1
   with:
     project_path: .
     lint_type: all

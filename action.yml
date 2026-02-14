@@ -1,6 +1,6 @@
 name: 'Ignition Lint'
-description: 'Lint Ignition projects for naming conventions and code quality. Extends ia-eknorr/ignition-lint with additional features.'
-author: 'Whiskey House Labs'
+description: 'Comprehensive linting toolkit for Ignition SCADA projects. Validates Perspective views, scripts, naming conventions, expressions, and code quality.'
+author: 'Patrick Mannion'
 
 inputs:
   version:

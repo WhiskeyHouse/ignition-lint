@@ -1,13 +1,38 @@
 # ignition-lint
 
 [![PyPI](https://img.shields.io/pypi/v/ignition-lint-toolkit)](https://pypi.org/project/ignition-lint-toolkit/)
+[![Downloads](https://img.shields.io/pypi/dm/ignition-lint-toolkit)](https://pypi.org/project/ignition-lint-toolkit/)
 [![Python](https://img.shields.io/pypi/pyversions/ignition-lint-toolkit)](https://pypi.org/project/ignition-lint-toolkit/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://github.com/WhiskeyHouse/ignition-lint/actions/workflows/ci.yml/badge.svg)](https://github.com/WhiskeyHouse/ignition-lint/actions/workflows/ci.yml)
+[![CI](https://github.com/TheThoughtagen/ignition-lint/actions/workflows/ci.yml/badge.svg)](https://github.com/TheThoughtagen/ignition-lint/actions/workflows/ci.yml)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-ignition--lint-blue?logo=github)](https://github.com/marketplace/actions/ignition-lint)
 
-A comprehensive linting toolkit for [Ignition SCADA](https://inductiveautomation.com/) projects. Validates Perspective views, Jython scripts, naming conventions, expressions, and more.
+**A comprehensive linting toolkit for [Ignition SCADA](https://inductiveautomation.com/) projects** that catches errors before runtime, enforces best practices, and maintains code quality across your industrial automation systems.
 
-> This project extends the foundational work by [Eric Knorr](https://github.com/ia-eknorr) in [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint), which pioneered naming convention validation for Ignition view.json files. See [credits](https://WhiskeyHouse.github.io/ignition-lint/credits) for the full story.
+> This project extends the foundational work by [Eric Knorr](https://github.com/ia-eknorr) in [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint), which pioneered naming convention validation for Ignition view.json files. See [credits](https://TheThoughtagen.github.io/ignition-lint/credits) for the full story.
+
+## Why ignition-lint?
+
+**Catch errors before they reach runtime**
+- Detect Jython syntax errors in onChange scripts and bindings
+- Find malformed expression bindings and property references
+- Validate against production-tested JSON schemas
+
+**Maintain consistent standards across teams**
+- Enforce naming conventions for components, parameters, and properties
+- Flag deprecated API usage (`print` statements, `.iteritems()`, `xrange()`)
+- Identify code smells like hardcoded URLs and overridden `system` variables
+
+**Improve performance and maintainability**
+- Detect `now()` expressions with inefficient polling intervals
+- Find unreferenced custom properties and parameters
+- Warn about fragile component traversal (`getSibling()`, `getChild()`)
+
+**Integrate everywhere**
+- GitHub Actions for automated PR checks
+- Pre-commit hooks for local validation
+- CLI for CI/CD pipelines
+- MCP server for AI-assisted development
 
 ## Installation
 
@@ -35,39 +60,50 @@ pip install "ignition-lint-toolkit[mcp]"
 
 ## Quick start
 
-### Lint any directory
-
-Point the linter at any directory and it recursively finds `view.json` and `.py` files:
-
+### Install
 ```bash
-ignition-lint --target /path/to/your/project
+pip install ignition-lint-toolkit
 ```
 
-### Lint a full Ignition project
-
-If your directory follows the standard Ignition layout:
-
+### Lint your first project
 ```bash
+# Lint any directory - finds all view.json and .py files
+ignition-lint --target /path/to/your/project
+
+# Or lint a full Ignition project (standard layout)
 ignition-lint --project /path/to/ignition/project --profile full
 ```
 
-### Pick specific checks
-
+### See what it catches
 ```bash
-# Only Perspective views
-ignition-lint -t /path/to/views --checks perspective
+# Example output:
+ERROR: JYTHON_SYNTAX_ERROR in MyView/view.json:45
+  Syntax error in onChange script: unexpected indent
 
-# Only scripts, JSON output for programmatic use
-ignition-lint -t /path/to/scripts --checks scripts --report-format json
+WARNING: EXPR_NOW_DEFAULT_POLLING in Dashboard/view.json:12
+  now() defaults to 1000ms polling - specify explicit interval: now(5000)
 
-# Naming conventions only
-ignition-lint --project /path/to/project --naming-only
+WARNING: NAMING_COMPONENT in Home/view.json:8
+  Component 'Label' should use PascalCase: 'StatusLabel'
+
+INFO: UNUSED_CUSTOM_PROPERTY in Settings/view.json:23
+  Custom property 'debugMode' is defined but never referenced
 ```
 
-### Suppress noisy rules during adoption
+### Common use cases
 
 ```bash
-ignition-lint -t ./project --ignore-codes NAMING_PARAMETER,MISSING_DOCSTRING,LONG_LINE
+# Pre-deployment validation
+ignition-lint --project ./production --fail-on error
+
+# Focus on one component type
+ignition-lint -t ./views --component ia.display.label
+
+# JSON output for CI/CD pipelines
+ignition-lint -t ./project --report-format json > lint-report.json
+
+# Suppress rules during gradual adoption
+ignition-lint -t ./legacy --ignore-codes NAMING_PARAMETER,MISSING_DOCSTRING
 ```
 
 ## What it checks
@@ -98,13 +134,13 @@ Three mechanisms let you control which rules fire and where:
 2. **`.ignition-lintignore` file** -- gitignore-style patterns with optional rule scoping per path
 3. **Inline comments** -- `# ignition-lint: disable=CODE` directives in Python scripts
 
-See the [suppression guide](https://WhiskeyHouse.github.io/ignition-lint/guides/suppression) for the full reference.
+See the [suppression guide](https://TheThoughtagen.github.io/ignition-lint/guides/suppression) for the full reference.
 
 ## Integrations
 
-### GitHub Actions
+### 🔄 GitHub Actions
 
-Create `.github/workflows/ignition-lint.yml`:
+Automatically lint PRs and commits. Add to `.github/workflows/ignition-lint.yml`:
 
 ```yaml
 name: Ignition Lint
@@ -115,28 +151,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: whiskeyhouse/ignition-lint@v1
+      - uses: TheThoughtagen/ignition-lint@v1
         with:
-          files: "**/view.json"
-          component_style: "PascalCase"
-          parameter_style: "camelCase"
+          project_path: .
+          lint_type: all
+          fail_on: error
+          ignore_codes: "NAMING_PARAMETER"  # Suppress during migration
 ```
 
-### Pre-commit hook
+[Full Action documentation →](https://TheThoughtagen.github.io/ignition-lint/integration/github-actions)
+
+### 🪝 Pre-commit hooks
+
+Catch issues before they're committed:
 
 ```yaml
+# .pre-commit-config.yaml
 repos:
-  - repo: https://github.com/WhiskeyHouse/ignition-lint
+  - repo: https://github.com/TheThoughtagen/ignition-lint
     rev: v1
     hooks:
       - id: ignition-perspective-lint
 ```
 
-### MCP server (AI agents)
+[Pre-commit guide →](https://TheThoughtagen.github.io/ignition-lint/integration/pre-commit)
+
+### 🤖 MCP server (AI agents)
+
+Enable AI assistants like Claude to lint your Ignition projects:
 
 ```bash
+pip install "ignition-lint-toolkit[mcp]"
 ignition-lint-server
 ```
+
+[MCP integration guide →](https://TheThoughtagen.github.io/ignition-lint/guides/mcp-server)
+
+### 🛠️ Editor integration
+
+#### VS Code / ignition-nvim
+Use with language servers for real-time feedback. See [Editor Integration Guide](#) for setup with:
+- VS Code with JSON schema validation
+- Neovim with ignition-nvim
+- LSP-compatible editors
 
 ## Tooling overview
 
@@ -148,14 +205,14 @@ ignition-lint-server
 
 ## Documentation
 
-Full documentation at [WhiskeyHouse.github.io/ignition-lint](https://WhiskeyHouse.github.io/ignition-lint/):
+Full documentation at [TheThoughtagen.github.io/ignition-lint](https://TheThoughtagen.github.io/ignition-lint/):
 
-- [Installation](https://WhiskeyHouse.github.io/ignition-lint/getting-started/installation)
-- [Basic usage](https://WhiskeyHouse.github.io/ignition-lint/getting-started/basic-usage)
-- [CLI reference](https://WhiskeyHouse.github.io/ignition-lint/guides/cli-reference)
-- [Rule codes](https://WhiskeyHouse.github.io/ignition-lint/guides/rule-codes)
-- [Suppression guide](https://WhiskeyHouse.github.io/ignition-lint/guides/suppression)
-- [GitHub Actions](https://WhiskeyHouse.github.io/ignition-lint/integration/github-actions)
+- [Installation](https://TheThoughtagen.github.io/ignition-lint/getting-started/installation)
+- [Basic usage](https://TheThoughtagen.github.io/ignition-lint/getting-started/basic-usage)
+- [CLI reference](https://TheThoughtagen.github.io/ignition-lint/guides/cli-reference)
+- [Rule codes](https://TheThoughtagen.github.io/ignition-lint/guides/rule-codes)
+- [Suppression guide](https://TheThoughtagen.github.io/ignition-lint/guides/suppression)
+- [GitHub Actions](https://TheThoughtagen.github.io/ignition-lint/integration/github-actions)
 
 ## Contributing
 
@@ -163,4 +220,4 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for developmen
 
 ## License
 
-[MIT](LICENSE) &copy; Whiskey House Labs
+[MIT](LICENSE) &copy; 2025 Patrick Mannion

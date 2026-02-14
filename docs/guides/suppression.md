@@ -32,7 +32,7 @@ ignition-lint -p /path/to/project --ignore-codes NAMING_PARAMETER,NAMING_COMPONE
 ### GitHub Actions
 
 ```yaml
-- uses: whiskeyhouse/ignition-lint@v1
+- uses: TheThoughtagen/ignition-lint@v1
   with:
     project_path: ./my-project
     ignore_codes: "NAMING_PARAMETER,NAMING_COMPONENT"
@@ -229,7 +229,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: whiskeyhouse/ignition-lint@v1
+      - uses: TheThoughtagen/ignition-lint@v1
         with:
           project_path: .
           lint_type: all

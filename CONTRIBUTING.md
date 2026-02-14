@@ -12,7 +12,7 @@ Thanks for your interest in contributing! This guide covers how to get set up an
 ### Clone and install
 
 ```bash
-git clone https://github.com/WhiskeyHouse/ignition-lint.git
+git clone https://github.com/TheThoughtagen/ignition-lint.git
 cd ignition-lint
 uv sync
 ```
@@ -97,7 +97,7 @@ website/                 # Docusaurus site
 
 ## Reporting bugs
 
-Open a [GitHub issue](https://github.com/WhiskeyHouse/ignition-lint/issues) with:
+Open a [GitHub issue](https://github.com/TheThoughtagen/ignition-lint/issues) with:
 
 - What you expected to happen
 - What actually happened

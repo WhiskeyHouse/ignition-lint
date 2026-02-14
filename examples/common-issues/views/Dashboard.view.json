@@ -1,0 +1,70 @@
+{
+  "custom": {
+    "unusedProperty": {
+      "value": "never referenced"
+    },
+    "debugMode": {
+      "value": false
+    }
+  },
+  "params": {
+    "line_number": {
+      "value": 1
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "width": 1200,
+      "height": 800
+    }
+  },
+  "root": {
+    "type": "ia.container.flex",
+    "props": {
+      "direction": "column"
+    },
+    "children": [
+      {
+        "type": "ia.display.label",
+        "meta": {
+          "name": "Label"
+        },
+        "props": {
+          "text": "Production Dashboard"
+        }
+      },
+      {
+        "type": "ia.display.label",
+        "meta": {
+          "name": "Label_0"
+        },
+        "props": {
+          "text": {
+            "binding": {
+              "type": "expr",
+              "config": {
+                "expression": "now()"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "ia.input.button",
+        "meta": {
+          "name": "Button"
+        },
+        "propConfig": {
+          "props.text": "Click Me"
+        },
+        "events": {
+          "onChange": {
+            "script": {
+              "value": "print 'Button clicked'\nurl = 'http://localhost:8088/gateway'\nresult = system.net.httpGet(url)"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

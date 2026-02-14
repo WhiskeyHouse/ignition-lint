@@ -13,7 +13,7 @@ Add ignition-lint to your `.pre-commit-config.yaml`:
 
 ```yaml
 repos:
-  - repo: https://github.com/WhiskeyHouse/ignition-lint
+  - repo: https://github.com/TheThoughtagen/ignition-lint
     rev: v1  # use a specific tag
     hooks:
       - id: ignition-perspective-lint
@@ -44,7 +44,7 @@ Override the default arguments in your config:
 
 ```yaml
 repos:
-  - repo: https://github.com/WhiskeyHouse/ignition-lint
+  - repo: https://github.com/TheThoughtagen/ignition-lint
     rev: v1
     hooks:
       - id: ignition-perspective-lint

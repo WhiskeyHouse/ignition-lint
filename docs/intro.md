@@ -37,7 +37,7 @@ Ignition projects grow fast in industrial environments. Without consistent valid
 
 This project extends the foundational work by [Eric Knorr](https://github.com/ia-eknorr) in [ia-eknorr/ignition-lint](https://github.com/ia-eknorr/ignition-lint), which pioneered naming convention validation for Ignition view.json files.
 
-| Capability | ia-eknorr/ignition-lint | whiskeyhouse/ignition-lint |
+| Capability | ia-eknorr/ignition-lint | TheThoughtagen/ignition-lint |
 |---|---|---|
 | View.json naming validation | Yes | Yes (enhanced) |
 | GitHub Actions integration | Yes | Yes (enhanced) |
@@ -50,7 +50,7 @@ This project extends the foundational work by [Eric Knorr](https://github.com/ia
 | MCP/AI integration | No | Yes (FastMCP server + JSON output) |
 | Lint suppression | No | Yes |
 
-Use **ia-eknorr/ignition-lint** if you only need the original naming checks and a lightweight GitHub Action. Use **whiskeyhouse/ignition-lint** for local CLI tooling, schema validation, script linting, MCP integration, or suppression support.
+Use **ia-eknorr/ignition-lint** if you only need the original naming checks and a lightweight GitHub Action. Use **TheThoughtagen/ignition-lint** for local CLI tooling, schema validation, script linting, MCP integration, or suppression support.
 
 ## Tooling Overview
 

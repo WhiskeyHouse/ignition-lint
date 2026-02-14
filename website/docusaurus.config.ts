@@ -11,10 +11,10 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://WhiskeyHouse.github.io',
+  url: 'https://TheThoughtagen.github.io',
   baseUrl: '/ignition-lint/',
 
-  organizationName: 'WhiskeyHouse',
+  organizationName: 'TheThoughtagen',
   projectName: 'ignition-lint',
 
   onBrokenLinks: 'warn',
@@ -39,7 +39,7 @@ const config: Config = {
           path: '../docs',
           sidebarPath: './sidebars.ts',
           editUrl:
-            'https://github.com/WhiskeyHouse/ignition-lint/tree/main/docs/',
+            'https://github.com/TheThoughtagen/ignition-lint/tree/main/docs/',
         },
         blog: false,
         theme: {
@@ -65,7 +65,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://github.com/WhiskeyHouse/ignition-lint',
+          href: 'https://github.com/TheThoughtagen/ignition-lint',
           label: 'GitHub',
           position: 'right',
         },
@@ -95,7 +95,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/WhiskeyHouse/ignition-lint',
+              href: 'https://github.com/TheThoughtagen/ignition-lint',
             },
             {
               label: 'Credits',

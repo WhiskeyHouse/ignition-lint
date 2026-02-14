@@ -9,7 +9,7 @@ description = "Comprehensive Ignition linting tool with naming conventions and e
 readme = "README.md"
 license = "MIT"
 authors = [
-    { name = "Whiskey House Labs", email = "info@whiskeyhouse.com" }
+    { name = "Patrick Mannion", email = "pmannion@whiskeyhouse.com" }
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -38,10 +38,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/whiskeyhouse/ignition-lint"
-Repository = "https://github.com/whiskeyhouse/ignition-lint"
-Documentation = "https://github.com/whiskeyhouse/ignition-lint/blob/main/README.md"
-Changelog = "https://github.com/whiskeyhouse/ignition-lint/releases"
+Homepage = "https://github.com/TheThoughtagen/ignition-lint"
+Repository = "https://github.com/TheThoughtagen/ignition-lint"
+Documentation = "https://github.com/TheThoughtagen/ignition-lint/blob/main/README.md"
+Changelog = "https://github.com/TheThoughtagen/ignition-lint/releases"
 
 [project.scripts]
 ignition-lint-server = "ignition_lint.server:main"
@@ -67,7 +67,10 @@ target-version = ['py310']
 [tool.ruff]
 target-version = "py310"
 line-length = 88
-exclude = ["src/ignition_lint/_version.py"]
+exclude = [
+    "src/ignition_lint/_version.py",
+    "examples/common-issues/",  # Intentionally broken code for demonstration
+]
 
 [tool.ruff.lint]
 select = [
