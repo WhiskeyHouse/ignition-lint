@@ -1,5 +1,5 @@
-name: 'Ignition Lint'
-description: 'Comprehensive linting toolkit for Ignition SCADA projects. Validates Perspective views, scripts, naming conventions, expressions, and code quality.'
+name: 'ignition-lint-toolkit'
+description: 'Lint Ignition SCADA projects: validate views, scripts, naming conventions, expressions, and code quality.'
 author: 'Patrick Mannion'
 
 inputs:
