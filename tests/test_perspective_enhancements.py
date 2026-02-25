@@ -393,3 +393,103 @@ class TestExpressionValidation:
         }
         issues = _lint_view(view)
         assert "EXPR_BAD_COMPONENT_REF" in _codes(issues)
+
+
+class TestPropertyBindingPathValidation:
+    def test_root_dot_custom_flagged(self):
+        """Property binding with /root.custom.X should be view.custom.X."""
+        view = {
+            "custom": {"auditData": {}},
+            "root": {
+                "type": "ia.display.table",
+                "meta": {"name": "AuditTable"},
+                "children": [],
+                "propConfig": {
+                    "props.data": {
+                        "binding": {
+                            "type": "property",
+                            "config": {"path": "/root.custom.auditData"},
+                        }
+                    }
+                },
+            },
+        }
+        issues = _lint_view(view)
+        codes = _codes(issues)
+        assert "BINDING_ROOT_DOT_PATH" in codes
+        # Check the suggestion is explicit about the fix
+        issue = next(i for i in issues if i.code == "BINDING_ROOT_DOT_PATH")
+        assert "view.custom.auditData" in issue.suggestion
+        assert '"path": "view.custom.auditData"' in issue.suggestion
+
+    def test_root_dot_params_flagged(self):
+        """Property binding with /root.params.X should be view.params.X."""
+        view = {
+            "custom": {},
+            "params": {"item": {}},
+            "root": {
+                "type": "ia.display.label",
+                "meta": {"name": "Label"},
+                "children": [],
+                "propConfig": {
+                    "props.text": {
+                        "binding": {
+                            "type": "property",
+                            "config": {"path": "/root.params.item"},
+                        }
+                    }
+                },
+            },
+        }
+        issues = _lint_view(view)
+        assert "BINDING_ROOT_DOT_PATH" in _codes(issues)
+
+    def test_root_slash_component_ref_not_flagged(self):
+        """Absolute component refs with /root/ (slashes) are valid."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [
+                    {
+                        "type": "ia.display.label",
+                        "meta": {"name": "MyLabel"},
+                        "children": [],
+                        "propConfig": {
+                            "props.text": {
+                                "binding": {
+                                    "type": "property",
+                                    "config": {
+                                        "path": "/root/Header/Label.props.text"
+                                    },
+                                }
+                            }
+                        },
+                    }
+                ],
+            },
+        }
+        issues = _lint_view(view)
+        assert "BINDING_ROOT_DOT_PATH" not in _codes(issues)
+
+    def test_view_custom_path_not_flagged(self):
+        """Correct view.custom.X paths should not be flagged."""
+        view = {
+            "custom": {"auditData": {}},
+            "root": {
+                "type": "ia.display.table",
+                "meta": {"name": "AuditTable"},
+                "children": [],
+                "propConfig": {
+                    "props.data": {
+                        "binding": {
+                            "type": "property",
+                            "config": {"path": "view.custom.auditData"},
+                        }
+                    }
+                },
+            },
+        }
+        issues = _lint_view(view)
+        assert "BINDING_ROOT_DOT_PATH" not in _codes(issues)

@@ -650,6 +650,27 @@ class IgnitionPerspectiveLinter:
                     suggestion="Add 'path' property to property binding config",
                 )
             )
+            return
+
+        path = config["path"]
+        # /root.custom.X or /root.params.X is a common mistake — should be view.custom.X
+        # or view.params.X.  Valid absolute component refs use slashes: /root/Child.props.X
+        if isinstance(path, str) and path.startswith("/root."):
+            suffix = path[len("/root."):]
+            self.issues.append(
+                LintIssue(
+                    severity=LintSeverity.ERROR,
+                    code="BINDING_ROOT_DOT_PATH",
+                    message=f"Property binding path '{path}' uses /root. prefix which resolves to Bad_NotFound",
+                    file_path=file_path,
+                    component_path=f"{component_path}.propConfig.{prop_name}",
+                    component_type=comp_type,
+                    suggestion=(
+                        f"Change the Property binding path to 'view.{suffix}'. "
+                        f"In the binding config JSON set \"path\": \"view.{suffix}\""
+                    ),
+                )
+            )
 
     def _validate_transform(
         self,

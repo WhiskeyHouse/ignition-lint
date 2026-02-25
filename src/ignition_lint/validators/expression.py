@@ -43,19 +43,40 @@ KNOWN_EXPRESSION_FUNCTIONS = frozenset(
         "startsWith",
         "substring",
         "toStr",
+        "toString",
         "trim",
         "upper",
         "urlEncode",
         "urlDecode",
         "unicodeNormalize",
         # Date/Time
+        "addDays",
+        "addHours",
+        "addMillis",
+        "addMinutes",
+        "addMonths",
+        "addSeconds",
+        "addWeeks",
+        "addYears",
         "dateArith",
+        "dateArithmetic",
         "dateDiff",
         "dateExtract",
         "dateFormat",
         "dateParse",
         "daysBetween",
+        "getDate",
+        "getDayOfMonth",
+        "getDayOfWeek",
+        "getDayOfYear",
+        "getHour",
+        "getMillis",
+        "getMinute",
+        "getMonth",
+        "getSecond",
+        "getYear",
         "hoursBetween",
+        "midnight",
         "millisBetween",
         "minutesBetween",
         "monthsBetween",
@@ -74,16 +95,21 @@ KNOWN_EXPRESSION_FUNCTIONS = frozenset(
         "hasChanged",
         "previousValue",
         "qualify",
+        "try",
         # Type casting
         "toBool",
+        "toBoolean",
         "toColor",
         "toDataSet",
         "toDouble",
         "toFloat",
         "toInt",
-        "toLong",  # Aggregate / Dataset
+        "toLong",
+        # Aggregate / Dataset
         "avg",
         "columnCount",
+        "columnRearrange",
+        "columnRename",
         "forEach",
         "getColumn",
         "hasRows",
@@ -94,7 +120,8 @@ KNOWN_EXPRESSION_FUNCTIONS = frozenset(
         "jsonToDataSet",
         # Color
         "chooseColor",
-        "colorMix",  # JSON
+        "colorMix",
+        # JSON
         "jsonDecode",
         "jsonEncode",
         "jsonMerge",
@@ -103,19 +130,19 @@ KNOWN_EXPRESSION_FUNCTIONS = frozenset(
         "jsonSet",
         "jsonLength",
         "jsonValueByKey",
-        # Tag
+        # Tag / Quality
         "hasQuality",
         "isGood",
         "isBad",
         "isUncertain",
         "isNotGood",
+        "qualityOf",
         "tag",
         "tagCount",
         # Advanced / Perspective
         "binEncode",
         "binDecode",
         "forceQuality",
-        "getMillis",
         "htmlToPlain",
         "isAuthorized",
         "mapLat",
@@ -134,6 +161,16 @@ _PROPERTY_REF_RE = re.compile(r"\{([^}]*)\}")
 
 # Component-tree traversal functions that are fragile in expressions.
 _BAD_COMPONENT_REF_FUNCS = {"getSibling", "getParent", "getChild", "getComponent"}
+
+# Detects array index access OUTSIDE braces, e.g. {view.params.steps}[1]
+# This is always invalid — the index must be inside: {view.params.steps[1]}
+_EXTERNAL_INDEX_RE = re.compile(r"\{([^}]+)\}\s*\[")
+
+# Detects array index access INSIDE braces, e.g. {view.params.steps[1].complete}
+_INTERNAL_INDEX_RE = re.compile(r"\{([^}\[]+)\[")
+
+# Size-guard functions whose result is typically used to protect index access.
+_SIZE_GUARD_FUNCS = {"len", "jsonLength", "rowCount", "columnCount"}
 
 
 class ExpressionValidator:
@@ -169,6 +206,16 @@ class ExpressionValidator:
         )
         issues.extend(
             self._check_bad_component_refs(
+                expression, file_path, component_path, component_type
+            )
+        )
+        issues.extend(
+            self._check_external_index_access(
+                expression, file_path, component_path, component_type
+            )
+        )
+        issues.extend(
+            self._check_short_circuit_guard(
                 expression, file_path, component_path, component_type
             )
         )
@@ -222,6 +269,25 @@ class ExpressionValidator:
             # and relative component paths (.../Component Name/...)
             if ref.startswith("[") or ref.startswith("/") or ref.startswith(".."):
                 continue
+            # {root.custom.X} or {root.params.X} in expressions is invalid — the
+            # correct syntax is {view.custom.X} or {view.params.X}.
+            if ref.startswith("root.custom.") or ref.startswith("root.params."):
+                suffix = ref[len("root."):]
+                issues.append(
+                    LintIssue(
+                        severity=LintSeverity.ERROR,
+                        code="EXPR_ROOT_PROPERTY_REF",
+                        message=f"Expression reference '{{{ref}}}' uses root. prefix which is not a valid scope",
+                        file_path=file_path,
+                        component_path=component_path,
+                        component_type=component_type,
+                        suggestion=(
+                            f"Change to '{{view.{suffix}}}'. "
+                            f"Valid scopes are: view, this, session, page"
+                        ),
+                    )
+                )
+                continue
             # Flag property refs that contain spaces (likely malformed)
             if " " in ref:
                 issues.append(
@@ -247,10 +313,13 @@ class ExpressionValidator:
             func_name = m.group(1)
             if func_name in _BAD_COMPONENT_REF_FUNCS:
                 continue
+            # Skip PascalCase names — likely component types, not expression functions
+            if func_name[0].isupper():
+                continue
             if func_name not in KNOWN_EXPRESSION_FUNCTIONS:
                 issues.append(
                     LintIssue(
-                        severity=LintSeverity.INFO,
+                        severity=LintSeverity.WARNING,
                         code="EXPR_UNKNOWN_FUNCTION",
                         message=f"Unrecognized expression function '{func_name}'",
                         file_path=file_path,
@@ -280,5 +349,78 @@ class ExpressionValidator:
                         suggestion="Use view custom properties or message handlers instead",
                     )
                 )
+
+        return issues
+
+    def _check_external_index_access(
+        self, expression: str, file_path: str, component_path: str, component_type: str
+    ) -> list[LintIssue]:
+        """Detect array/dot access outside braces: {X}[n] or {X}[n].prop is invalid."""
+        issues: list[LintIssue] = []
+
+        for m in _EXTERNAL_INDEX_RE.finditer(expression):
+            prop = m.group(1).strip()
+            issues.append(
+                LintIssue(
+                    severity=LintSeverity.ERROR,
+                    code="EXPR_EXTERNAL_INDEX_ACCESS",
+                    message=(
+                        f"Array index access outside braces on '{{{prop}}}' is invalid syntax"
+                    ),
+                    file_path=file_path,
+                    component_path=component_path,
+                    component_type=component_type,
+                    suggestion=(
+                        f"Move the index inside the braces, e.g. '{{{prop}[0]}}'"
+                    ),
+                )
+            )
+
+        return issues
+
+    def _check_short_circuit_guard(
+        self, expression: str, file_path: str, component_path: str, component_type: str
+    ) -> list[LintIssue]:
+        """Detect guard-pattern anti-pattern: len(X) && X[n] won't short-circuit."""
+        issues: list[LintIssue] = []
+
+        # Only relevant when && or || is present
+        if "&&" not in expression and "||" not in expression:
+            return issues
+
+        # Collect base property paths that are array-indexed.
+        # Handles both external {X}[n] and internal {X[n].prop} forms.
+        indexed_props: set[str] = set()
+        for m in _EXTERNAL_INDEX_RE.finditer(expression):
+            indexed_props.add(m.group(1).strip())
+        for m in _INTERNAL_INDEX_RE.finditer(expression):
+            indexed_props.add(m.group(1).strip())
+
+        if not indexed_props:
+            return issues
+
+        # Check if any size-guard function wraps one of the same property refs
+        already_reported: set[str] = set()
+        for func in _SIZE_GUARD_FUNCS:
+            for m in re.finditer(rf"\b{func}\s*\(\s*\{{([^}}]+)\}}\s*\)", expression):
+                guarded_prop = m.group(1).strip()
+                if guarded_prop in indexed_props and guarded_prop not in already_reported:
+                    already_reported.add(guarded_prop)
+                    op = "&&" if "&&" in expression else "||"
+                    issues.append(
+                        LintIssue(
+                            severity=LintSeverity.WARNING,
+                            code="EXPR_NO_SHORT_CIRCUIT",
+                            message=(
+                                f"'{op}' does not short-circuit in Ignition expressions; "
+                                f"{func}({{{guarded_prop}}}) guard will not protect "
+                                f"index access on '{{{guarded_prop}}}'"
+                            ),
+                            file_path=file_path,
+                            component_path=component_path,
+                            component_type=component_type,
+                            suggestion="Use nested if() calls to guard array index access",
+                        )
+                    )
 
         return issues
