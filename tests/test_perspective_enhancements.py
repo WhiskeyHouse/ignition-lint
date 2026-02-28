@@ -566,8 +566,13 @@ class TestBindingPathSyntax:
 
     def test_valid_scopes_not_flagged(self):
         """view., this., session., page., parent. scopes should pass."""
-        for scope in ["view.custom.x", "this.props.text", "session.props.auth",
-                       "page.props.path", "parent.custom.y"]:
+        for scope in [
+            "view.custom.x",
+            "this.props.text",
+            "session.props.auth",
+            "page.props.path",
+            "parent.custom.y",
+        ]:
             view = {
                 "custom": {"x": ""},
                 "root": {
@@ -586,7 +591,9 @@ class TestBindingPathSyntax:
             }
             issues = _lint_view(view)
             scope_codes = {"BINDING_BARE_ROOT_PATH", "BINDING_INVALID_SCOPE"}
-            assert not scope_codes & _codes(issues), f"Scope '{scope}' was incorrectly flagged"
+            assert not scope_codes & _codes(issues), (
+                f"Scope '{scope}' was incorrectly flagged"
+            )
 
     def test_relative_path_not_flagged(self):
         """Relative component refs (./ and ../) should pass syntax checks."""
@@ -609,7 +616,9 @@ class TestBindingPathSyntax:
             }
             issues = _lint_view(view)
             syntax_codes = {"BINDING_BARE_ROOT_PATH", "BINDING_INVALID_SCOPE"}
-            assert not syntax_codes & _codes(issues), f"Path '{path}' was incorrectly flagged"
+            assert not syntax_codes & _codes(issues), (
+                f"Path '{path}' was incorrectly flagged"
+            )
 
     def test_no_duplicate_for_root_dot(self):
         """BINDING_ROOT_DOT_PATH should not also trigger BINDING_INVALID_SCOPE."""
@@ -815,7 +824,9 @@ class TestComponentPathResolution:
                             "props.text": {
                                 "binding": {
                                     "type": "property",
-                                    "config": {"path": "/root/Header/Missing.props.text"},
+                                    "config": {
+                                        "path": "/root/Header/Missing.props.text"
+                                    },
                                 }
                             }
                         },
@@ -879,7 +890,9 @@ class TestComponentPathResolution:
                             "props.text": {
                                 "binding": {
                                     "type": "property",
-                                    "config": {"path": "/root/Date Range Picker.props.value"},
+                                    "config": {
+                                        "path": "/root/Date Range Picker.props.value"
+                                    },
                                 }
                             }
                         },
@@ -941,7 +954,9 @@ class TestExpressionPathResolution:
                     "props.text": {
                         "binding": {
                             "type": "expr",
-                            "config": {"expression": "if({view.custom.missing}, 'yes', 'no')"},
+                            "config": {
+                                "expression": "if({view.custom.missing}, 'yes', 'no')"
+                            },
                         }
                     }
                 },
@@ -1021,3 +1036,196 @@ class TestExpressionPathResolution:
         }
         issues = _lint_view(view)
         assert "EXPR_VIEW_PROP_NOT_FOUND" in _codes(issues)
+
+
+class TestNonBindablePropertyDetection:
+    """Tests for BINDING_NON_BINDABLE_PROPERTY rule.
+
+    propConfig keys must start with props., position., custom., meta., or params.
+    Structural keys like children, type have no binding scope and cause
+    IllegalArgumentException in Ignition Designer.
+    """
+
+    def test_children_binding_flagged(self):
+        """children is structural on containers — binding to it is always invalid."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [
+                    {
+                        "type": "ia.container.flex",
+                        "meta": {"name": "SummaryBar"},
+                        "children": [],
+                        "propConfig": {
+                            "children": {
+                                "binding": {
+                                    "type": "expr",
+                                    "config": {"expression": "''"},
+                                }
+                            }
+                        },
+                    }
+                ],
+            },
+        }
+        issues = _lint_view(view)
+        codes = _codes(issues)
+        assert "BINDING_NON_BINDABLE_PROPERTY" in codes
+        matching = [i for i in issues if i.code == "BINDING_NON_BINDABLE_PROPERTY"]
+        assert len(matching) == 1
+        assert "children" in matching[0].message
+        assert matching[0].severity.value == "error"
+
+    def test_type_binding_flagged(self):
+        """type is structural — binding to it is invalid."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [
+                    {
+                        "type": "ia.display.label",
+                        "meta": {"name": "Lbl"},
+                        "propConfig": {
+                            "type": {
+                                "binding": {
+                                    "type": "expr",
+                                    "config": {"expression": "'ia.display.label'"},
+                                }
+                            }
+                        },
+                    }
+                ],
+            },
+        }
+        issues = _lint_view(view)
+        assert "BINDING_NON_BINDABLE_PROPERTY" in _codes(issues)
+
+    def test_valid_scopes_not_flagged(self):
+        """props.*, position.*, custom.*, meta.*, params.* are all valid scopes."""
+        view = {
+            "custom": {"myFlag": False},
+            "params": {"myParam": ""},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [
+                    {
+                        "type": "ia.display.label",
+                        "meta": {"name": "Lbl"},
+                        "propConfig": {
+                            "props.text": {
+                                "binding": {
+                                    "type": "property",
+                                    "config": {"path": "view.params.myParam"},
+                                }
+                            },
+                            "position.basis": {
+                                "binding": {
+                                    "type": "expr",
+                                    "config": {"expression": "'100px'"},
+                                }
+                            },
+                            "meta.visible": {
+                                "binding": {
+                                    "type": "property",
+                                    "config": {"path": "view.custom.myFlag"},
+                                }
+                            },
+                        },
+                    }
+                ],
+            },
+        }
+        issues = _lint_view(view)
+        assert "BINDING_NON_BINDABLE_PROPERTY" not in _codes(issues)
+
+    def test_onchange_on_structural_property_flagged(self):
+        """Even onChange (not just binding) on a structural key is invalid."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [
+                    {
+                        "type": "ia.container.flex",
+                        "meta": {"name": "Container"},
+                        "children": [],
+                        "propConfig": {
+                            "children": {
+                                "onChange": {"script": "\tpass"}
+                            }
+                        },
+                    }
+                ],
+            },
+        }
+        issues = _lint_view(view)
+        assert "BINDING_NON_BINDABLE_PROPERTY" in _codes(issues)
+
+    def test_view_level_structural_propconfig_flagged(self):
+        """Structural keys in view-level propConfig should also be flagged."""
+        view = {
+            "custom": {},
+            "propConfig": {
+                "children": {
+                    "binding": {
+                        "type": "expr",
+                        "config": {"expression": "''"},
+                    }
+                }
+            },
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [],
+            },
+        }
+        issues = _lint_view(view)
+        codes = _codes(issues)
+        assert "BINDING_NON_BINDABLE_PROPERTY" in codes
+
+    def test_multiple_structural_keys_all_flagged(self):
+        """Multiple invalid propConfig keys on the same component each get flagged."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [
+                    {
+                        "type": "ia.container.flex",
+                        "meta": {"name": "Bad"},
+                        "children": [],
+                        "propConfig": {
+                            "children": {
+                                "binding": {
+                                    "type": "expr",
+                                    "config": {"expression": "''"},
+                                }
+                            },
+                            "type": {
+                                "binding": {
+                                    "type": "expr",
+                                    "config": {"expression": "''"},
+                                }
+                            },
+                            "props.text": {
+                                "binding": {
+                                    "type": "expr",
+                                    "config": {"expression": "'hello'"},
+                                }
+                            },
+                        },
+                    }
+                ],
+            },
+        }
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "BINDING_NON_BINDABLE_PROPERTY"]
+        flagged_keys = {i.message.split("'")[1] for i in matching}
+        assert flagged_keys == {"children", "type"}

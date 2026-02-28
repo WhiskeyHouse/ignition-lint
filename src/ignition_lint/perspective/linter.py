@@ -514,10 +514,35 @@ class IgnitionPerspectiveLinter:
                     )
                 )
 
+    # Valid binding scopes in Perspective — only these prefixes may appear
+    # as propConfig keys.  Structural keys like ``children``, ``type``, and
+    # ``meta.name`` have no binding scope and must never be targeted.
+    _VALID_BINDING_SCOPES = ("props.", "position.", "custom.", "meta.", "params.")
+
     def _validate_bindings(self, component: dict, file_path: str, component_path: str):
         """Validate bindings based on empirical analysis patterns."""
         prop_config = component.get("propConfig", {})
         comp_type = component.get("type", "unknown")
+
+        # Check for non-bindable structural properties in propConfig
+        for prop_name in prop_config:
+            if not prop_name.startswith(self._VALID_BINDING_SCOPES):
+                self.issues.append(
+                    LintIssue(
+                        severity=LintSeverity.ERROR,
+                        code="BINDING_NON_BINDABLE_PROPERTY",
+                        message=f"propConfig targets non-bindable structural property '{prop_name}'",
+                        file_path=file_path,
+                        component_path=f"{component_path}.propConfig.{prop_name}",
+                        component_type=comp_type,
+                        suggestion=(
+                            f"'{prop_name}' is a structural key with no binding scope. "
+                            "Only props.*, position.*, custom.*, meta.*, and params.* "
+                            "are bindable. This will cause an IllegalArgumentException "
+                            "in Ignition Designer."
+                        ),
+                    )
+                )
 
         # Validate each property binding
         for prop_name, config in prop_config.items():
@@ -678,7 +703,7 @@ class IgnitionPerspectiveLinter:
 
         # Bare root.custom.X or root.params.X without leading / or view. scope
         if path.startswith("root.custom.") or path.startswith("root.params."):
-            suffix = path[len("root."):]
+            suffix = path[len("root.") :]
             self.issues.append(
                 LintIssue(
                     severity=LintSeverity.ERROR,
@@ -697,11 +722,17 @@ class IgnitionPerspectiveLinter:
 
         # Valid scope prefixes — pass through without further syntax checks
         _VALID_SCOPE_PREFIXES = (
-            "view.", "this.", "session.", "page.", "parent.",
+            "view.",
+            "this.",
+            "session.",
+            "page.",
+            "parent.",
         )
         # Valid structural prefixes — absolute and relative component refs
         _VALID_STRUCTURAL_PREFIXES = (
-            "/root/", "/root.", "./",
+            "/root/",
+            "/root.",
+            "./",
         )
 
         if any(path.startswith(p) for p in _VALID_SCOPE_PREFIXES):
@@ -1187,7 +1218,9 @@ class IgnitionPerspectiveLinter:
                 continue
             entry: dict = {
                 "_type": child.get("type", "unknown"),
-                "_children": IgnitionPerspectiveLinter._build_component_name_tree(child),
+                "_children": IgnitionPerspectiveLinter._build_component_name_tree(
+                    child
+                ),
             }
             tree[name] = entry
         return tree
@@ -1302,8 +1335,12 @@ class IgnitionPerspectiveLinter:
                         bp = binding_config.get("path", "")
                         if isinstance(bp, str):
                             self._check_view_prop_ref(
-                                bp, custom_keys, params_keys, file_path,
-                                component_path, comp_type,
+                                bp,
+                                custom_keys,
+                                params_keys,
+                                file_path,
+                                component_path,
+                                comp_type,
                                 code="BINDING_VIEW_PROP_NOT_FOUND",
                             )
 
@@ -1311,10 +1348,13 @@ class IgnitionPerspectiveLinter:
                     if binding_type == "property" and isinstance(binding_config, dict):
                         bp = binding_config.get("path", "")
                         if isinstance(bp, str) and bp.startswith("/root/"):
-                            after_root = bp[len("/root/"):]
+                            after_root = bp[len("/root/") :]
                             self._resolve_component_path(
-                                after_root, name_tree, file_path,
-                                component_path, comp_type,
+                                after_root,
+                                name_tree,
+                                file_path,
+                                component_path,
+                                comp_type,
                             )
 
                     # Tier 2: Check expression refs {view.custom.X} / {view.params.X}
@@ -1322,16 +1362,24 @@ class IgnitionPerspectiveLinter:
                         expr = binding_config.get("expression", "")
                         if isinstance(expr, str):
                             self._check_expr_view_refs(
-                                expr, custom_keys, params_keys,
-                                file_path, component_path, comp_type,
+                                expr,
+                                custom_keys,
+                                params_keys,
+                                file_path,
+                                component_path,
+                                comp_type,
                             )
-                    if binding_type == "expr-struct" and isinstance(binding_config, dict):
+                    if binding_type == "expr-struct" and isinstance(
+                        binding_config, dict
+                    ):
                         struct = binding_config.get("struct", {})
                         if isinstance(struct, dict):
                             for member_name, member_expr in struct.items():
                                 if isinstance(member_expr, str):
                                     self._check_expr_view_refs(
-                                        member_expr, custom_keys, params_keys,
+                                        member_expr,
+                                        custom_keys,
+                                        params_keys,
                                         file_path,
                                         f"{component_path}.{member_name}",
                                         comp_type,
@@ -1348,7 +1396,9 @@ class IgnitionPerspectiveLinter:
                                 expr = transform.get("expression", "")
                                 if isinstance(expr, str):
                                     self._check_expr_view_refs(
-                                        expr, custom_keys, params_keys,
+                                        expr,
+                                        custom_keys,
+                                        params_keys,
                                         file_path,
                                         f"{component_path}.transforms[{i}]",
                                         comp_type,
@@ -1358,16 +1408,28 @@ class IgnitionPerspectiveLinter:
             children = obj.get("children", [])
             if isinstance(children, list):
                 for i, child in enumerate(children):
-                    child_name = child.get("meta", {}).get("name", f"[{i}]") if isinstance(child, dict) else f"[{i}]"
+                    child_name = (
+                        child.get("meta", {}).get("name", f"[{i}]")
+                        if isinstance(child, dict)
+                        else f"[{i}]"
+                    )
                     self._walk_bindings_for_resolution(
-                        child, file_path, custom_keys, params_keys, name_tree,
+                        child,
+                        file_path,
+                        custom_keys,
+                        params_keys,
+                        name_tree,
                         f"{path_prefix}/{child_name}",
                     )
 
             # Recurse into root (for top-level view_data)
             if "root" in obj and path_prefix == "root":
                 self._walk_bindings_for_resolution(
-                    obj["root"], file_path, custom_keys, params_keys, name_tree,
+                    obj["root"],
+                    file_path,
+                    custom_keys,
+                    params_keys,
+                    name_tree,
                     "root",
                 )
 
@@ -1383,7 +1445,7 @@ class IgnitionPerspectiveLinter:
     ):
         """Check if a view.custom.X or view.params.X reference resolves."""
         if path.startswith("view.custom."):
-            suffix = path[len("view.custom."):]
+            suffix = path[len("view.custom.") :]
             top_key = self._extract_top_level_key(suffix)
             if top_key and top_key not in custom_keys:
                 self.issues.append(
@@ -1398,7 +1460,7 @@ class IgnitionPerspectiveLinter:
                     )
                 )
         elif path.startswith("view.params."):
-            suffix = path[len("view.params."):]
+            suffix = path[len("view.params.") :]
             top_key = self._extract_top_level_key(suffix)
             if top_key and top_key not in params_keys:
                 self.issues.append(
@@ -1428,8 +1490,12 @@ class IgnitionPerspectiveLinter:
         for m in self._EXPR_VIEW_REF_RE.finditer(expression):
             ref = m.group(1)
             self._check_view_prop_ref(
-                ref, custom_keys, params_keys, file_path,
-                component_path, comp_type,
+                ref,
+                custom_keys,
+                params_keys,
+                file_path,
+                component_path,
+                comp_type,
                 code="EXPR_VIEW_PROP_NOT_FOUND",
             )
 
@@ -1553,6 +1619,24 @@ class IgnitionPerspectiveLinter:
         # Validate view-level propConfig (onChange scripts, transform scripts, expressions)
         view_prop_config = view_data.get("propConfig", {})
         if isinstance(view_prop_config, dict):
+            for prop_name in view_prop_config:
+                if not prop_name.startswith(self._VALID_BINDING_SCOPES):
+                    self.issues.append(
+                        LintIssue(
+                            severity=LintSeverity.ERROR,
+                            code="BINDING_NON_BINDABLE_PROPERTY",
+                            message=f"propConfig targets non-bindable structural property '{prop_name}'",
+                            file_path=file_path,
+                            component_path=f"view.propConfig.{prop_name}",
+                            component_type="view",
+                            suggestion=(
+                                f"'{prop_name}' is a structural key with no binding scope. "
+                                "Only props.*, position.*, custom.*, meta.*, and params.* "
+                                "are bindable. This will cause an IllegalArgumentException "
+                                "in Ignition Designer."
+                            ),
+                        )
+                    )
             self._validate_propconfig_scripts(view_prop_config, file_path, "view")
             self._validate_propconfig_expressions(view_prop_config, file_path, "view")
 
