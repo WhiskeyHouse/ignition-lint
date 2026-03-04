@@ -257,3 +257,256 @@ class TestNoShortCircuit:
             expr, "test", "file.json", "root", "ia.display.label"
         )
         assert "EXPR_NO_SHORT_CIRCUIT" not in _codes(issues)
+
+
+class TestUnmatchedParens:
+    def test_missing_close_paren(self, validator):
+        issues = validator.validate_expression(
+            "runScript('test', 1000", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_PAREN" in _codes(issues)
+
+    def test_extra_close_paren(self, validator):
+        issues = validator.validate_expression(
+            "toStr(42))", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_PAREN" in _codes(issues)
+
+    def test_balanced_parens(self, validator):
+        issues = validator.validate_expression(
+            "if(toStr(42) = '42', 'yes', 'no')",
+            "test",
+            "file.json",
+            "root",
+            "ia.display.label",
+        )
+        assert "EXPR_UNMATCHED_PAREN" not in _codes(issues)
+
+    def test_parens_inside_string_ignored(self, validator):
+        """Parens inside string literals should not be counted."""
+        issues = validator.validate_expression(
+            "toStr('(hello)')", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_PAREN" not in _codes(issues)
+
+    def test_parens_inside_tag_ref_ignored(self, validator):
+        """Parens inside {…} tag refs should not be counted."""
+        issues = validator.validate_expression(
+            "toStr({[default]Tag (1)/Value})",
+            "test",
+            "file.json",
+            "root",
+            "ia.display.label",
+        )
+        assert "EXPR_UNMATCHED_PAREN" not in _codes(issues)
+
+    def test_no_parens_ok(self, validator):
+        issues = validator.validate_expression(
+            "{view.custom.value}", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_PAREN" not in _codes(issues)
+
+
+class TestUnmatchedBraces:
+    def test_missing_close_brace(self, validator):
+        issues = validator.validate_expression(
+            "{[default]Tag * 2", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_BRACE" in _codes(issues)
+
+    def test_extra_close_brace(self, validator):
+        issues = validator.validate_expression(
+            "{view.custom.x}} + 1", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_BRACE" in _codes(issues)
+
+    def test_balanced_braces(self, validator):
+        issues = validator.validate_expression(
+            "{view.custom.a} + {view.custom.b}",
+            "test",
+            "file.json",
+            "root",
+            "ia.display.label",
+        )
+        assert "EXPR_UNMATCHED_BRACE" not in _codes(issues)
+
+    def test_braces_inside_string_ignored(self, validator):
+        """Braces inside string literals should not be counted."""
+        issues = validator.validate_expression(
+            "toStr('{hello}')", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_BRACE" not in _codes(issues)
+
+    def test_no_braces_ok(self, validator):
+        issues = validator.validate_expression(
+            "toStr(42)", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_BRACE" not in _codes(issues)
+
+
+class TestUnmatchedQuotes:
+    def test_unclosed_string(self, validator):
+        issues = validator.validate_expression(
+            "runScript('test, 1000)", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_QUOTE" in _codes(issues)
+
+    def test_balanced_strings(self, validator):
+        issues = validator.validate_expression(
+            "if(1, 'yes', 'no')", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_QUOTE" not in _codes(issues)
+
+    def test_empty_string_ok(self, validator):
+        issues = validator.validate_expression(
+            "toStr('')", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_QUOTE" not in _codes(issues)
+
+    def test_no_quotes_ok(self, validator):
+        issues = validator.validate_expression(
+            "{view.custom.x} + 1", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_UNMATCHED_QUOTE" not in _codes(issues)
+
+    def test_multiple_strings_last_unclosed(self, validator):
+        issues = validator.validate_expression(
+            "if(1, 'yes', 'no)",
+            "test",
+            "file.json",
+            "root",
+            "ia.display.label",
+        )
+        assert "EXPR_UNMATCHED_QUOTE" in _codes(issues)
+
+
+class TestAdjacentExpressions:
+    def test_back_to_back_function_calls(self, validator):
+        """runScript()runScript(...) should be flagged."""
+        expr = "runScript()runScript('core.proj.func', 1000)"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_back_to_back_with_space(self, validator):
+        """runScript() runScript(...) should also be flagged."""
+        expr = "runScript() runScript('core.proj.func', 1000)"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_ref_then_func_call(self, validator):
+        """{view.custom.x} runScript(...) — missing operator."""
+        expr = "{view.custom.x} runScript('func', 1000)"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_ref_then_ref(self, validator):
+        """{x}{y} — two adjacent property refs."""
+        expr = "{view.custom.x}{view.custom.y}"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_func_then_number(self, validator):
+        """toStr(1) 42 — value then number literal."""
+        expr = "toStr(1) 42"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_func_then_string(self, validator):
+        """toStr(1) 'hello' — value then string literal."""
+        expr = "toStr(1) 'hello'"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_func_then_ref(self, validator):
+        """toStr(1) {view.custom.x} — value then property ref."""
+        expr = "toStr(1) {view.custom.x}"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_number_then_func(self, validator):
+        """42 toStr(1) — number then function call."""
+        expr = "42 toStr(1)"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_string_then_ref(self, validator):
+        """'hello' {view.custom.x} — string then ref."""
+        expr = "'hello' {view.custom.x}"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" in _codes(issues)
+
+    def test_operator_between_calls_ok(self, validator):
+        """toStr(1) + toStr(2) is valid."""
+        issues = validator.validate_expression(
+            "toStr(1) + toStr(2)", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
+
+    def test_operator_between_ref_and_number_ok(self, validator):
+        """{view.custom.x} * 2 is valid."""
+        issues = validator.validate_expression(
+            "{view.custom.x} * 2", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
+
+    def test_comma_separated_ok(self, validator):
+        """Function args like if(toStr(1), toStr(2)) are valid."""
+        issues = validator.validate_expression(
+            "if(toStr(1), toStr(2), toStr(3))",
+            "test",
+            "file.json",
+            "root",
+            "ia.display.label",
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
+
+    def test_nested_function_ok(self, validator):
+        """toStr(abs(1)) is valid — ')' followed by ')' not an identifier."""
+        issues = validator.validate_expression(
+            "toStr(abs(1))", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
+
+    def test_adjacent_in_string_ignored(self, validator):
+        """Text inside strings should not trigger the check."""
+        issues = validator.validate_expression(
+            "toStr('foo()bar()')", "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
+
+    def test_ref_with_operator_ok(self, validator):
+        """{x} + {y} is valid."""
+        issues = validator.validate_expression(
+            "{view.custom.a} + {view.custom.b}",
+            "test",
+            "file.json",
+            "root",
+            "ia.display.label",
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
+
+    def test_complex_valid_expression(self, validator):
+        """Real-world expression with multiple tokens and operators."""
+        expr = "if({view.custom.x} > 0, toStr({view.custom.x} * 2), 'none')"
+        issues = validator.validate_expression(
+            expr, "test", "file.json", "root", "ia.display.label"
+        )
+        assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
