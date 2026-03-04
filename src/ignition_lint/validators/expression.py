@@ -173,6 +173,20 @@ _INTERNAL_INDEX_RE = re.compile(r"\{([^}\[]+)\[")
 _SIZE_GUARD_FUNCS = {"len", "jsonLength", "rowCount", "columnCount"}
 
 
+def _skip_string(expression: str, start: int) -> tuple[int, bool]:
+    """Skip from opening quote to closing quote. Returns (end_pos, closed).
+
+    Ignition expressions use single quotes for strings with no backslash escaping.
+    ``start`` must point to the opening ``'``.
+    """
+    i = start + 1
+    while i < len(expression):
+        if expression[i] == "'":
+            return (i, True)
+        i += 1
+    return (len(expression) - 1, False)
+
+
 class ExpressionValidator:
     """Validates Ignition expression language strings."""
 
@@ -216,6 +230,26 @@ class ExpressionValidator:
         )
         issues.extend(
             self._check_short_circuit_guard(
+                expression, file_path, component_path, component_type
+            )
+        )
+        issues.extend(
+            self._check_unmatched_parens(
+                expression, file_path, component_path, component_type
+            )
+        )
+        issues.extend(
+            self._check_unmatched_braces(
+                expression, file_path, component_path, component_type
+            )
+        )
+        issues.extend(
+            self._check_unmatched_string_quotes(
+                expression, file_path, component_path, component_type
+            )
+        )
+        issues.extend(
+            self._check_adjacent_expressions(
                 expression, file_path, component_path, component_type
             )
         )
@@ -425,5 +459,261 @@ class ExpressionValidator:
                             suggestion="Use nested if() calls to guard array index access",
                         )
                     )
+
+        return issues
+
+    def _check_unmatched_parens(
+        self, expression: str, file_path: str, component_path: str, component_type: str
+    ) -> list[LintIssue]:
+        """Detect unmatched parentheses, skipping string literals and {…} blocks."""
+        issues: list[LintIssue] = []
+        depth = 0
+        i = 0
+        last_open = -1
+        last_extra_close = -1
+        while i < len(expression):
+            ch = expression[i]
+            if ch == "'":
+                end, _closed = _skip_string(expression, i)
+                i = end + 1
+                continue
+            if ch == "{":
+                # Skip brace block — tag paths may contain parens
+                brace_depth = 1
+                i += 1
+                while i < len(expression) and brace_depth > 0:
+                    if expression[i] == "{":
+                        brace_depth += 1
+                    elif expression[i] == "}":
+                        brace_depth -= 1
+                    i += 1
+                continue
+            if ch == "(":
+                depth += 1
+                last_open = i
+            elif ch == ")":
+                depth -= 1
+                if depth < 0 and last_extra_close < 0:
+                    last_extra_close = i
+            i += 1
+
+        if depth != 0:
+            if depth > 0:
+                msg = f"Unmatched opening parenthesis ({depth} unclosed)"
+                suggestion = "Add missing closing ')'"
+                col = last_open + 1  # 1-indexed
+            else:
+                msg = f"Unmatched closing parenthesis ({-depth} extra)"
+                suggestion = "Remove extra ')' or add matching '('"
+                col = (last_extra_close + 1) if last_extra_close >= 0 else 1
+            issues.append(
+                LintIssue(
+                    severity=LintSeverity.ERROR,
+                    code="EXPR_UNMATCHED_PAREN",
+                    message=msg,
+                    file_path=file_path,
+                    component_path=component_path,
+                    component_type=component_type,
+                    suggestion=suggestion,
+                    column=col,
+                )
+            )
+        return issues
+
+    def _check_unmatched_braces(
+        self, expression: str, file_path: str, component_path: str, component_type: str
+    ) -> list[LintIssue]:
+        """Detect unmatched curly braces, skipping string literals."""
+        issues: list[LintIssue] = []
+        depth = 0
+        i = 0
+        last_open = -1
+        last_extra_close = -1
+        while i < len(expression):
+            ch = expression[i]
+            if ch == "'":
+                end, _closed = _skip_string(expression, i)
+                i = end + 1
+                continue
+            if ch == "{":
+                depth += 1
+                last_open = i
+            elif ch == "}":
+                depth -= 1
+                if depth < 0 and last_extra_close < 0:
+                    last_extra_close = i
+            i += 1
+
+        if depth != 0:
+            if depth > 0:
+                msg = f"Unmatched opening brace ({depth} unclosed)"
+                suggestion = "Add missing closing '}'"
+                col = last_open + 1
+            else:
+                msg = f"Unmatched closing brace ({-depth} extra)"
+                suggestion = "Remove extra '}}' or add matching '{{'"
+                col = (last_extra_close + 1) if last_extra_close >= 0 else 1
+            issues.append(
+                LintIssue(
+                    severity=LintSeverity.ERROR,
+                    code="EXPR_UNMATCHED_BRACE",
+                    message=msg,
+                    file_path=file_path,
+                    component_path=component_path,
+                    component_type=component_type,
+                    suggestion=suggestion,
+                    column=col,
+                )
+            )
+        return issues
+
+    def _check_unmatched_string_quotes(
+        self, expression: str, file_path: str, component_path: str, component_type: str
+    ) -> list[LintIssue]:
+        """Detect unclosed string literals (single quotes)."""
+        issues: list[LintIssue] = []
+        i = 0
+        while i < len(expression):
+            if expression[i] == "'":
+                end, closed = _skip_string(expression, i)
+                if not closed:
+                    issues.append(
+                        LintIssue(
+                            severity=LintSeverity.ERROR,
+                            code="EXPR_UNMATCHED_QUOTE",
+                            message="Unclosed string literal",
+                            file_path=file_path,
+                            component_path=component_path,
+                            component_type=component_type,
+                            suggestion="Add missing closing single quote",
+                            column=i + 1,  # 1-indexed
+                        )
+                    )
+                    break
+                i = end + 1
+            else:
+                i += 1
+        return issues
+
+    def _check_adjacent_expressions(
+        self, expression: str, file_path: str, component_path: str, component_type: str
+    ) -> list[LintIssue]:
+        """Detect adjacent value tokens with no operator between them.
+
+        In Ignition expressions all operators are symbolic (+, -, *, /, etc.)
+        so two value-producing tokens back-to-back (with only whitespace) is
+        always a syntax error.  Value-ending tokens: ``)``, ``}``, closing
+        ``'``, last digit of a number.  Value-starting tokens: ``{``, ``'``,
+        digit, identifier (function call).
+        """
+        issues: list[LintIssue] = []
+        i = 0
+        length = len(expression)
+        # Position of the character that ended the last value token, or -1.
+        last_value_end = -1
+
+        def _has_operator_between(start: int, end: int) -> bool:
+            """Return True if there is a non-whitespace character between *start* and *end*."""
+            return expression[start + 1 : end].strip() != ""
+
+        def _flag(desc: str, pos: int) -> None:
+            issues.append(
+                LintIssue(
+                    severity=LintSeverity.ERROR,
+                    code="EXPR_ADJACENT_EXPRESSIONS",
+                    message=f"Adjacent expressions with no operator: {desc}",
+                    file_path=file_path,
+                    component_path=component_path,
+                    component_type=component_type,
+                    suggestion="Add an operator (+, -, *, /, etc.) or comma between expressions",
+                    column=pos + 1,  # 1-indexed
+                )
+            )
+
+        while i < length:
+            ch = expression[i]
+
+            # --- String literal (value) ---
+            if ch == "'":
+                if last_value_end >= 0 and not _has_operator_between(last_value_end, i):
+                    _flag("string literal after value", i)
+                end, closed = _skip_string(expression, i)
+                if closed:
+                    last_value_end = end
+                    i = end + 1
+                else:
+                    break  # unclosed string — other check handles it
+                continue
+
+            # --- Property / tag reference (value) ---
+            if ch == "{":
+                if last_value_end >= 0 and not _has_operator_between(last_value_end, i):
+                    _flag("property reference after value", i)
+                # Skip to matching }
+                brace_depth = 1
+                j = i + 1
+                while j < length and brace_depth > 0:
+                    if expression[j] == "{":
+                        brace_depth += 1
+                    elif expression[j] == "}":
+                        brace_depth -= 1
+                    j += 1
+                last_value_end = j - 1  # closing }
+                i = j
+                continue
+
+            # --- Closing paren ends a value (func call / grouping) ---
+            if ch == ")":
+                last_value_end = i
+                i += 1
+                continue
+
+            # --- Number literal (value) ---
+            if ch.isdigit():
+                if last_value_end >= 0 and not _has_operator_between(last_value_end, i):
+                    _flag("number literal after value", i)
+                # Consume the whole number (digits + optional decimal)
+                while i < length and (expression[i].isdigit() or expression[i] == "."):
+                    i += 1
+                last_value_end = i - 1
+                continue
+
+            # --- Identifier / function call (value) ---
+            if ch.isalpha() or ch == "_":
+                if last_value_end >= 0 and not _has_operator_between(last_value_end, i):
+                    # Consume identifier
+                    j = i
+                    while j < length and (
+                        expression[j].isalnum() or expression[j] == "_"
+                    ):
+                        j += 1
+                    ident = expression[i:j]
+                    _flag(f"'{ident}' after value", i)
+                    # Don't update last_value_end — let the normal flow handle it
+                # Consume identifier regardless
+                while i < length and (expression[i].isalnum() or expression[i] == "_"):
+                    i += 1
+                # Check if it's a function call — if so, skip into the parens
+                # and let ')' handling set last_value_end
+                j = i
+                while j < length and expression[j] in " \t":
+                    j += 1
+                if j < length and expression[j] == "(":
+                    # It's a function call — don't set last_value_end here;
+                    # the matching ')' will set it
+                    i = j + 1
+                    continue
+                # Bare identifier (rare in expressions) — treat as value
+                last_value_end = i - 1
+                continue
+
+            # --- Operators, commas, whitespace, open parens — reset value tracking ---
+            if ch in "+-*/%<>=!&|^~,":
+                last_value_end = -1
+            elif ch == "(":
+                # Opening paren for grouping — not a value end
+                last_value_end = -1
+
+            i += 1
 
         return issues

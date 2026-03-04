@@ -1155,11 +1155,7 @@ class TestNonBindablePropertyDetection:
                         "type": "ia.container.flex",
                         "meta": {"name": "Container"},
                         "children": [],
-                        "propConfig": {
-                            "children": {
-                                "onChange": {"script": "\tpass"}
-                            }
-                        },
+                        "propConfig": {"children": {"onChange": {"script": "\tpass"}}},
                     }
                 ],
             },
