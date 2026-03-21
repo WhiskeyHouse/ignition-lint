@@ -295,7 +295,10 @@ class JythonValidator:
         # Wrap transforms in a def so the indentation is valid Python.
         is_transform = "transform[" in context
         if is_transform:
-            prepared = f"def _transform(self, value, quality, timestamp):\n{script}"
+            # Standalone transforms are already dedented — re-indent so the
+            # body is valid inside the wrapper function.
+            body = textwrap.indent(script, "    ") if standalone else script
+            prepared = f"def _transform(self, value, quality, timestamp):\n{body}"
             prepared = _preprocess_py2(prepared)
         elif standalone:
             # Already dedented — parse directly

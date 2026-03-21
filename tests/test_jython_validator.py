@@ -171,6 +171,18 @@ class TestStandaloneMode:
         codes = [i.code for i in issues]
         assert "JYTHON_SYNTAX_ERROR" in codes
 
+    def test_standalone_transform_no_false_syntax_error(self):
+        """standalone=True with a transform context should not produce a false syntax error."""
+        v = JythonValidator()
+        # Dedented transform body — no leading tabs
+        issues = v.validate_script(
+            "if value > 10:\n    return 'high'\nreturn 'low'",
+            context="transform[0]",
+            standalone=True,
+        )
+        codes = [i.code for i in issues]
+        assert "JYTHON_SYNTAX_ERROR" not in codes
+
     def test_standalone_still_checks_patterns(self):
         """standalone=True still runs ignition pattern checks."""
         v = JythonValidator()
