@@ -148,16 +148,21 @@ class JythonValidator:
         self.issues: list[JythonIssue] = []
 
     def validate_script(
-        self, script_content: str, context: str = "script"
+        self, script_content: str, context: str = "script", standalone: bool = False
     ) -> list[LintIssue]:
-        """Validate a script and return normalized lint issues."""
+        """Validate a script and return normalized lint issues.
+
+        When *standalone* is True the script has already been dedented for
+        editing (e.g. by ignition-lsp) — indentation checks are skipped and
+        syntax checking avoids a redundant ``textwrap.dedent``.
+        """
         self.issues = []
 
         if not script_content or not script_content.strip():
             return []
 
-        self._check_indentation(script_content, context)
-        self._check_syntax(script_content, context)
+        self._check_indentation(script_content, context, standalone=standalone)
+        self._check_syntax(script_content, context, standalone=standalone)
         self._check_ignition_patterns(script_content, context)
         self._check_java_imports(script_content, context)
 
@@ -176,12 +181,19 @@ class JythonValidator:
             )
         return lint_issues
 
-    def _check_indentation(self, script: str, context: str) -> None:
+    def _check_indentation(
+        self, script: str, context: str, standalone: bool = False
+    ) -> None:
         # Skip indentation heuristics for standalone .py files. Python's own
         # compiler (in _check_syntax) catches real errors; our custom checks
         # are only useful for embedded scripts in JSON event handlers.
         is_standalone = context.endswith(".py") or ".py]" in context
         if is_standalone:
+            return
+
+        # Skip for dedented virtual buffer scripts — indentation was
+        # stripped for editing and will be re-added on save
+        if standalone:
             return
 
         lines = script.split("\n")
@@ -274,15 +286,23 @@ class JythonValidator:
                 )
             )
 
-    def _check_syntax(self, script: str, context: str) -> None:
+    def _check_syntax(
+        self, script: str, context: str, standalone: bool = False
+    ) -> None:
         # Script transforms are stored with leading tab indentation inside an
         # implicit function body.  When triple-quoted strings break
         # textwrap.dedent() common-prefix detection, ast.parse() fails.
         # Wrap transforms in a def so the indentation is valid Python.
         is_transform = "transform[" in context
         if is_transform:
-            prepared = f"def _transform(self, value, quality, timestamp):\n{script}"
+            # Standalone transforms are already dedented — re-indent so the
+            # body is valid inside the wrapper function.
+            body = textwrap.indent(script, "    ") if standalone else script
+            prepared = f"def _transform(self, value, quality, timestamp):\n{body}"
             prepared = _preprocess_py2(prepared)
+        elif standalone:
+            # Already dedented — parse directly
+            prepared = _preprocess_py2(script)
         else:
             # Ignition stores inline scripts with leading indentation; dedent before parsing
             prepared = _preprocess_py2(textwrap.dedent(script))

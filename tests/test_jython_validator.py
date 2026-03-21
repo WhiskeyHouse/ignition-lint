@@ -150,6 +150,49 @@ def validate_with_context(script: str, context: str):
     return validator.validate_script(script, context=context)
 
 
+class TestStandaloneMode:
+    """standalone=True skips indentation but keeps other checks."""
+
+    def test_standalone_skips_indentation_check(self):
+        """standalone=True suppresses indentation diagnostics."""
+        v = JythonValidator()
+        # Script with no leading indent — would normally trigger JYTHON_INDENTATION_REQUIRED
+        issues = v.validate_script(
+            "from core import x\nreturn x", context="script", standalone=True
+        )
+        codes = [i.code for i in issues]
+        assert "JYTHON_INDENTATION_REQUIRED" not in codes
+        assert "JYTHON_INCONSISTENT_INDENTATION_STYLE" not in codes
+
+    def test_standalone_still_checks_syntax(self):
+        """standalone=True still validates Python syntax."""
+        v = JythonValidator()
+        issues = v.validate_script("def foo(\n", context="script", standalone=True)
+        codes = [i.code for i in issues]
+        assert "JYTHON_SYNTAX_ERROR" in codes
+
+    def test_standalone_transform_no_false_syntax_error(self):
+        """standalone=True with a transform context should not produce a false syntax error."""
+        v = JythonValidator()
+        # Dedented transform body — no leading tabs
+        issues = v.validate_script(
+            "if value > 10:\n    return 'high'\nreturn 'low'",
+            context="transform[0]",
+            standalone=True,
+        )
+        codes = [i.code for i in issues]
+        assert "JYTHON_SYNTAX_ERROR" not in codes
+
+    def test_standalone_still_checks_patterns(self):
+        """standalone=True still runs ignition pattern checks."""
+        v = JythonValidator()
+        issues = v.validate_script(
+            "print('hello')\n", context="script", standalone=True
+        )
+        codes = [i.code for i in issues]
+        assert "JYTHON_PREFER_PERSPECTIVE_PRINT" in codes
+
+
 class TestTransformSyntax:
     """Transform scripts should be parsed correctly despite leading indentation."""
 

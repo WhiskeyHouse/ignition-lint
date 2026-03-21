@@ -503,6 +503,16 @@ class TestAdjacentExpressions:
         )
         assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues)
 
+    def test_scientific_notation_not_flagged(self, validator):
+        """1e10 and 2.5E-3 should be parsed as single numbers, not adjacent tokens."""
+        for expr in ["1e10", "2.5E-3", "1E+5"]:
+            issues = validator.validate_expression(
+                expr, "test", "file.json", "root", "ia.display.label"
+            )
+            assert "EXPR_ADJACENT_EXPRESSIONS" not in _codes(issues), (
+                f"False positive on {expr}"
+            )
+
     def test_complex_valid_expression(self, validator):
         """Real-world expression with multiple tokens and operators."""
         expr = "if({view.custom.x} > 0, toStr({view.custom.x} * 2), 'none')"

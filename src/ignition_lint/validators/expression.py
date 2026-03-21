@@ -675,6 +675,13 @@ class ExpressionValidator:
                 # Consume the whole number (digits + optional decimal)
                 while i < length and (expression[i].isdigit() or expression[i] == "."):
                     i += 1
+                # Handle scientific notation (e.g., 1e10, 1E-5)
+                if i < length and expression[i] in "eE":
+                    i += 1
+                    if i < length and expression[i] in "+-":
+                        i += 1
+                    while i < length and expression[i].isdigit():
+                        i += 1
                 last_value_end = i - 1
                 continue
 
