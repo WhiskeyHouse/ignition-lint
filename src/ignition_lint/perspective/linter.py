@@ -1200,6 +1200,66 @@ class IgnitionPerspectiveLinter:
                         )
                     )
 
+    def _check_param_directions(self, view_data: dict, file_path: str):
+        """Check that view params have explicit paramDirection in propConfig.
+
+        The Perspective Designer shows 'input' as the default direction in the
+        UI, but this is NOT serialized to the view JSON unless the user
+        explicitly sets it.  Without a propConfig entry the runtime silently
+        fails to propagate parameter values from embedding parent views.
+        """
+        params = view_data.get("params", {})
+        if not isinstance(params, dict) or not params:
+            return
+
+        prop_config = view_data.get("propConfig", {})
+        if not isinstance(prop_config, dict):
+            prop_config = {}
+
+        for param_name in params:
+            config_key = f"params.{param_name}"
+            entry = prop_config.get(config_key)
+
+            if entry is None:
+                self.issues.append(
+                    LintIssue(
+                        severity=LintSeverity.WARNING,
+                        code="MISSING_PARAM_DIRECTION",
+                        message=(
+                            f"View parameter '{param_name}' has no propConfig entry"
+                        ),
+                        file_path=file_path,
+                        component_path=f"params.{param_name}",
+                        component_type="view",
+                        suggestion=(
+                            f"Add a propConfig entry for 'params.{param_name}' with "
+                            "an explicit paramDirection. Without it the runtime "
+                            "will not propagate values from embedding parent views. "
+                            "The Designer shows 'input' as a UI default but does not "
+                            "serialize it. Valid values: input, output, inout."
+                        ),
+                    )
+                )
+            elif isinstance(entry, dict) and "paramDirection" not in entry:
+                self.issues.append(
+                    LintIssue(
+                        severity=LintSeverity.WARNING,
+                        code="MISSING_PARAM_DIRECTION",
+                        message=(
+                            f"View parameter '{param_name}' has propConfig but no "
+                            "paramDirection"
+                        ),
+                        file_path=file_path,
+                        component_path=f"propConfig.params.{param_name}",
+                        component_type="view",
+                        suggestion=(
+                            f"Add 'paramDirection' to the propConfig entry for "
+                            f"'params.{param_name}'. "
+                            "Valid values: input, output, inout."
+                        ),
+                    )
+                )
+
     # --- Tier 2 & 3: Binding path resolution (view-level pass) ---
 
     _PROPERTY_BOUNDARY_RE = re.compile(r"\.(props|custom|position|meta)\.")
@@ -1688,6 +1748,9 @@ class IgnitionPerspectiveLinter:
 
         # Check for unused custom/param properties (per-view)
         self._check_unused_properties(view_data, file_path)
+
+        # Check that params have explicit paramDirection in propConfig
+        self._check_param_directions(view_data, file_path)
 
         # Validate binding paths against view structure (Tier 2 & 3)
         self._validate_binding_paths(view_data, file_path)

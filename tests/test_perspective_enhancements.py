@@ -1225,3 +1225,89 @@ class TestNonBindablePropertyDetection:
         matching = [i for i in issues if i.code == "BINDING_NON_BINDABLE_PROPERTY"]
         flagged_keys = {i.message.split("'")[1] for i in matching}
         assert flagged_keys == {"children", "type"}
+
+
+class TestParamDirectionValidation:
+    """Tests for MISSING_PARAM_DIRECTION rule."""
+
+    _BASE_ROOT = {
+        "type": "ia.container.flex",
+        "meta": {"name": "Root"},
+        "children": [],
+    }
+
+    def test_param_no_propconfig_warns(self):
+        """Params defined with no propConfig at all — the exact bug scenario."""
+        view = {
+            "custom": {},
+            "params": {"itemId": 0, "mode": "view"},
+            "root": self._BASE_ROOT,
+        }
+        issues = _lint_view(view)
+        param_issues = [i for i in issues if i.code == "MISSING_PARAM_DIRECTION"]
+        assert len(param_issues) == 2
+        names = {i.component_path for i in param_issues}
+        assert names == {"params.itemId", "params.mode"}
+        assert all(i.severity.value == "warning" for i in param_issues)
+
+    def test_param_propconfig_no_direction_warns(self):
+        """propConfig entry exists for the param but lacks paramDirection."""
+        view = {
+            "custom": {},
+            "params": {"cameraID": "abc"},
+            "propConfig": {
+                "params.cameraID": {
+                    "persistent": True,
+                }
+            },
+            "root": self._BASE_ROOT,
+        }
+        issues = _lint_view(view)
+        assert "MISSING_PARAM_DIRECTION" in _codes(issues)
+        matching = [i for i in issues if i.code == "MISSING_PARAM_DIRECTION"]
+        assert len(matching) == 1
+        assert matching[0].component_path == "propConfig.params.cameraID"
+
+    def test_param_proper_propconfig_clean(self):
+        """Complete propConfig with paramDirection — no warning."""
+        view = {
+            "custom": {},
+            "params": {"cameraID": "abc"},
+            "propConfig": {
+                "params.cameraID": {
+                    "paramDirection": "input",
+                    "persistent": True,
+                }
+            },
+            "root": self._BASE_ROOT,
+        }
+        issues = _lint_view(view)
+        assert "MISSING_PARAM_DIRECTION" not in _codes(issues)
+
+    def test_empty_params_no_warning(self):
+        """Empty params dict should not trigger any warnings."""
+        view = {
+            "custom": {},
+            "params": {},
+            "root": self._BASE_ROOT,
+        }
+        issues = _lint_view(view)
+        assert "MISSING_PARAM_DIRECTION" not in _codes(issues)
+
+    def test_multiple_params_partial_propconfig(self):
+        """Two params, one configured and one not — exactly one warning."""
+        view = {
+            "custom": {},
+            "params": {"itemId": 0, "mode": "view"},
+            "propConfig": {
+                "params.itemId": {
+                    "paramDirection": "input",
+                    "persistent": True,
+                }
+            },
+            "root": self._BASE_ROOT,
+        }
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "MISSING_PARAM_DIRECTION"]
+        assert len(matching) == 1
+        assert matching[0].component_path == "params.mode"
