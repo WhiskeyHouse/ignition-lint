@@ -519,6 +519,45 @@ class IgnitionPerspectiveLinter:
     # ``meta.name`` have no binding scope and must never be targeted.
     _VALID_BINDING_SCOPES = ("props.", "position.", "custom.", "meta.", "params.")
 
+    # Canonical mapping of Perspective event names to their required category.
+    # Placing an event under the wrong category causes Ignition Designer to
+    # silently ignore the handler — the script never fires.
+    _EVENT_CATEGORY_MAP: dict[str, str] = {
+        # system
+        "onStartup": "system",
+        "onShutdown": "system",
+        # component
+        "onActionPerformed": "component",
+        "onEditCellCommit": "component",
+        "onQualityOverlay": "component",
+        # mouse
+        "onClick": "mouse",
+        "onContextMenu": "mouse",
+        "onDoubleClick": "mouse",
+        "onMouseDown": "mouse",
+        "onMouseUp": "mouse",
+        "onMouseEnter": "mouse",
+        "onMouseLeave": "mouse",
+        "onMouseMove": "mouse",
+        "onMouseOver": "mouse",
+        # pointer
+        "onPointerCancel": "pointer",
+        "onPointerDown": "pointer",
+        "onPointerEnter": "pointer",
+        "onPointerLeave": "pointer",
+        "onPointerMove": "pointer",
+        "onPointerOut": "pointer",
+        "onPointerOver": "pointer",
+        "onPointerUp": "pointer",
+        # keyboard
+        "onKeyDown": "keyboard",
+        "onKeyPress": "keyboard",
+        "onKeyUp": "keyboard",
+        # focus
+        "onFocus": "focus",
+        "onBlur": "focus",
+    }
+
     def _validate_bindings(self, component: dict, file_path: str, component_path: str):
         """Validate bindings based on empirical analysis patterns."""
         prop_config = component.get("propConfig", {})
@@ -886,6 +925,27 @@ class IgnitionPerspectiveLinter:
         for event_category, handlers in events.items():
             if isinstance(handlers, dict):
                 for event_name, handler_config in handlers.items():
+                    # Check that event is under the correct category
+                    expected_category = self._EVENT_CATEGORY_MAP.get(event_name)
+                    if (
+                        expected_category is not None
+                        and event_category != expected_category
+                    ):
+                        self.issues.append(
+                            LintIssue(
+                                severity=LintSeverity.ERROR,
+                                code="EVENT_WRONG_CATEGORY",
+                                message=(
+                                    f"Event '{event_name}' is a {expected_category} "
+                                    f"event but was found under '{event_category}'"
+                                ),
+                                file_path=file_path,
+                                component_path=component_path,
+                                component_type=comp_type,
+                                suggestion=f"Move to events.{expected_category}.{event_name}",
+                            )
+                        )
+
                     # Handle both single handler and array of handlers
                     handlers_list = (
                         handler_config

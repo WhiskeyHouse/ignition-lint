@@ -1311,3 +1311,130 @@ class TestParamDirectionValidation:
         matching = [i for i in issues if i.code == "MISSING_PARAM_DIRECTION"]
         assert len(matching) == 1
         assert matching[0].component_path == "params.mode"
+
+
+class TestEventWrongCategory:
+    """Tests for EVENT_WRONG_CATEGORY rule (TEC-2383)."""
+
+    _BASE_VIEW = {
+        "custom": {},
+        "root": {
+            "type": "ia.container.flex",
+            "meta": {"name": "Root"},
+            "children": [],
+        },
+    }
+
+    @staticmethod
+    def _make_view_with_event(category, event_name):
+        """Build a minimal view.json with a single event handler."""
+        return {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [],
+                "events": {
+                    category: {
+                        event_name: {
+                            "type": "script",
+                            "config": {"script": "\tpass"},
+                        }
+                    }
+                },
+            },
+        }
+
+    def test_correct_system_event(self):
+        """onStartup under events.system should not flag."""
+        view = self._make_view_with_event("system", "onStartup")
+        issues = _lint_view(view)
+        assert "EVENT_WRONG_CATEGORY" not in _codes(issues)
+
+    def test_correct_mouse_event(self):
+        """onClick under events.mouse should not flag."""
+        view = self._make_view_with_event("mouse", "onClick")
+        issues = _lint_view(view)
+        assert "EVENT_WRONG_CATEGORY" not in _codes(issues)
+
+    def test_correct_component_event(self):
+        """onActionPerformed under events.component should not flag."""
+        view = self._make_view_with_event("component", "onActionPerformed")
+        issues = _lint_view(view)
+        assert "EVENT_WRONG_CATEGORY" not in _codes(issues)
+
+    def test_system_event_under_component(self):
+        """onStartup under events.component should flag."""
+        view = self._make_view_with_event("component", "onStartup")
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "EVENT_WRONG_CATEGORY"]
+        assert len(matching) == 1
+        assert "system event" in matching[0].message
+        assert matching[0].suggestion == "Move to events.system.onStartup"
+
+    def test_mouse_event_under_system(self):
+        """onClick under events.system should flag."""
+        view = self._make_view_with_event("system", "onClick")
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "EVENT_WRONG_CATEGORY"]
+        assert len(matching) == 1
+        assert "mouse event" in matching[0].message
+        assert matching[0].suggestion == "Move to events.mouse.onClick"
+
+    def test_keyboard_event_under_mouse(self):
+        """onKeyDown under events.mouse should flag."""
+        view = self._make_view_with_event("mouse", "onKeyDown")
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "EVENT_WRONG_CATEGORY"]
+        assert len(matching) == 1
+        assert matching[0].suggestion == "Move to events.keyboard.onKeyDown"
+
+    def test_focus_event_under_component(self):
+        """onBlur under events.component should flag."""
+        view = self._make_view_with_event("component", "onBlur")
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "EVENT_WRONG_CATEGORY"]
+        assert len(matching) == 1
+        assert matching[0].suggestion == "Move to events.focus.onBlur"
+
+    def test_pointer_event_under_mouse(self):
+        """onPointerDown under events.mouse should flag."""
+        view = self._make_view_with_event("mouse", "onPointerDown")
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "EVENT_WRONG_CATEGORY"]
+        assert len(matching) == 1
+        assert matching[0].suggestion == "Move to events.pointer.onPointerDown"
+
+    def test_unknown_event_not_flagged(self):
+        """Custom/unknown events should not trigger this rule."""
+        view = self._make_view_with_event("component", "onCustomThing")
+        issues = _lint_view(view)
+        assert "EVENT_WRONG_CATEGORY" not in _codes(issues)
+
+    def test_multiple_wrong_events(self):
+        """Multiple misplaced events should each produce a separate issue."""
+        view = {
+            "custom": {},
+            "root": {
+                "type": "ia.container.flex",
+                "meta": {"name": "Root"},
+                "children": [],
+                "events": {
+                    "component": {
+                        "onStartup": {
+                            "type": "script",
+                            "config": {"script": "\tpass"},
+                        },
+                        "onShutdown": {
+                            "type": "script",
+                            "config": {"script": "\tpass"},
+                        },
+                    }
+                },
+            },
+        }
+        issues = _lint_view(view)
+        matching = [i for i in issues if i.code == "EVENT_WRONG_CATEGORY"]
+        assert len(matching) == 2
+        event_names = {m.message.split("'")[1] for m in matching}
+        assert event_names == {"onStartup", "onShutdown"}
