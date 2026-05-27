@@ -212,7 +212,7 @@ Full documentation at [TheThoughtagen.github.io/ignition-lint](https://TheThough
 - [CLI reference](https://TheThoughtagen.github.io/ignition-lint/docs/guides/cli-reference)
 - [Rule codes](https://TheThoughtagen.github.io/ignition-lint/docs/guides/rule-codes)
 - [Suppression guide](https://TheThoughtagen.github.io/ignition-lint/docs/guides/suppression)
-- [GitHub Actions](https://TheThoughtagen.github.io/ignition-lint/integration/docs/github-actions)
+- [GitHub Actions](https://TheThoughtagen.github.io/ignition-lint/docs/integration/github-actions)
 
 ## Contributing
 
