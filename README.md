@@ -134,7 +134,7 @@ Three mechanisms let you control which rules fire and where:
 2. **`.ignition-lintignore` file** -- gitignore-style patterns with optional rule scoping per path
 3. **Inline comments** -- `# ignition-lint: disable=CODE` directives in Python scripts
 
-See the [suppression guide](https://TheThoughtagen.github.io/ignition-lint/guides/suppression) for the full reference.
+See the [suppression guide](https://TheThoughtagen.github.io/ignition-lint/docs/guides/suppression) for the full reference.
 
 ## Integrations
 
@@ -159,7 +159,7 @@ jobs:
           ignore_codes: "NAMING_PARAMETER"  # Suppress during migration
 ```
 
-[Full Action documentation →](https://TheThoughtagen.github.io/ignition-lint/integration/github-actions)
+[Full Action documentation →](https://TheThoughtagen.github.io/ignition-lint/docs/integration/github-actions)
 
 ### 🪝 Pre-commit hooks
 
@@ -174,7 +174,7 @@ repos:
       - id: ignition-perspective-lint
 ```
 
-[Pre-commit guide →](https://TheThoughtagen.github.io/ignition-lint/integration/pre-commit)
+[Pre-commit guide →](https://TheThoughtagen.github.io/ignition-lint/docs/integration/pre-commit)
 
 ### 🤖 MCP server (AI agents)
 
@@ -185,7 +185,7 @@ pip install "ignition-lint-toolkit[mcp]"
 ignition-lint-server
 ```
 
-[MCP integration guide →](https://TheThoughtagen.github.io/ignition-lint/guides/mcp-server)
+[MCP integration guide →](https://TheThoughtagen.github.io/ignition-lint/docs/guides/mcp-server)
 
 ### 🛠️ Editor integration
 
@@ -205,14 +205,14 @@ Use with language servers for real-time feedback. See [Editor Integration Guide]
 
 ## Documentation
 
-Full documentation at [TheThoughtagen.github.io/ignition-lint](https://TheThoughtagen.github.io/ignition-lint/):
+Full documentation at [TheThoughtagen.github.io/ignition-lint](https://TheThoughtagen.github.io/ignition-lint/docs/):
 
-- [Installation](https://TheThoughtagen.github.io/ignition-lint/getting-started/installation)
-- [Basic usage](https://TheThoughtagen.github.io/ignition-lint/getting-started/basic-usage)
-- [CLI reference](https://TheThoughtagen.github.io/ignition-lint/guides/cli-reference)
-- [Rule codes](https://TheThoughtagen.github.io/ignition-lint/guides/rule-codes)
-- [Suppression guide](https://TheThoughtagen.github.io/ignition-lint/guides/suppression)
-- [GitHub Actions](https://TheThoughtagen.github.io/ignition-lint/integration/github-actions)
+- [Installation](https://TheThoughtagen.github.io/ignition-lint/docs/getting-started/installation)
+- [Basic usage](https://TheThoughtagen.github.io/ignition-lint/docs/getting-started/basic-usage)
+- [CLI reference](https://TheThoughtagen.github.io/ignition-lint/docs/guides/cli-reference)
+- [Rule codes](https://TheThoughtagen.github.io/ignition-lint/docs/guides/rule-codes)
+- [Suppression guide](https://TheThoughtagen.github.io/ignition-lint/docs/guides/suppression)
+- [GitHub Actions](https://TheThoughtagen.github.io/ignition-lint/docs/integration/github-actions)
 
 ## Contributing
 
